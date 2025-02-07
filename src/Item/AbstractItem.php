@@ -49,7 +49,7 @@ abstract class AbstractItem
         ) {
             return [
                 'name' => $param->var->name,
-                'type' => $param->type ? $this->getTypeName($param->type) : null
+                'type' => $param->type ? static::getTypeName($param->type) : null
             ];
         }, $params);
     }
@@ -80,20 +80,20 @@ abstract class AbstractItem
         return null;
     }
 
-//    protected static function parseValue(Node\Expr $expr): mixed
-//    {
-//        if ($expr instanceof Node\Scalar\String_) {
-//            return $expr->value;
-//        }
-//        if ($expr instanceof Node\Scalar\LNumber) {
-//            return $expr->value;
-//        }
-//        if ($expr instanceof Node\Scalar\DNumber) {
-//            return $expr->value;
-//        }
-//        if ($expr instanceof Node\Expr\ConstFetch) {
-//            return $expr->name->toString() === 'true';
-//        }
-//        return null;
-//    }
+    protected static function parseValue(Node\Expr $expr): mixed
+    {
+        if ($expr instanceof Node\Scalar\String_) {
+            return $expr->value;
+        }
+        if ($expr instanceof Node\Scalar\LNumber) {
+            return $expr->value;
+        }
+        if ($expr instanceof Node\Scalar\DNumber) {
+            return $expr->value;
+        }
+        if ($expr instanceof Node\Expr\ConstFetch) {
+            return $expr->name->toString() === 'true';
+        }
+        return null;
+    }
 }

@@ -60,23 +60,6 @@ class ClassItem extends AbstractItem
         ];
     }
 
-    private static function parseValue(Node\Expr $expr): mixed
-    {
-        if ($expr instanceof Node\Scalar\String_) {
-            return $expr->value;
-        }
-        if ($expr instanceof Node\Scalar\LNumber) {
-            return $expr->value;
-        }
-        if ($expr instanceof Node\Scalar\DNumber) {
-            return $expr->value;
-        }
-        if ($expr instanceof Node\Expr\ConstFetch) {
-            return $expr->name->toString() === 'true';
-        }
-        return null;
-    }
-
     public function generateCode(): string
     {
         $output = $this->formatDocBlock($this->description);

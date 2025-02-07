@@ -3,18 +3,9 @@
 namespace Wexample\Pseudocode\Generator;
 
 use Symfony\Component\Yaml\Yaml;
-use Wexample\Pseudocode\Parser\PhpParser;
 
 class CodeGenerator extends AbstractGenerator
 {
-    private PhpParser $phpParser;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->phpParser = new PhpParser();
-    }
-
     public function generateCode(string $yamlContent): string
     {
         $pseudoCode = Yaml::parse($yamlContent);
