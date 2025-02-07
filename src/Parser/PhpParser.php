@@ -48,8 +48,8 @@ class PhpParser extends NodeVisitorAbstract
         }
 
         return [
-            'type' => 'class',
             'name' => $node->name->toString(),
+            'type' => 'class',
             'description' => $this->getDocComment($node),
             'properties' => $properties,
             'methods' => $methods

@@ -5,17 +5,17 @@ define('PI', 3.14159); // Mathematical constant for circle calculations.
 define('DEFAULT_GREETING', "Hello, World!"); // Default greeting message.
 
 /**
- * Calculate the sum of two numbers.
- * @param number $a The first operand.
- * @param number $b The second operand.
- * @return number
+ * Calculate the sum of two ints.
+ * @param int $a The first operand.
+ * @param int $b The second operand.
+ * @return int
  */
 function calculateSum(
-    number $a,
-    number $b
-): number
+    int $a,
+    int $b
+): int
 {
-    // Use basic arithmetic to return the sum. Validate that both parameters are numbers and handle any necessary error checking.
+    // Use basic arithmetic to return the sum. Validate that both parameters are ints and handle any necessary error checking.
     // TODO: Implement function body
 }
 
@@ -37,19 +37,19 @@ function generateGreeting(
  */
 class Calculator
 {
-    /** @var number Stores the result of the last operation performed. */
-    private number $lastResult = 0;
+    /** @var int Stores the result of the last operation performed. */
+    private int $lastResult = 0;
 
     /**
-     * Add two numbers and update lastResult.
-     * @param number $a
-     * @param number $b
-     * @return number
+     * Add two ints and update lastResult.
+     * @param int $a
+     * @param int $b
+     * @return int
      */
     function add(
-        number $a,
-        number $b
-    ): number
+        int $a,
+        int $b
+    ): int
     {
         // Use the calculateSum function to compute the sum. Update the lastResult property with the new value.
         // TODO: Implement function body

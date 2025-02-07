@@ -11,18 +11,18 @@ items:
 
   - name: calculateSum
     type: function
-    description: "Calculate the sum of two numbers."
+    description: "Calculate the sum of two ints."
     parameters:
       - name: a
-        type: number
+        type: int
         description: "The first operand."
       - name: b
-        type: number
+        type: int
         description: "The second operand."
-    returnType: number
+    returnType: int
     implementationGuidelines: >
       Use basic arithmetic to return the sum.
-      Validate that both parameters are numbers and handle any necessary error checking.
+      Validate that both parameters are ints and handle any necessary error checking.
 
   - name: generateGreeting
     type: function
@@ -40,18 +40,18 @@ items:
     description: "A class that performs basic arithmetic operations."
     properties:
       - name: lastResult
-        type: number
+        type: int
         default: 0
         description: "Stores the result of the last operation performed."
     methods:
       - name: add
-        description: "Add two numbers and update lastResult."
+        description: "Add two ints and update lastResult."
         parameters:
           - name: a
-            type: number
+            type: int
           - name: b
-            type: number
-        returnType: number
+            type: int
+        returnType: int
         implementationGuidelines: >
           Use the calculateSum function to compute the sum.
           Update the lastResult property with the new value.
