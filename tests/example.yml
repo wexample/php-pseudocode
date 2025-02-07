@@ -1,7 +1,8 @@
 function:
   name: calculateSum
+  documentation:
+    info: Returns the sum of two numbers.
+    implementation: This function should calculate the sum of the two variables.
   parameters:
     - a
     - b
-  body:
-    - return $a + $b;
