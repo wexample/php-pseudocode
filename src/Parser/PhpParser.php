@@ -2,6 +2,7 @@
 
 namespace Wexample\Pseudocode\Parser;
 
+use PhpParser\Lexer\Emulative;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -16,7 +17,10 @@ class PhpParser extends NodeVisitorAbstract
 
     public function parse(string $code): array
     {
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $lexer = new Emulative([
+            'usedAttributes' => ['comments', 'startLine', 'endLine']
+        ]);
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7, $lexer);
         $ast = $parser->parse($code);
 
         $traverser = new NodeTraverser();
@@ -33,7 +37,22 @@ class PhpParser extends NodeVisitorAbstract
         } elseif ($node instanceof Node\Stmt\Function_) {
             $this->items[] = FunctionItem::fromNode($node);
         } elseif ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define') {
-            $this->items[] = ConstantItem::fromNode($node);
+            // Get the comments attached to this node
+            $comments = $node->getAttribute('comments', []);
+            $inlineComment = null;
+            
+            // Look for the last comment that appears on the same line as the node
+            foreach ($comments as $comment) {
+                if ($comment->getStartLine() === $node->getStartLine() && $comment->getType() === PhpParser\Comment::TYPE_SINGLE) {
+                    $inlineComment = trim(substr($comment->getText(), 2)); // Remove // from comment
+                }
+            }
+            
+            $nodeData = ConstantItem::fromNode($node);
+            if ($inlineComment) {
+                $nodeData['description'] = $inlineComment;
+            }
+            $this->items[] = $nodeData;
         }
     }
 

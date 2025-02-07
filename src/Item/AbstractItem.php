@@ -80,6 +80,30 @@ abstract class AbstractItem
         return null;
     }
 
+    protected static function getInlineComment(Node $node): ?string
+    {
+        // Try to get any comments attached to the node.
+        $comments = $node->getAttribute('comments');
+
+        if (!$comments || empty($comments)) {
+            return null;
+        }
+
+        // For inline comments, we check if the comment appears on the same line as the node's end line.
+        $nodeEndLine = $node->getAttribute('endLine');
+        foreach ($comments as $comment) {
+            // Check if the comment's starting line matches the node's ending line.
+            if ($comment->getLine() === $nodeEndLine) {
+                $text = $comment->getText();
+                // Check if it is an inline comment (starting with //).
+                if (strpos($text, '//') === 0) {
+                    return trim(substr($text, 2));
+                }
+            }
+        }
+        return null;
+    }
+
     protected static function parseValue(Node\Expr $expr): mixed
     {
         if ($expr instanceof Node\Scalar\String_) {

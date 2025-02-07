@@ -26,11 +26,13 @@ class ConstantItem extends AbstractItem
 
     public static function fromNode(NodeAbstract $node): array
     {
-        return [
+        $data = [
             'type' => 'constant',
             'name' => $node->args[0]->value->value,
             'value' => static::parseValue($node->args[1]->value),
-            'description' => static::getDocComment($node)
         ];
+
+        // Description will be set by the parser if an inline comment is found
+        return $data;
     }
 }
