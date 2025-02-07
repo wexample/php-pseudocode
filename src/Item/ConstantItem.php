@@ -2,6 +2,8 @@
 
 namespace Wexample\Pseudocode\Item;
 
+use PhpParser\NodeAbstract;
+
 class ConstantItem extends AbstractItem
 {
     private mixed $value;
@@ -20,5 +22,15 @@ class ConstantItem extends AbstractItem
             $this->formatValue($this->value),
             $this->description ?? ''
         );
+    }
+
+    public static function fromNode(NodeAbstract $node): array
+    {
+        return [
+            'type' => 'constant',
+            'name' => $node->args[0]->value->value,
+            'value' => static::parseValue($node->args[1]->value),
+            'description' => static::getDocComment($node)
+        ];
     }
 }

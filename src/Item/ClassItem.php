@@ -2,6 +2,9 @@
 
 namespace Wexample\Pseudocode\Item;
 
+use PhpParser\Node;
+use PhpParser\NodeAbstract;
+
 class ClassItem extends AbstractItem
 {
     protected array $properties;
@@ -14,6 +17,66 @@ class ClassItem extends AbstractItem
         $this->methods = $data['methods'] ?? [];
     }
 
+
+    public static function fromNode(NodeAbstract $node): array
+    {
+        $properties = [];
+        $methods = [];
+
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof Node\Stmt\Property) {
+                $properties[] = static::parseProperty($stmt);
+            } elseif ($stmt instanceof Node\Stmt\ClassMethod) {
+                $methods[] = static::parseMethod($stmt);
+            }
+        }
+
+        return [
+            'name' => $node->name->toString(),
+            'type' => 'class',
+            'description' => static::getDocComment($node),
+            'properties' => $properties,
+            'methods' => $methods
+        ];
+    }
+
+    private static function parseProperty(Node\Stmt\Property $node): array
+    {
+        return [
+            'name' => $node->props[0]->name->toString(),
+            'type' => self::getTypeName($node->type),
+            'description' => self::getDocComment($node),
+            'default' => $node->props[0]->default ? self::parseValue($node->props[0]->default) : null
+        ];
+    }
+
+    private static function parseMethod(Node\Stmt\ClassMethod $node): array
+    {
+        return [
+            'name' => $node->name->toString(),
+            'description' => self::getDocComment($node),
+            'parameters' => self::parseParameters($node->params),
+            'returnType' => $node->returnType ? self::getTypeName($node->returnType) : null
+        ];
+    }
+
+    private static function parseValue(Node\Expr $expr): mixed
+    {
+        if ($expr instanceof Node\Scalar\String_) {
+            return $expr->value;
+        }
+        if ($expr instanceof Node\Scalar\LNumber) {
+            return $expr->value;
+        }
+        if ($expr instanceof Node\Scalar\DNumber) {
+            return $expr->value;
+        }
+        if ($expr instanceof Node\Expr\ConstFetch) {
+            return $expr->name->toString() === 'true';
+        }
+        return null;
+    }
+
     public function generateCode(): string
     {
         $output = $this->formatDocBlock($this->description);
@@ -21,39 +84,39 @@ class ClassItem extends AbstractItem
         $output .= $this->generateProperties();
         $output .= $this->generateMethods();
         $output .= "}\n";
-        
+
         return $output;
     }
 
     protected function generateProperties(): string
     {
         $output = '';
-        
+
         foreach ($this->properties as $property) {
             if (isset($property['description'])) {
                 $output .= "    /** @var {$property['type']} {$property['description']} */\n";
             }
-            
-            $default = isset($property['default']) 
-                ? " = " . $this->formatValue($property['default']) 
+
+            $default = isset($property['default'])
+                ? " = " . $this->formatValue($property['default'])
                 : "";
-                
+
             $output .= "    private {$property['type']} \${$property['name']}{$default};\n\n";
         }
-        
+
         return $output;
     }
 
     protected function generateMethods(): string
     {
         $output = '';
-        
+
         foreach ($this->methods as $methodData) {
             $method = new FunctionItem($methodData);
             $output .= "    " . str_replace("\n", "\n    ", $method->generateCode());
             $output .= "\n";
         }
-        
+
         return $output;
     }
 }

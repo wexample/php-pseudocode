@@ -2,6 +2,9 @@
 
 namespace Wexample\Pseudocode\Item;
 
+use PhpParser\Node;
+use PhpParser\NodeAbstract;
+
 class FunctionItem extends AbstractItem
 {
     protected array $parameters;
@@ -86,5 +89,16 @@ class FunctionItem extends AbstractItem
         $output .= "}\n";
         
         return $output;
+    }
+
+    static function fromNode(NodeAbstract $node): array
+    {
+        return [
+            'type' => 'function',
+            'name' => $node->name->toString(),
+            'description' => self::getDocComment($node),
+            'parameters' => self::parseParameters($node->params),
+            'returnType' => $node->returnType ? self::getTypeName($node->returnType) : null
+        ];
     }
 }
