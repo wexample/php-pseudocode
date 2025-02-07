@@ -1,16 +1,16 @@
 items:
-  - name: PI
-    type: constant
+  - type: constant
+    name: PI
     value: 3.14159
     description: "Mathematical constant for circle calculations."
 
-  - name: DEFAULT_GREETING
-    type: constant
+  - type: constant
+    name: DEFAULT_GREETING
     value: "Hello, World!"
     description: "Default greeting message."
 
-  - name: calculateSum
-    type: function
+  - type: function
+    name: calculateSum
     description: "Calculate the sum of two ints."
     parameters:
       - name: a
@@ -24,8 +24,8 @@ items:
       Use basic arithmetic to return the sum.
       Validate that both parameters are ints and handle any necessary error checking.
 
-  - name: generateGreeting
-    type: function
+  - type: function
+    name: generateGreeting
     description: "Generate a personalized greeting message."
     parameters:
       - name: name
@@ -35,8 +35,8 @@ items:
     implementationGuidelines: >
       If the provided name is empty, use the DEFAULT_GREETING constant.
       Ensure the output string is properly formatted.
-  - name: Calculator
-    type: class
+  - type: class
+    name: Calculator
     description: "A class that performs basic arithmetic operations."
     properties:
       - name: lastResult
