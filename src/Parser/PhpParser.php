@@ -8,6 +8,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
+use PhpParser\Comment\Doc; // Import the Doc comment class
 use Wexample\Pseudocode\Item\ClassItem;
 use Wexample\Pseudocode\Item\ConstantItem;
 use Wexample\Pseudocode\Item\FunctionItem;
@@ -15,9 +16,9 @@ use Wexample\Pseudocode\Item\FunctionItem;
 class PhpParser extends NodeVisitorAbstract
 {
     private array $items = [];
-    // On collecte tous les commentaires vus dans l'AST
+    // Collect all comments from the AST
     private array $allComments = [];
-    // On stocke les nœuds correspondant à des appels à define()
+    // Collect all "define" nodes for constants
     private array $defineNodes = [];
 
     public function parse(string $code): array
@@ -35,48 +36,50 @@ class PhpParser extends NodeVisitorAbstract
         $ast = $parser->parse($code);
 
         $traverser = new NodeTraverser();
-        // Pour que chaque nœud reçoive un attribut "parent"
+        // Ensure that each node gets a "parent" attribute.
         $traverser->addVisitor(new ParentConnectingVisitor());
         $traverser->addVisitor($this);
         $traverser->traverse($ast);
 
-        // Une fois le parcours terminé, on affecte les commentaires inline aux define() en fonction de leur position.
+        // After traversal, assign inline comments to define() nodes.
         $this->assignInlineCommentsToDefines();
 
-        // Retourne tous les items (constantes, classes, fonctions, etc.)
         return $this->items;
     }
 
     /**
-     * Pour chaque commentaire inline (commençant par // ou #) collecté,
-     * on cherche le nœud define() dont la position de fin est immédiatement
-     * précédée par le commentaire.
+     * Associates each define() node with the inline comment that immediately follows it,
+     * filtering out any PHPDoc comments.
      */
     protected function assignInlineCommentsToDefines(): void
     {
-        // Filtrer uniquement les commentaires inline (ignorer les commentaires multi-lignes ou PHPDoc)
+        // Filter only inline comments (starting with // or #) and skip PHPDoc comments.
         $inlineComments = array_filter($this->allComments, function($comment) {
+            // Skip PHPDoc comments
+            if ($comment instanceof Doc) {
+                return false;
+            }
             $text = $comment->getText();
             return (strpos($text, '//') === 0 || strpos($text, '#') === 0);
         });
 
-        // Trie des commentaires par leur position de début (croissant)
+        // Sort inline comments by their start file position (ascending).
         usort($inlineComments, function($a, $b) {
             return $a->getStartFilePos() - $b->getStartFilePos();
         });
 
-        // Trie des nœuds define par leur position de fin (croissant)
+        // Sort define nodes by their end file position (ascending).
         usort($this->defineNodes, function(Node $a, Node $b) {
             return $a->getAttribute('endFilePos') - $b->getAttribute('endFilePos');
         });
 
-        // On va associer pour chaque nœud define le commentaire inline le plus proche le précédant.
         $assignedComments = [];
+        // For each inline comment, find the define() node whose endFilePos is
+        // the closest preceding position.
         foreach ($inlineComments as $comment) {
             $commentStart = $comment->getStartFilePos();
             $closestDefine = null;
             $maxEnd = -1;
-            // Parcourt de tous les nœuds define pour trouver celui dont la fin est la plus proche, mais inférieure à la position du commentaire
             foreach ($this->defineNodes as $defineNode) {
                 $defineEnd = $defineNode->getAttribute('endFilePos');
                 if ($defineEnd < $commentStart && $defineEnd > $maxEnd) {
@@ -86,7 +89,7 @@ class PhpParser extends NodeVisitorAbstract
             }
             if ($closestDefine !== null) {
                 $hash = spl_object_hash($closestDefine);
-                // N'assigne qu'un seul commentaire par nœud
+                // Assign only one comment per define node.
                 if (!isset($assignedComments[$hash])) {
                     $text = $comment->getText();
                     if (strpos($text, '//') === 0) {
@@ -98,7 +101,7 @@ class PhpParser extends NodeVisitorAbstract
             }
         }
 
-        // Crée les items de constantes en utilisant le commentaire assigné (s'il existe)
+        // Create constant items using the assigned inline comment if available.
         foreach ($this->defineNodes as $defineNode) {
             $hash = spl_object_hash($defineNode);
             $inlineComment = $assignedComments[$hash] ?? null;
@@ -107,19 +110,18 @@ class PhpParser extends NodeVisitorAbstract
     }
 
     /**
-     * Pendant le parcours, on collecte les commentaires et on stocke
-     * les nœuds define() pour traitement ultérieur.
+     * During traversal, collect all comments and store define() nodes for later processing.
      */
     public function enterNode(Node $node)
     {
-        // Collecte des commentaires attachés à ce nœud
+        // Collect comments attached to the current node.
         $comments = $node->getAttribute('comments', []);
         foreach ($comments as $comment) {
             $pos = $comment->getStartFilePos();
             $this->allComments[$pos] = $comment;
         }
 
-        // Pour les classes et fonctions, on peut créer immédiatement les items
+        // For classes and functions, create items immediately.
         if ($node instanceof Node\Stmt\Class_) {
             $this->items[] = ClassItem::fromNode($node);
         } elseif ($node instanceof Node\Stmt\Function_) {
@@ -128,13 +130,12 @@ class PhpParser extends NodeVisitorAbstract
             $node instanceof Node\Expr\FuncCall &&
             $node->name->toString() === 'define'
         ) {
-            // On stocke le nœud define() pour le traiter après
+            // Store the define() node for later processing.
             $this->defineNodes[] = $node;
         }
     }
 
-    // Méthodes utilitaires (getTypeName, getDocComment, etc.) inchangées
-
+    // Utility methods remain unchanged.
     private function getTypeName($type): string
     {
         if ($type instanceof Node\Name) {
