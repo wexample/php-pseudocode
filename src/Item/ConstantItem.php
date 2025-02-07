@@ -24,7 +24,7 @@ class ConstantItem extends AbstractItem
         );
     }
 
-    public static function fromNode(NodeAbstract $node): array
+    public static function fromNode(NodeAbstract $node, ?string $inlineComment = null): array
     {
         $data = [
             'type' => 'constant',
@@ -32,7 +32,10 @@ class ConstantItem extends AbstractItem
             'value' => static::parseValue($node->args[1]->value),
         ];
 
-        // Description will be set by the parser if an inline comment is found
+        if ($inlineComment !== null) {
+            $data['description'] = $inlineComment;
+        }
+
         return $data;
     }
 }

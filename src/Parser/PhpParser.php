@@ -8,8 +8,8 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use Wexample\Pseudocode\Item\ClassItem;
-use Wexample\Pseudocode\Item\FunctionItem;
 use Wexample\Pseudocode\Item\ConstantItem;
+use Wexample\Pseudocode\Item\FunctionItem;
 
 class PhpParser extends NodeVisitorAbstract
 {
@@ -30,6 +30,45 @@ class PhpParser extends NodeVisitorAbstract
         return $this->items;
     }
 
+    protected function getInlineComment(\PhpParser\Node $node): ?string
+    {
+        // First, try to retrieve comments from the parent node,
+        // since inline (trailing) comments are typically attached to the statement.
+        $parent = $node->getAttribute('parent');
+        if ($parent instanceof \PhpParser\Node) {
+            $comments = $parent->getAttribute('comments', []);
+            if (!empty($comments)) {
+                foreach ($comments as $comment) {
+                    $text = $comment->getText();
+                    // Check for a single-line comment starting with '//' or '#'
+                    if (strpos($text, '//') === 0) {
+                        return trim(substr($text, 2));
+                    }
+                    if (strpos($text, '#') === 0) {
+                        return trim(substr($text, 1));
+                    }
+                }
+            }
+        }
+
+        // Fallback: check the node's own comments.
+        $comments = $node->getAttribute('comments', []);
+        if (!empty($comments)) {
+            foreach ($comments as $comment) {
+                $text = $comment->getText();
+                if (strpos($text, '//') === 0) {
+                    return trim(substr($text, 2));
+                }
+                if (strpos($text, '#') === 0) {
+                    return trim(substr($text, 1));
+                }
+            }
+        }
+
+        return null;
+    }
+
+
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
@@ -37,22 +76,7 @@ class PhpParser extends NodeVisitorAbstract
         } elseif ($node instanceof Node\Stmt\Function_) {
             $this->items[] = FunctionItem::fromNode($node);
         } elseif ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define') {
-            // Get the comments attached to this node
-            $comments = $node->getAttribute('comments', []);
-            $inlineComment = null;
-            
-            // Look for the last comment that appears on the same line as the node
-            foreach ($comments as $comment) {
-                if ($comment->getStartLine() === $node->getStartLine() && $comment->getType() === PhpParser\Comment::TYPE_SINGLE) {
-                    $inlineComment = trim(substr($comment->getText(), 2)); // Remove // from comment
-                }
-            }
-            
-            $nodeData = ConstantItem::fromNode($node);
-            if ($inlineComment) {
-                $nodeData['description'] = $inlineComment;
-            }
-            $this->items[] = $nodeData;
+            $this->items[] = ConstantItem::fromNode($node, $this->getInlineComment($node));
         }
     }
 
@@ -72,13 +96,13 @@ class PhpParser extends NodeVisitorAbstract
         if (!$node->getDocComment()) {
             return null;
         }
-        
+
         $docComment = $node->getDocComment()->getText();
         // Extract description from PHPDoc
         if (preg_match('/\*\s+([^@\n]+)/', $docComment, $matches)) {
             return trim($matches[1]);
         }
-        
+
         return null;
     }
 }
