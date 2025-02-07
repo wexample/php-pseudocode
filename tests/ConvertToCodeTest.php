@@ -3,16 +3,16 @@
 namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Wexample\Pseudocode\PseudocodeConverter;
+use Wexample\Pseudocode\PseudocodeGenerator;
 
-class PseudocodeConverterTest extends TestCase
+class ConvertToCodeTest extends TestCase
 {
-    private PseudocodeConverter $converter;
+    private PseudocodeGenerator $converter;
     private string $fixturesDir;
 
     protected function setUp(): void
     {
-        $this->converter = new PseudocodeConverter();
+        $this->converter = new PseudocodeGenerator();
         $this->fixturesDir = __DIR__;
     }
 
@@ -23,7 +23,7 @@ class PseudocodeConverterTest extends TestCase
         $actualPhp = $this->converter->loadFromYaml($yamlContent)->convert();
 
         // Load expected PHP output
-        $expectedPhp = file_get_contents($this->fixturesDir . '/expected/example.php');
+        $expectedPhp = file_get_contents($this->fixturesDir . '/example.php');
 
         // Normalize line endings to prevent false negatives
         $actualPhp = $this->normalizeLineEndings($actualPhp);

@@ -6,7 +6,7 @@ use Symfony\Component\Yaml\Yaml;
 use Wexample\Pseudocode\Item\ItemFactory;
 use Wexample\Pseudocode\Parser\PhpParser;
 
-class CodeConverter
+class CodeGenerator
 {
     private ItemFactory $itemFactory;
     private PhpParser $phpParser;
@@ -17,7 +17,7 @@ class CodeConverter
         $this->phpParser = new PhpParser();
     }
 
-    public function convertYamlToPhp(string $yamlContent): string
+    public function convertToCode(string $yamlContent): string
     {
         $data = Yaml::parse($yamlContent);
         
@@ -39,7 +39,7 @@ class CodeConverter
         return $output;
     }
 
-    public function convertPhpToYaml(string $phpCode): string
+    public function convertToPseudocode(string $phpCode): string
     {
         $items = $this->phpParser->parse($phpCode);
         

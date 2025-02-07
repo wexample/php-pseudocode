@@ -1,27 +1,27 @@
 <?php
 
-namespace Wexample\Pseudocode\Tests\Converter;
+namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Wexample\Pseudocode\Converter\CodeConverter;
+use Wexample\Pseudocode\Converter\CodeGenerator;
 
-class CodeConverterTest extends TestCase
+class ConvertToPseudoCodeTest extends TestCase
 {
-    private CodeConverter $converter;
+    private CodeGenerator $converter;
     private string $fixturesDir;
 
     protected function setUp(): void
     {
-        $this->converter = new CodeConverter();
+        $this->converter = new CodeGenerator();
         $this->fixturesDir = dirname(__DIR__);
     }
 
     public function testYamlToPhpConversion(): void
     {
         $yamlContent = file_get_contents($this->fixturesDir . '/example.yml');
-        $expectedPhp = file_get_contents($this->fixturesDir . '/expected/example.php');
+        $expectedPhp = file_get_contents($this->fixturesDir . '/example.php');
 
-        $actualPhp = $this->converter->convertYamlToPhp($yamlContent);
+        $actualPhp = $this->converter->convertToCode($yamlContent);
 
         $this->assertEquals(
             $this->normalizeCode($expectedPhp),
@@ -31,10 +31,10 @@ class CodeConverterTest extends TestCase
 
     public function testPhpToYamlConversion(): void
     {
-        $phpContent = file_get_contents($this->fixturesDir . '/expected/example.php');
+        $phpContent = file_get_contents($this->fixturesDir . '/example.php');
         $expectedYaml = file_get_contents($this->fixturesDir . '/example.yml');
 
-        $actualYaml = $this->converter->convertPhpToYaml($phpContent);
+        $actualYaml = $this->converter->convertToPseudocode($phpContent);
 
         $this->assertEquals(
             $this->normalizeYaml($expectedYaml),
@@ -46,8 +46,8 @@ class CodeConverterTest extends TestCase
     {
         // YAML -> PHP -> YAML
         $originalYaml = file_get_contents($this->fixturesDir . '/example.yml');
-        $php = $this->converter->convertYamlToPhp($originalYaml);
-        $convertedYaml = $this->converter->convertPhpToYaml($php);
+        $php = $this->converter->convertToCode($originalYaml);
+        $convertedYaml = $this->converter->convertToPseudocode($php);
 
         $this->assertEquals(
             $this->normalizeYaml($originalYaml),
@@ -55,9 +55,9 @@ class CodeConverterTest extends TestCase
         );
 
         // PHP -> YAML -> PHP
-        $originalPhp = file_get_contents($this->fixturesDir . '/expected/example.php');
-        $yaml = $this->converter->convertPhpToYaml($originalPhp);
-        $convertedPhp = $this->converter->convertYamlToPhp($yaml);
+        $originalPhp = file_get_contents($this->fixturesDir . '/example.php');
+        $yaml = $this->converter->convertToPseudocode($originalPhp);
+        $convertedPhp = $this->converter->convertToCode($yaml);
 
         $this->assertEquals(
             $this->normalizeCode($originalPhp),

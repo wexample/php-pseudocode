@@ -5,7 +5,7 @@ namespace Wexample\Pseudocode;
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Pseudocode\Item\ItemFactory;
 
-class PseudocodeConverter
+class PseudocodeGenerator
 {
     private array $codeStructure;
     private ItemFactory $itemFactory;
