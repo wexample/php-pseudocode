@@ -1,0 +1,7 @@
+function:
+  name: calculateSum
+  parameters:
+    - a
+    - b
+  body:
+    - return $a + $b;
