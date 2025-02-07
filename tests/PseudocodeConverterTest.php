@@ -8,30 +8,54 @@ use Wexample\Pseudocode\PseudocodeConverter;
 class PseudocodeConverterTest extends TestCase
 {
     private PseudocodeConverter $converter;
+    private string $fixturesDir;
 
     protected function setUp(): void
     {
         $this->converter = new PseudocodeConverter();
+        $this->fixturesDir = __DIR__;
     }
 
     public function testFullConversion(): void
     {
-        $yamlContent = file_get_contents(__DIR__ . '/example.yml');
-        $php = $this->converter->loadFromYaml($yamlContent)->convert();
+        // Load and convert YAML to PHP
+        $yamlContent = file_get_contents($this->fixturesDir . '/example.yml');
+        $actualPhp = $this->converter->loadFromYaml($yamlContent)->convert();
 
-        // Test constants
-        $this->assertStringContainsString("define('PI', 3.14159);", $php);
-        $this->assertStringContainsString("define('DEFAULT_GREETING', \"Hello, World!\");", $php);
+        // Load expected PHP output
+        $expectedPhp = file_get_contents($this->fixturesDir . '/expected/example.php');
 
-        // Test function
-        $this->assertStringContainsString('function calculateSum(', $php);
-        $this->assertStringContainsString('number $a', $php);
-        $this->assertStringContainsString('number $b', $php);
+        // Normalize line endings to prevent false negatives
+        $actualPhp = $this->normalizeLineEndings($actualPhp);
+        $expectedPhp = $this->normalizeLineEndings($expectedPhp);
 
-        // Test class
-        $this->assertStringContainsString('class Calculator', $php);
-        $this->assertStringContainsString('private number $lastResult = 0;', $php);
-        $this->assertStringContainsString('function add(', $php);
-        $this->assertStringContainsString('function reset(', $php);
+        // Compare the entire output
+        $this->assertEquals(
+            $expectedPhp,
+            $actualPhp,
+            "Generated PHP code does not match expected output.\n" .
+            "Expected:\n{$expectedPhp}\n" .
+            "Actual:\n{$actualPhp}"
+        );
+    }
+
+    /**
+     * Normalizes line endings to prevent false negatives in tests
+     * due to different operating systems
+     */
+    private function normalizeLineEndings(string $content): string
+    {
+        // Convert all line endings to \n
+        $content = str_replace("\r\n", "\n", $content);
+        $content = str_replace("\r", "\n", $content);
+        
+        // Ensure only single line breaks
+        $content = preg_replace("/\n+/", "\n", $content);
+        
+        // Trim trailing whitespace
+        $content = preg_replace('/[ \t]+$/m', '', $content);
+        
+        // Ensure single newline at end of file
+        return rtrim($content) . "\n";
     }
 }
