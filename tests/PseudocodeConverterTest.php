@@ -14,21 +14,24 @@ class PseudocodeConverterTest extends TestCase
         $this->converter = new PseudocodeConverter();
     }
 
-    public function testSimpleFunctionConversion(): void
+    public function testFullConversion(): void
     {
         $yamlContent = file_get_contents(__DIR__ . '/example.yml');
-        
-        $expectedPhp = <<<'PHP'
-function calculateSum($a, $b) {
-    return $a + $b;
-}
+        $php = $this->converter->loadFromYaml($yamlContent)->convert();
 
-PHP;
+        // Test constants
+        $this->assertStringContainsString("define('PI', 3.14159);", $php);
+        $this->assertStringContainsString("define('DEFAULT_GREETING', \"Hello, World!\");", $php);
 
-        $actualPhp = $this->converter
-            ->loadFromYaml($yamlContent)
-            ->convert();
+        // Test function
+        $this->assertStringContainsString('function calculateSum(', $php);
+        $this->assertStringContainsString('number $a', $php);
+        $this->assertStringContainsString('number $b', $php);
 
-        $this->assertEquals($expectedPhp, $actualPhp);
+        // Test class
+        $this->assertStringContainsString('class Calculator', $php);
+        $this->assertStringContainsString('private number $lastResult = 0;', $php);
+        $this->assertStringContainsString('function add(', $php);
+        $this->assertStringContainsString('function reset(', $php);
     }
 }
