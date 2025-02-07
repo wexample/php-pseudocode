@@ -1,0 +1,21 @@
+{
+    "name": "wexample/pseudocode",
+    "description": "A basic PHP package",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wexample",
+            "email": "contact@wexample.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wexample\\Pseudocode\\": "src/"
+        }
+    }
+}
