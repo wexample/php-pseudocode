@@ -3,9 +3,12 @@
 namespace Wexample\Pseudocode\Tests;
 
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
+use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
 
 class ConvertToPseudocodeTest extends AbstractConverterTest
 {
+    use WithYamlTestCase;
+
     protected function getGenerator(): PseudocodeGenerator
     {
         return new PseudocodeGenerator();
@@ -14,24 +17,21 @@ class ConvertToPseudocodeTest extends AbstractConverterTest
     public function testFullConversion(): void
     {
         // Load and convert PHP to YAML
-        $actualYaml = $this->generator->generatePseudocode(
+        $generator = $this->getGenerator();
+        $actualPseudocode = $generator->generateItems(
             $this->loadExampleFileContent('php')
         );
 
         // Load expected YAML output
-        $expectedYaml =  $this->loadExampleFileContent('yml');
-
-        // Normalize line endings to prevent false negatives
-        $actualYaml = $this->normalizeLineEndings($actualYaml);
-        $expectedYaml = $this->normalizeLineEndings($expectedYaml);
+        $expectedYaml = $this->loadExampleFileContent('yml');
 
         // Compare the entire output
-        $this->assertEquals(
+        $this->assertYamlEqualsArray(
             $expectedYaml,
-            $actualYaml,
+            $actualPseudocode,
             "Generated pseudocode does not match expected output.\n" .
             "Expected:\n{$expectedYaml}\n" .
-            "Actual:\n{$actualYaml}"
+            "Actual:\n{$generator->dumpItems($actualPseudocode)}"
         );
     }
 }

@@ -14,7 +14,7 @@ class ConvertToCodeTest extends AbstractConverterTest
     public function testFullConversion(): void
     {
         // Load and convert YAML to Code
-        $actualCode = $this->generator->generateCode(
+        $actualCode = $this->getGenerator()->generateCode(
             $this->loadExampleFileContent('yml')
         );
 
