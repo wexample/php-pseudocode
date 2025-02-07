@@ -3,50 +3,37 @@
 namespace Wexample\Pseudocode\Generator;
 
 use Symfony\Component\Yaml\Yaml;
-use Wexample\Pseudocode\Item\ItemFactory;
 use Wexample\Pseudocode\Parser\PhpParser;
 
-class CodeGenerator
+class CodeGenerator extends AbstractGenerator
 {
-    private ItemFactory $itemFactory;
     private PhpParser $phpParser;
 
     public function __construct()
     {
-        $this->itemFactory = new ItemFactory();
+        parent::__construct();
         $this->phpParser = new PhpParser();
     }
 
-    public function convertToCode(string $yamlContent): string
+    public function generateCode(string $yamlContent): string
     {
-        $data = Yaml::parse($yamlContent);
+        $pseudoCode = Yaml::parse($yamlContent);
 
-        if (!isset($data['items'])) {
-            throw new \RuntimeException('Invalid structure: missing items array.');
+        if ($pseudoCode === null) {
+            throw new \RuntimeException('No code structure loaded.');
         }
 
         $output = "<?php\n\n";
 
-        foreach ($data['items'] as $itemData) {
+        foreach ($pseudoCode['items'] as $itemData) {
             if (!isset($itemData['type'])) {
                 continue;
             }
 
             $item = $this->itemFactory->createFromArray($itemData);
-            $output .= $item->toPhp() . "\n";
+            $output .= $item->generateCode() . "\n";
         }
 
         return $output;
-    }
-
-    public function convertToPseudocode(string $phpCode): string
-    {
-        $items = $this->phpParser->parse($phpCode);
-
-        $data = [
-            'items' => $items
-        ];
-
-        return Yaml::dump($data, 4, 2);
     }
 }

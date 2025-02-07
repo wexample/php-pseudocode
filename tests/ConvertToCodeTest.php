@@ -3,39 +3,40 @@
 namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Wexample\Pseudocode\Generator\PseudocodeGenerator;
+use Wexample\Pseudocode\Generator\CodeGenerator;
 
 class ConvertToCodeTest extends TestCase
 {
-    private PseudocodeGenerator $converter;
+    private CodeGenerator $converter;
     private string $fixturesDir;
 
     protected function setUp(): void
     {
-        $this->converter = new PseudocodeGenerator();
+        $this->converter = new CodeGenerator();
         $this->fixturesDir = __DIR__;
     }
 
     public function testFullConversion(): void
     {
-        // Load and convert YAML to PHP
-        $yamlContent = file_get_contents($this->fixturesDir . '/tests/resources/example.yml');
-        $actualPhp = $this->converter->loadFromYaml($yamlContent)->convert();
+        // Load and convert YAML to Code
+        $actualCode = $this->converter->generateCode(
+            file_get_contents($this->fixturesDir . '/resources/example.yml')
+        );
 
-        // Load expected PHP output
-        $expectedPhp = file_get_contents($this->fixturesDir . '/tests/resources/example.php');
+        // Load expected Code output
+        $expectedPhp = file_get_contents($this->fixturesDir . '/resources/example.php');
 
         // Normalize line endings to prevent false negatives
-        $actualPhp = $this->normalizeLineEndings($actualPhp);
+        $actualCode = $this->normalizeLineEndings($actualCode);
         $expectedPhp = $this->normalizeLineEndings($expectedPhp);
 
         // Compare the entire output
         $this->assertEquals(
             $expectedPhp,
-            $actualPhp,
-            "Generated PHP code does not match expected output.\n" .
+            $actualCode,
+            "Generated code does not match expected output.\n" .
             "Expected:\n{$expectedPhp}\n" .
-            "Actual:\n{$actualPhp}"
+            "Actual:\n{$actualCode}"
         );
     }
 
