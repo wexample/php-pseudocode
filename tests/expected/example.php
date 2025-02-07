@@ -10,9 +10,12 @@ define('DEFAULT_GREETING', "Hello, World!"); // Default greeting message.
  * @param number $b The second operand.
  * @return number
  */
-function calculateSum(number $a, number $b): number {
-    // Use basic arithmetic to return the sum.
-    // Validate that both parameters are numbers and handle any necessary error checking.
+function calculateSum(
+    number $a,
+    number $b
+): number
+{
+    // Use basic arithmetic to return the sum. Validate that both parameters are numbers and handle any necessary error checking.
     // TODO: Implement function body
 }
 
@@ -21,16 +24,19 @@ function calculateSum(number $a, number $b): number {
  * @param string $name The name to include in the greeting.
  * @return string
  */
-function generateGreeting(string $name): string {
-    // If the provided name is empty, use the DEFAULT_GREETING constant.
-    // Ensure the output string is properly formatted.
+function generateGreeting(
+    string $name
+): string
+{
+    // If the provided name is empty, use the DEFAULT_GREETING constant. Ensure the output string is properly formatted.
     // TODO: Implement function body
 }
 
 /**
  * A class that performs basic arithmetic operations.
  */
-class Calculator {
+class Calculator
+{
     /** @var number Stores the result of the last operation performed. */
     private number $lastResult = 0;
 
@@ -40,9 +46,12 @@ class Calculator {
      * @param number $b
      * @return number
      */
-    function add(number $a, number $b): number {
-        // Use the calculateSum function to compute the sum.
-        // Update the lastResult property with the new value.
+    function add(
+        number $a,
+        number $b
+    ): number
+    {
+        // Use the calculateSum function to compute the sum. Update the lastResult property with the new value.
         // TODO: Implement function body
     }
 
