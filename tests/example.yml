@@ -1,8 +1,64 @@
-function:
-  name: calculateSum
-  documentation:
-    info: Returns the sum of two numbers.
-    implementation: This function should calculate the sum of the two variables.
-  parameters:
-    - a
-    - b
+items:
+  - name: PI
+    type: constant
+    value: 3.14159
+    description: "Mathematical constant for circle calculations."
+
+  - name: DEFAULT_GREETING
+    type: constant
+    value: "Hello, World!"
+    description: "Default greeting message."
+
+  - name: calculateSum
+    type: function
+    description: "Calculate the sum of two numbers."
+    parameters:
+      - name: a
+        type: number
+        description: "The first operand."
+      - name: b
+        type: number
+        description: "The second operand."
+    returnType: number
+    implementationGuidelines: >
+      Use basic arithmetic to return the sum.
+      Validate that both parameters are numbers and handle any necessary error checking.
+
+  - name: generateGreeting
+    type: function
+    description: "Generate a personalized greeting message."
+    parameters:
+      - name: name
+        type: string
+        description: "The name to include in the greeting."
+    returnType: string
+    implementationGuidelines: >
+      If the provided name is empty, use the DEFAULT_GREETING constant.
+      Ensure the output string is properly formatted.
+  - name: Calculator
+    type: class
+    description: "A class that performs basic arithmetic operations."
+    properties:
+      - name: lastResult
+        type: number
+        default: 0
+        description: "Stores the result of the last operation performed."
+    methods:
+      - name: add
+        description: "Add two numbers and update lastResult."
+        parameters:
+          - name: a
+            type: number
+          - name: b
+            type: number
+        returnType: number
+        implementationGuidelines: >
+          Use the calculateSum function to compute the sum.
+          Update the lastResult property with the new value.
+
+      - name: reset
+        description: "Reset the calculator to its initial state."
+        parameters: [ ]
+        returnType: void
+        implementationGuidelines: >
+          Set the lastResult property back to 0.
