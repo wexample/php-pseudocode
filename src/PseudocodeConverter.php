@@ -83,22 +83,24 @@ class PseudocodeConverter
             $output .= " */\n";
         }
 
-        $output .= sprintf("function %s(", $function['name']);
+        $output .= sprintf("function %s", $function['name']);
 
         // Parameters
-        if (isset($function['parameters'])) {
+        if (!isset($function['parameters']) || empty($function['parameters'])) {
+            $output .= "(): " . ($function['returnType'] ?? 'void') . "\n{\n";
+        } else {
+            $output .= "(\n";
             $params = array_map(
                 fn($param) => sprintf(
-                    '%s$%s',
+                    '    %s$%s',
                     isset($param['type']) ? $param['type'] . ' ' : '',
                     $param['name']
                 ),
                 $function['parameters']
             );
-            $output .= implode(', ', $params);
+            $output .= implode(",\n", $params);
+            $output .= "\n): " . ($function['returnType'] ?? 'void') . "\n{\n";
         }
-
-        $output .= ")" . (isset($function['returnType']) ? ": {$function['returnType']}" : "") . " {\n";
 
         // Implementation guidelines as comments
         if (isset($function['implementationGuidelines'])) {
@@ -125,7 +127,7 @@ class PseudocodeConverter
             $output .= "/**\n * " . $class['description'] . "\n */\n";
         }
 
-        $output .= "class {$class['name']} {\n";
+        $output .= "class {$class['name']}\n{\n";
 
         // Properties
         if (isset($class['properties'])) {

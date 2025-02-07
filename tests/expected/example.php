@@ -59,7 +59,8 @@ class Calculator
      * Reset the calculator to its initial state.
      * @return void
      */
-    function reset(): void {
+    function reset(): void
+    {
         // Set the lastResult property back to 0.
         // TODO: Implement function body
     }

@@ -49,11 +49,17 @@ class PseudocodeConverterTest extends TestCase
         $content = str_replace("\r\n", "\n", $content);
         $content = str_replace("\r", "\n", $content);
         
-        // Ensure only single line breaks
-        $content = preg_replace("/\n+/", "\n", $content);
-        
         // Trim trailing whitespace
         $content = preg_replace('/[ \t]+$/m', '', $content);
+        
+        // Normalize empty lines between methods/functions
+        $content = preg_replace('/\}\n[\n\s]*\/\*\*/m', "}\n\n/**", $content);
+        
+        // Normalize empty lines at the end of classes
+        $content = preg_replace('/\}\n[\n\s]*\}/m', "}\n\n}", $content);
+        
+        // Remove any remaining multiple empty lines
+        $content = preg_replace("/\n{3,}/", "\n\n", $content);
         
         // Ensure single newline at end of file
         return rtrim($content) . "\n";
