@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\Pseudocode\Converter;
+namespace Wexample\Pseudocode\Generator;
 
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Pseudocode\Item\ItemFactory;
@@ -20,13 +20,13 @@ class CodeGenerator
     public function convertToCode(string $yamlContent): string
     {
         $data = Yaml::parse($yamlContent);
-        
+
         if (!isset($data['items'])) {
             throw new \RuntimeException('Invalid structure: missing items array.');
         }
 
         $output = "<?php\n\n";
-        
+
         foreach ($data['items'] as $itemData) {
             if (!isset($itemData['type'])) {
                 continue;
@@ -42,7 +42,7 @@ class CodeGenerator
     public function convertToPseudocode(string $phpCode): string
     {
         $items = $this->phpParser->parse($phpCode);
-        
+
         $data = [
             'items' => $items
         ];

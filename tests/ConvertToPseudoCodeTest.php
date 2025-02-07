@@ -3,7 +3,7 @@
 namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Wexample\Pseudocode\Converter\CodeGenerator;
+use Wexample\Pseudocode\Generator\CodeGenerator;
 
 class ConvertToPseudoCodeTest extends TestCase
 {
@@ -18,8 +18,8 @@ class ConvertToPseudoCodeTest extends TestCase
 
     public function testYamlToPhpConversion(): void
     {
-        $yamlContent = file_get_contents($this->fixturesDir . '/example.yml');
-        $expectedPhp = file_get_contents($this->fixturesDir . '/example.php');
+        $yamlContent = file_get_contents($this->fixturesDir . '/tests/resources/example.yml');
+        $expectedPhp = file_get_contents($this->fixturesDir . '/tests/resources/example.php');
 
         $actualPhp = $this->converter->convertToCode($yamlContent);
 
@@ -31,8 +31,8 @@ class ConvertToPseudoCodeTest extends TestCase
 
     public function testPhpToYamlConversion(): void
     {
-        $phpContent = file_get_contents($this->fixturesDir . '/example.php');
-        $expectedYaml = file_get_contents($this->fixturesDir . '/example.yml');
+        $phpContent = file_get_contents($this->fixturesDir . '/tests/resources/example.php');
+        $expectedYaml = file_get_contents($this->fixturesDir . '/tests/resources/example.yml');
 
         $actualYaml = $this->converter->convertToPseudocode($phpContent);
 
@@ -45,7 +45,7 @@ class ConvertToPseudoCodeTest extends TestCase
     public function testBidirectionalConversion(): void
     {
         // YAML -> PHP -> YAML
-        $originalYaml = file_get_contents($this->fixturesDir . '/example.yml');
+        $originalYaml = file_get_contents($this->fixturesDir . '/tests/resources/example.yml');
         $php = $this->converter->convertToCode($originalYaml);
         $convertedYaml = $this->converter->convertToPseudocode($php);
 
@@ -55,7 +55,7 @@ class ConvertToPseudoCodeTest extends TestCase
         );
 
         // PHP -> YAML -> PHP
-        $originalPhp = file_get_contents($this->fixturesDir . '/example.php');
+        $originalPhp = file_get_contents($this->fixturesDir . '/tests/resources/example.php');
         $yaml = $this->converter->convertToPseudocode($originalPhp);
         $convertedPhp = $this->converter->convertToCode($yaml);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\Pseudocode;
+namespace Wexample\Pseudocode\Generator;
 
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Pseudocode\Item\ItemFactory;

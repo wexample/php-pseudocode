@@ -3,7 +3,7 @@
 namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Wexample\Pseudocode\PseudocodeGenerator;
+use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 
 class ConvertToCodeTest extends TestCase
 {
@@ -19,11 +19,11 @@ class ConvertToCodeTest extends TestCase
     public function testFullConversion(): void
     {
         // Load and convert YAML to PHP
-        $yamlContent = file_get_contents($this->fixturesDir . '/example.yml');
+        $yamlContent = file_get_contents($this->fixturesDir . '/tests/resources/example.yml');
         $actualPhp = $this->converter->loadFromYaml($yamlContent)->convert();
 
         // Load expected PHP output
-        $expectedPhp = file_get_contents($this->fixturesDir . '/example.php');
+        $expectedPhp = file_get_contents($this->fixturesDir . '/tests/resources/example.php');
 
         // Normalize line endings to prevent false negatives
         $actualPhp = $this->normalizeLineEndings($actualPhp);
