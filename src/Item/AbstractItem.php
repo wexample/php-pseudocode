@@ -64,6 +64,12 @@ abstract class AbstractItem
 
     protected static function getTypeName($type): string
     {
+        if ($type instanceof Node\UnionType) {
+            return implode('|', array_map(fn($t) => self::getTypeName($t), $type->types));
+        }
+        if ($type instanceof Node\NullableType) {
+            return self::getTypeName($type->type) . '|null';
+        }
         if ($type instanceof Node\Name) {
             return $type->toString();
         }
