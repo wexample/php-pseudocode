@@ -62,12 +62,9 @@ class ClassItem extends AbstractItem
 
     private static function parseMethod(Node\Stmt\ClassMethod $node): array
     {
-        return [
-            'name' => $node->name->toString(),
-            'description' => self::getDocComment($node),
-            'parameters' => self::parseParameters($node->params),
-            'returnType' => $node->returnType ? self::getTypeName($node->returnType) : null
-        ];
+        $functionData = FunctionItem::fromNode($node);
+        unset($functionData['type']); // Remove function type as it's a method
+        return $functionData;
     }
 
     public function generateCode(): string
