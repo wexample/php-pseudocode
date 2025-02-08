@@ -93,11 +93,29 @@ class FunctionItem extends AbstractItem
 
     static function fromNode(NodeAbstract $node): array
     {
+        $docInfo = self::parseDocComment($node);
+        $parameters = [];
+        
+        foreach ($node->params as $param) {
+            $paramName = $param->var->name;
+            $paramInfo = [
+                'name' => $paramName,
+                'type' => $param->type ? self::getTypeName($param->type) : null,
+            ];
+            
+            // Add description if available in PHPDoc
+            if (isset($docInfo['params'][$paramName])) {
+                $paramInfo['description'] = $docInfo['params'][$paramName]['description'];
+            }
+            
+            $parameters[] = $paramInfo;
+        }
+
         return [
             'type' => 'function',
             'name' => $node->name->toString(),
-            'description' => self::getDocComment($node),
-            'parameters' => self::parseParameters($node->params),
+            'description' => $docInfo['description'],
+            'parameters' => $parameters,
             'returnType' => $node->returnType ? self::getTypeName($node->returnType) : null
         ];
     }

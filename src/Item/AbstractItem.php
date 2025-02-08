@@ -65,30 +65,66 @@ abstract class AbstractItem
         return 'mixed';
     }
 
-    protected static function getDocComment(Node $node): ?string
+    protected static function parseDocComment(Node $node): array
     {
+        $result = [
+            'description' => null,
+            'params' => [],
+            'return' => null
+        ];
+
         if (!$node->getDocComment()) {
-            return null;
+            return $result;
         }
 
         $docComment = $node->getDocComment()->getText();
-        
         // Remove the opening /** and closing */
         $docComment = preg_replace('/^\/\*\*|\*\/$/', '', $docComment);
         
         // Split into lines and process each line
         $lines = explode("\n", $docComment);
+        $description = [];
+        
         foreach ($lines as $line) {
             // Remove leading asterisks and whitespace
             $line = preg_replace('/^\s*\*\s*/', '', trim($line));
             
-            // Skip empty lines and @tags
-            if ($line && !str_starts_with($line, '@')) {
-                return $line;
+            if (empty($line)) {
+                continue;
+            }
+
+            // Parse @param tags
+            if (preg_match('/@param\s+(\S+)\s+\$(\S+)\s+(.+)/', $line, $matches)) {
+                $result['params'][$matches[2]] = [
+                    'type' => $matches[1],
+                    'description' => trim($matches[3])
+                ];
+                continue;
+            }
+
+            // Parse @return tag
+            if (preg_match('/@return\s+(\S+)(?:\s+(.+))?/', $line, $matches)) {
+                $result['return'] = [
+                    'type' => $matches[1],
+                    'description' => isset($matches[2]) ? trim($matches[2]) : null
+                ];
+                continue;
+            }
+
+            // If not a tag, it's part of the description
+            if (!str_starts_with($line, '@')) {
+                $description[] = $line;
             }
         }
 
-        return null;
+        $result['description'] = implode("\n", $description);
+        return $result;
+    }
+
+    protected static function getDocComment(Node $node): ?string
+    {
+        $docInfo = self::parseDocComment($node);
+        return $docInfo['description'];
     }
 
     protected static function getInlineComment(Node $node): ?string
