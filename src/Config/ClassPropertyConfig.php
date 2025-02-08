@@ -10,8 +10,8 @@ class ClassPropertyConfig extends AbstractConfig
     public function __construct(
         protected readonly string $name,
         protected readonly string $type,
-        protected readonly DocCommentConfig $description,
-        protected readonly mixed $default,
+        protected readonly ?DocCommentConfig $description = null,
+        protected readonly mixed $default = null,
     )
     {
 
@@ -22,12 +22,10 @@ class ClassPropertyConfig extends AbstractConfig
         ?string $inlineComment = null
     ): ?static
     {
-        $description = DocCommentParserHelper::extractDescriptionFromNode($node);
-
         return new (static::class)(
             name: $node->props[0]->name->name,
             type: self::getTypeName($node->type),
-            description: $description,
+            description: DocCommentParserHelper::extractDescriptionFromNode($node),
             default: $node->props[0]->default ? self::parseValue($node->props[0]->default) : null,
         );
     }

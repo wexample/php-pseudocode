@@ -9,13 +9,13 @@ class ClassConfig extends AbstractConfig
 {
     /**
      * @param string $name
-     * @param DocCommentConfig $description
+     * @param DocCommentConfig|null $description
      * @param ClassPropertyConfig[] $properties
      * @param ClassMethodConfig[] $methods
      */
     public function __construct(
         protected readonly string $name,
-        protected readonly DocCommentConfig $description,
+        protected readonly ?DocCommentConfig $description = null,
         protected readonly array $properties,
         protected readonly array $methods,
     )
