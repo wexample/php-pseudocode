@@ -2,11 +2,29 @@
 
 namespace Wexample\Pseudocode\Generator;
 
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
+use Wexample\Helpers\Helper\FileHelper;
+use Wexample\Helpers\Helper\TextHelper;
 use Wexample\Pseudocode\Parser\PhpParser;
 
 class PseudocodeGenerator extends AbstractGenerator
 {
+    public function getSourceFileExtension(): string
+    {
+        return FileHelper::FILE_EXTENSION_PHP;
+    }
+
+    public function getTargetFileExtension(): string
+    {
+        return FileHelper::FILE_EXTENSION_YML;
+    }
+
+    function buildOutputFileName(SplFileInfo $file): string
+    {
+        return TextHelper::toSnake($file->getFilename());
+    }
+
     public function generateItems(string $code): array
     {
         $phpParser = new PhpParser();
@@ -20,13 +38,12 @@ class PseudocodeGenerator extends AbstractGenerator
 
         // Replace the format '  -\n    ' with '  - '
         return preg_replace('/^(\s+)-\n\s+/m', '$1- ', $yaml);
-
     }
 
-    public function generatePseudocode(string $code): string
+    public function generate(string $fileContent): string
     {
         return $this->dumpItems(
-            $this->generateItems($code)
+            $this->generateItems($fileContent)
         );
     }
 }
