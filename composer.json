@@ -24,14 +24,5 @@
         "psr-4": {
             "Wexample\\Pseudocode\\": "src/"
         }
-    },
-    "repositories": {
-        "wexample/helpers": {
-            "type": "path",
-            "url": "../helpers",
-            "options": {
-                "symlink": true
-            }
-        }
     }
 }
