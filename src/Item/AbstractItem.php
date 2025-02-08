@@ -72,9 +72,20 @@ abstract class AbstractItem
         }
 
         $docComment = $node->getDocComment()->getText();
-        // Extract description from PHPDoc
-        if (preg_match('/\*\s+([^@\n]+)/', $docComment, $matches)) {
-            return trim($matches[1]);
+        
+        // Remove the opening /** and closing */
+        $docComment = preg_replace('/^\/\*\*|\*\/$/', '', $docComment);
+        
+        // Split into lines and process each line
+        $lines = explode("\n", $docComment);
+        foreach ($lines as $line) {
+            // Remove leading asterisks and whitespace
+            $line = preg_replace('/^\s*\*\s*/', '', trim($line));
+            
+            // Skip empty lines and @tags
+            if ($line && !str_starts_with($line, '@')) {
+                return $line;
+            }
         }
 
         return null;

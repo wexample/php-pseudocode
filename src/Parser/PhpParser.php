@@ -71,7 +71,6 @@ class PhpParser extends NodeVisitorAbstract
         $traverser->addVisitor($this);
         $traverser->traverse($ast);
 
-
         return $this->items;
     }
 
@@ -85,7 +84,7 @@ class PhpParser extends NodeVisitorAbstract
             $endLine = $node->getEndLine();
             $this->items[] = ConstantItem::fromNode(
                 $node,
-                $this->allInlineComments[$endLine] ?? $this->allInlineComments[$endLine]
+                $this->allInlineComments[$endLine] ?? null
             );
         }
     }
