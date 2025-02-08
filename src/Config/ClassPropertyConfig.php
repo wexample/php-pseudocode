@@ -21,10 +21,21 @@ class ClassPropertyConfig extends AbstractConfig
         ?string $inlineComment = null
     ): ?static
     {
+        $description = null;
+        if ($node->getDocComment()) {
+            $docComment = $node->getDocComment()->getText();
+            // Remove /** and */ markers
+            $docComment = preg_replace('/^\/\*\*|\*\/$/', '', $docComment);
+            // Remove @var type if present and get the actual description
+            if (preg_match('/@var\s+\S+\s+(.+)/', $docComment, $matches)) {
+                $description = new DocCommentConfig(trim($matches[1]));
+            }
+        }
+
         return new (static::class)(
             name: $node->props[0]->name->name,
             type: self::getTypeName($node->type),
-            description: DocCommentConfig::fromNode($node),
+            description: $description,
             default: $node->props[0]->default ? self::parseValue($node->props[0]->default) : null,
         );
     }
