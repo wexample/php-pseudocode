@@ -18,17 +18,17 @@ trait WithYamlTestCase
      * $this->assertYamlEqualsArray($yamlContent, $generatedArray, "Generated YAML does not match reference");
      * </code>
      *
-     * @param string $yamlContent The expected YAML content.
+     * @param array  $yamlContent The expected YAML content.
      * @param array $arrayData The generated PHP array.
      * @param string $message Custom message for failure.
      */
-    public function assertYamlEqualsArray(
-        string $yamlContent,
+    public function assertArraysEquals(
+        array $yamlContent,
         array $arrayData,
         string $message = ''
     ): void
     {
-        $differences = ArrayHelper::diffYamlAndArray($yamlContent, $arrayData);
+        $differences = ArrayHelper::diffArrays($yamlContent, $arrayData);
         if (!empty($differences)) {
             $fullMessage = $message . "\nDifferences found:\n" . implode("\n", $differences);
             $this->fail($fullMessage);

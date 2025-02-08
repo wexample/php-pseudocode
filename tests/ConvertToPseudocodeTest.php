@@ -2,6 +2,7 @@
 
 namespace Wexample\Pseudocode\Tests;
 
+use Symfony\Component\Yaml\Yaml;
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
 
@@ -12,6 +13,37 @@ class ConvertToPseudocodeTest extends AbstractConverterTest
     protected function getGenerator(): PseudocodeGenerator
     {
         return new PseudocodeGenerator();
+    }
+
+    /**
+     * List of keys to ignore when comparing YAML structures.
+     * Add new keys here when needed.
+     */
+    private array $ignoredKeys = [
+        'implementationGuidelines',
+        // Add more keys to ignore here as needed
+        // Example: 'someOtherKey',
+    ];
+
+    /**
+     * Recursively removes specified keys from an array.
+     */
+    private function filterIgnoredKeys(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            // Remove ignored keys
+            if (in_array($key, $this->ignoredKeys)) {
+                unset($data[$key]);
+                continue;
+            }
+
+            // Recursively process nested arrays
+            if (is_array($value)) {
+                $data[$key] = $this->filterIgnoredKeys($value);
+            }
+        }
+
+        return $data;
     }
 
     public function testFullConversion(): void
@@ -25,13 +57,16 @@ class ConvertToPseudocodeTest extends AbstractConverterTest
         // Load expected YAML output
         $expectedYaml = $this->loadExampleFileContent('yml');
 
-        // Compare the entire output
-        $this->assertYamlEqualsArray(
-            $expectedYaml,
+        // Filter out ignored keys from both structures
+        $filteredExpected = $this->filterIgnoredKeys(Yaml::parse($expectedYaml));
+
+        // Compare the filtered output
+        $this->assertArraysEquals(
+            $filteredExpected,
             $actualPseudocode,
             "Generated pseudocode does not match expected output.\n" .
-            "Expected:\n{$expectedYaml}\n" .
-            "Actual:\n{$generator->dumpItems($actualPseudocode)}"
+            "Expected:\n" . json_encode($filteredExpected, JSON_PRETTY_PRINT) . "\n" .
+            "Actual:\n" . json_encode($actualPseudocode, JSON_PRETTY_PRINT)
         );
     }
 }

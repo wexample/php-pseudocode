@@ -2,34 +2,22 @@
 
 namespace Wexample\Pseudocode\Helper;
 
-use Symfony\Component\Yaml\Yaml;
-
-class ArrayHelper {
-    /**
-     * Recursively sorts an array by its keys.
-     *
-     * @param array $array The array to sort.
-     */
-    public static function recursiveKsort(array &$array): void
-    {
-        ksort($array);
-        foreach ($array as &$value) {
-            if (is_array($value)) {
-                self::recursiveKsort($value);
-            }
-        }
-    }
-
+class ArrayHelper
+{
     /**
      * Recursively compares two values (arrays or scalars) and returns the differences.
      *
-     * @param mixed  $expected The expected value (could be an array).
-     * @param mixed  $actual   The actual value (could be an array).
-     * @param string $path     The current path in the structure (for error reporting).
+     * @param mixed $expected The expected value (could be an array).
+     * @param mixed $actual The actual value (could be an array).
+     * @param string $path The current path in the structure (for error reporting).
      *
      * @return array List of differences as messages.
      */
-    public static function diffArrays($expected, $actual, string $path = ''): array
+    public static function diffArrays(
+        mixed $expected,
+        mixed $actual,
+        string $path = ''
+    ): array
     {
         $differences = [];
 
@@ -61,27 +49,5 @@ class ArrayHelper {
         }
 
         return $differences;
-    }
-
-    /**
-     * Compares the parsed YAML content with a PHP array.
-     * The keys order is ignored by sorting both arrays recursively.
-     *
-     * @param string $yamlContent The YAML content to parse and compare.
-     * @param array  $arrayData   The expected PHP array.
-     *
-     * @return array List of differences. If empty, the structures are equivalent.
-     */
-    public static function diffYamlAndArray(string $yamlContent, array $arrayData): array
-    {
-        // Parse the YAML content.
-        $parsedYaml = Yaml::parse($yamlContent);
-
-        // Recursively sort both arrays to ignore key order.
-        self::recursiveKsort($parsedYaml);
-        self::recursiveKsort($arrayData);
-
-        // Compare the two structures.
-        return self::diffArrays($parsedYaml, $arrayData);
     }
 }
