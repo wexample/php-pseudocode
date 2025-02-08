@@ -4,7 +4,6 @@ namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Item\AbstractConfig;
 
 class ConstantConfig extends AbstractConfig
 {
@@ -50,5 +49,15 @@ class ConstantConfig extends AbstractConfig
             'value' => $this->value,
             'description' => $this->description->toConfig()
         ];
+    }
+
+    public function generateCode(): string
+    {
+        return sprintf(
+            "define('%s', %s); // %s\n",
+            $this->name,
+            $this->formatValue($this->value),
+            $this->description ?? ''
+        );
     }
 }

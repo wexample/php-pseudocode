@@ -3,7 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Item\AbstractConfig;
+use Wexample\Pseudocode\Config\AbstractConfig;
 
 class FunctionParameterConfig extends AbstractConfig
 {

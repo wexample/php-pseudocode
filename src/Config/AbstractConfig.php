@@ -1,16 +1,29 @@
 <?php
 
-namespace Wexample\Pseudocode\Item;
+namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
 use PhpParser\NodeAbstract;
+use Wexample\Helpers\Class\Traits\HasSnakeShortClassNameClassTrait;
 
 abstract class AbstractConfig
 {
+    use HasSnakeShortClassNameClassTrait;
+
     abstract public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null
     ): ?static;
+
+    public static function fromData(array $data): ?static
+    {
+        return new static(...$data);
+    }
+
+    protected static function getClassNameSuffix(): ?string
+    {
+        return 'Config';
+    }
 
     protected static function parseValue(Node\Expr $expr): mixed
     {
@@ -48,6 +61,20 @@ abstract class AbstractConfig
         return 'mixed';
     }
 
+    protected function formatValue(mixed $value): string
+    {
+        if (is_string($value)) {
+            return '"' . addslashes($value) . '"';
+        }
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+        if (is_null($value)) {
+            return 'null';
+        }
+        return (string) $value;
+    }
+
     /**
      * @param AbstractConfig[] $items
      * @return array
@@ -62,6 +89,11 @@ abstract class AbstractConfig
     }
 
     public function toConfig(): mixed
+    {
+        return null;
+    }
+
+    public function toCode(): ?string
     {
         return null;
     }

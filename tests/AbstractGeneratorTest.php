@@ -4,15 +4,16 @@ namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
+use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Generator\AbstractGenerator;
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
-use Wexample\Pseudocode\Item\AbstractItem;
-use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
+use Wexample\Pseudocode\Config\AbstractConfig;
 
 abstract class AbstractGeneratorTest extends TestCase
 {
-    protected AbstractGenerator $generator;
     use WithYamlTestCase;
+
+    protected AbstractGenerator $generator;
 
     protected function setUp(): void
     {
@@ -25,7 +26,7 @@ abstract class AbstractGeneratorTest extends TestCase
     }
 
     /**
-     * @return class-string<AbstractItem>
+     * @return class-string<AbstractConfig>
      */
     abstract protected function getItemType(): string;
 
@@ -43,7 +44,7 @@ abstract class AbstractGeneratorTest extends TestCase
         $filteredExpected = $this->filterIgnoredKeys($expectedYaml);
         $filteredActual = $this->filterIgnoredKeys($actualPseudocode);
 
-        $this->assertArraysEquals(
+        $this->assertArraysEqual(
             $filteredExpected,
             $filteredActual,
             "Generated pseudocode does not match expected output for {$filename}.\n" .

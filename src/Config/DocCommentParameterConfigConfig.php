@@ -22,4 +22,14 @@ class DocCommentParameterConfigConfig extends AbstractDocCommentParameterConfig
                 'name' => $this->name,
             ] + parent::toConfig();
     }
+
+    public function toCode(): string
+    {
+        return sprintf(
+            " * @param %s $%s %s\n",
+            $this->type ?? 'mixed',
+            $this->name,
+            $this->description ?? ''
+        );
+    }
 }

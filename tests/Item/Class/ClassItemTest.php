@@ -2,8 +2,8 @@
 
 namespace Wexample\Pseudocode\Tests\Item\Class;
 
-use Wexample\Pseudocode\Item\ClassItem;
-use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
+use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
+use Wexample\Pseudocode\Config\ClassConfig;
 use Wexample\Pseudocode\Tests\AbstractGeneratorTest;
 
 class ClassItemTest extends AbstractGeneratorTest
@@ -12,7 +12,7 @@ class ClassItemTest extends AbstractGeneratorTest
 
     protected function getItemType(): string
     {
-        return ClassItem::class;
+        return ClassConfig::class;
     }
 
     /**

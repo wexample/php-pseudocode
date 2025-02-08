@@ -2,9 +2,9 @@
 
 namespace Wexample\Pseudocode\Tests\Item\Function;
 
+use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
+use Wexample\Pseudocode\Config\FunctionConfig;
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
-use Wexample\Pseudocode\Item\FunctionItem;
-use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Tests\AbstractGeneratorTest;
 
 class FunctionItemTest extends AbstractGeneratorTest
@@ -13,7 +13,7 @@ class FunctionItemTest extends AbstractGeneratorTest
 
     protected function getItemType(): string
     {
-        return FunctionItem::class;
+        return FunctionConfig::class;
     }
 
     protected function getGenerator(): PseudocodeGenerator

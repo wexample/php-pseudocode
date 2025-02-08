@@ -6,17 +6,9 @@ use Symfony\Component\Finder\SplFileInfo;
 use Wexample\Helpers\Helper\FileHelper;
 use Wexample\Helpers\Helper\PathHelper;
 use Wexample\Helpers\Helper\TextHelper;
-use Wexample\Pseudocode\Item\ItemFactory;
 
 abstract class AbstractGenerator
 {
-    protected ItemFactory $itemFactory;
-
-    public function __construct()
-    {
-        $this->itemFactory = new ItemFactory();
-    }
-
     function generateFromFileAndSave(
         string $filePath,
         string $sourceBasePath,
@@ -74,5 +66,5 @@ abstract class AbstractGenerator
 
     abstract function getTargetFileExtension(): string;
 
-    abstract function generate(string $fileContent): string;
+    abstract function generate(string $pseudocode): string;
 }

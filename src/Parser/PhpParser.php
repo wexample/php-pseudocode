@@ -6,9 +6,9 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
-use Wexample\Pseudocode\Item\ClassItem;
-use Wexample\Pseudocode\Item\ConstantItem;
-use Wexample\Pseudocode\Item\FunctionItem;
+use Wexample\Pseudocode\Config\ClassConfig;
+use Wexample\Pseudocode\Config\ConstantConfig;
+use Wexample\Pseudocode\Config\FunctionConfig;
 
 class PhpParser extends NodeVisitorAbstract
 {
@@ -77,14 +77,14 @@ class PhpParser extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
-            $this->items[] = ClassItem::fromNode($node);
+            $this->items[] = ClassConfig::fromNode($node);
         } elseif ($node instanceof Node\Stmt\Function_) {
-            $this->items[] = FunctionItem::fromNode($node);
+            $this->items[] = FunctionConfig::fromNode($node);
         } elseif (
             ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define')
             or ($node instanceof Node\Stmt\Const_)) {
             $endLine = $node->getEndLine();
-            $this->items[] = ConstantItem::fromNode(
+            $this->items[] = ConstantConfig::fromNode(
                 $node,
                 $this->allInlineComments[$endLine] ?? null
             );

@@ -2,8 +2,8 @@
 
 namespace Wexample\Pseudocode\Tests\Item\Constant;
 
-use Wexample\Pseudocode\Item\ConstantItem;
-use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
+use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
+use Wexample\Pseudocode\Config\ConstantConfig;
 use Wexample\Pseudocode\Tests\AbstractGeneratorTest;
 
 class ConstantItemTest extends AbstractGeneratorTest
@@ -12,7 +12,7 @@ class ConstantItemTest extends AbstractGeneratorTest
 
     protected function getItemType(): string
     {
-        return ConstantItem::class;
+        return ConstantConfig::class;
     }
 
     /**

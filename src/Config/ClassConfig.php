@@ -4,14 +4,13 @@ namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Item\AbstractConfig;
 
 class ClassConfig extends AbstractConfig
 {
     /**
      * @param string $name
      * @param DocCommentConfig $description
-     * @param ClassPropertiyConfig[] $properties
+     * @param ClassPropertyConfig[] $properties
      * @param ClassMethodConfig[] $methods
      */
     public function __construct(
@@ -60,7 +59,7 @@ class ClassConfig extends AbstractConfig
         }
 
         if (!empty($this->properties)) {
-            $config['properties'] = ClassPropertiyConfig::collectionToConfig($this->properties);
+            $config['properties'] = ClassPropertyConfig::collectionToConfig($this->properties);
         }
 
         if (!empty($this->methods)) {
@@ -68,5 +67,28 @@ class ClassConfig extends AbstractConfig
         }
 
         return $config;
+    }
+
+    public function toCode(): string
+    {
+        $output = '';
+
+        if ($this->description) {
+            $output .= $this->description->toCode();
+        }
+
+        $output .= "class {$this->name}\n{\n";
+
+        foreach ($this->properties as $property) {
+            $output .= $property->toCode();
+        }
+
+        foreach ($this->methods as $method) {
+            $output .= $method->toCode();
+        }
+
+        $output .= "}\n";
+
+        return $output;
     }
 }

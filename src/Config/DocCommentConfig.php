@@ -3,7 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Item\AbstractConfig;
+use Wexample\Pseudocode\Config\AbstractConfig;
 
 class DocCommentConfig extends AbstractConfig
 {
@@ -23,7 +23,7 @@ class DocCommentConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null // TODO RM
+        ?string $inlineComment = null
     ): ?static
     {
         if (!$node->getDocComment()) {
@@ -100,5 +100,29 @@ class DocCommentConfig extends AbstractConfig
         }
 
         return $this->description;
+    }
+
+    /**
+     * @param FunctionParameterConfig[] $parameters
+     * @param FunctionReturnConfig|null $return
+     * @return string
+     */
+    public function toCode(
+        array $parameters = [],
+        ?FunctionReturnConfig $return = null
+    ): string
+    {
+        $output = "/**\n * " . $this->description . "\n";
+
+        foreach ($parameters as $parameter) {
+            $output .= $parameter->toCode();
+        }
+
+        if ($return) {
+            $output = $return->toCode();
+        }
+
+        $output .= " */\n";
+        return $output;
     }
 }

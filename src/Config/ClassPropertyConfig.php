@@ -3,7 +3,6 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Item\AbstractConfig;
 
 class ClassPropertyConfig extends AbstractConfig
 {
@@ -23,7 +22,7 @@ class ClassPropertyConfig extends AbstractConfig
     ): ?static
     {
         return new (static::class)(
-            name: $node->name->toString(),
+            name: $node->props[0]->name->name,
             type: self::getTypeName($node->type),
             description: DocCommentConfig::fromNode($node),
             default: $node->props[0]->default ? self::parseValue($node->props[0]->default) : null,
@@ -46,5 +45,22 @@ class ClassPropertyConfig extends AbstractConfig
         }
 
         return $config;
+    }
+
+    public function toCode(): string
+    {
+        $output = '';
+
+        if ($this->description) {
+            $output .= $this->description->toCode();
+        }
+
+        $default = isset($this->default)
+            ? " = " . $this->formatValue($this->default)
+            : "";
+
+        $output .= "    private {$this->type} \${$this->name}{$default};\n\n";
+
+        return $output;
     }
 }

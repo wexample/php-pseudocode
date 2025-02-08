@@ -3,7 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Item\AbstractConfig;
+use Wexample\Pseudocode\Config\AbstractConfig;
 
 class FunctionReturnConfig extends AbstractConfig
 {
@@ -25,5 +25,10 @@ class FunctionReturnConfig extends AbstractConfig
     ): ?static
     {
         return $node->returnType ? new (static::class)(type: self::getTypeName($node->returnType)) : null;
+    }
+
+    public function toCode(): string
+    {
+        return " * @return " . $this->type . "\n";
     }
 }
