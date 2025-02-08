@@ -40,7 +40,7 @@ class ClassPropertyConfig extends AbstractConfig
             $config['description'] = $this->description->toConfig();
         }
 
-        if ($this->default) {
+        if ($this->default !== null) {
             $config['default'] = $this->default;
         }
 
