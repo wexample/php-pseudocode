@@ -3,9 +3,12 @@
 namespace Wexample\Pseudocode\Item;
 
 use PhpParser\Node;
+use Wexample\Helpers\Class\Traits\HasSnakeShortClassNameClassTrait;
 
 abstract class AbstractItem
 {
+    use HasSnakeShortClassNameClassTrait;
+
     protected string $name;
     protected ?string $description;
 
@@ -16,6 +19,11 @@ abstract class AbstractItem
     }
 
     abstract public function generateCode(): string;
+
+    protected static function getClassNameSuffix(): ?string
+    {
+        return 'Item';
+    }
 
     protected function formatDocBlock(?string $description = null): string
     {
@@ -80,15 +88,15 @@ abstract class AbstractItem
         $docComment = $node->getDocComment()->getText();
         // Remove the opening /** and closing */
         $docComment = preg_replace('/^\/\*\*|\*\/$/', '', $docComment);
-        
+
         // Split into lines and process each line
         $lines = explode("\n", $docComment);
         $description = [];
-        
+
         foreach ($lines as $line) {
             // Remove leading asterisks and whitespace
             $line = preg_replace('/^\s*\*\s*/', '', trim($line));
-            
+
             if (empty($line)) {
                 continue;
             }

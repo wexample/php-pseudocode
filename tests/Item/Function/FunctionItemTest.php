@@ -3,12 +3,18 @@
 namespace Wexample\Pseudocode\Tests\Item\Function;
 
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
+use Wexample\Pseudocode\Item\FunctionItem;
 use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Tests\AbstractConverterTest;
 
 class FunctionItemTest extends AbstractConverterTest
 {
     use WithYamlTestCase;
+
+    protected function getItemType(): string
+    {
+        return FunctionItem::class;
+    }
 
     protected function getGenerator(): PseudocodeGenerator
     {

@@ -2,12 +2,18 @@
 
 namespace Wexample\Pseudocode\Tests\Item\Constant;
 
+use Wexample\Pseudocode\Item\ConstantItem;
 use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Tests\AbstractConverterTest;
 
 class ConstantItemTest extends AbstractConverterTest
 {
     use WithYamlTestCase;
+
+    protected function getItemType(): string
+    {
+        return ConstantItem::class;
+    }
 
     /**
      * Test conversion of constants defined using define()

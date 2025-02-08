@@ -6,16 +6,17 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Pseudocode\Generator\AbstractGenerator;
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
+use Wexample\Pseudocode\Item\AbstractItem;
+use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
 
 abstract class AbstractConverterTest extends TestCase
 {
     protected AbstractGenerator $generator;
-    protected string $fixturesDir;
+    use WithYamlTestCase;
 
     protected function setUp(): void
     {
         $this->generator = $this->getGenerator();
-        $this->fixturesDir = __DIR__;
     }
 
     protected function getGenerator(): PseudocodeGenerator
@@ -23,10 +24,10 @@ abstract class AbstractConverterTest extends TestCase
         return new PseudocodeGenerator();
     }
     
-    protected function loadExampleFileContent(string $ext): string
-    {
-        return file_get_contents($this->fixturesDir . '/resources/example.' . $ext);
-    }
+    /**
+     * @return class-string<AbstractItem>
+     */
+    abstract protected function getItemType(): string;
 
     /**
      * Helper method to test file conversion
@@ -42,8 +43,8 @@ abstract class AbstractConverterTest extends TestCase
         $filteredExpected = $this->filterIgnoredKeys($expectedYaml);
         $filteredActual = $this->filterIgnoredKeys($actualPseudocode);
 
-        $this->assertYamlEqualsArray(
-            json_encode($filteredExpected),
+        $this->assertArraysEquals(
+            $filteredExpected,
             $filteredActual,
             "Generated pseudocode does not match expected output for {$filename}.\n" .
             "Expected:\n" . json_encode($filteredExpected, JSON_PRETTY_PRINT) . "\n" .
@@ -61,7 +62,8 @@ abstract class AbstractConverterTest extends TestCase
      */
     protected function loadTestResource(string $filename): string
     {
-        $path = __DIR__ . '/resources/' . $filename;
+        $path = __DIR__ . '/Item/' . $this->getItemType()::getShortClassName() . '/resources/' . $filename;
+
         if (!file_exists($path)) {
             throw new \RuntimeException("Test resource not found: {$path}");
         }
