@@ -18,7 +18,8 @@
         "wexample/helpers": "^1.0.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "wexample/helpers": "^1.0.2"
     },
     "autoload": {
         "psr-4": {
