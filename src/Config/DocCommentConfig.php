@@ -3,7 +3,6 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Config\AbstractConfig;
 
 class DocCommentConfig extends AbstractConfig
 {
@@ -89,7 +88,7 @@ class DocCommentConfig extends AbstractConfig
             ];
 
             if (!empty($this->params)) {
-                $config['params'] = DocCommentParameterConfigConfig::collectionToConfig($this->params);
+                $config['parameters'] = DocCommentParameterConfigConfig::collectionToConfig($this->params);
             }
 
             if ($this->return) {
