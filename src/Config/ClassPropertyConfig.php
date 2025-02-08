@@ -29,7 +29,7 @@ class ClassPropertyConfig extends AbstractConfig
         );
     }
 
-    public function toConfig(): array
+    public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         $config = [
             'name' => $this->name,
@@ -47,12 +47,12 @@ class ClassPropertyConfig extends AbstractConfig
         return $config;
     }
 
-    public function toCode(): string
+    public function toCode(?AbstractConfig $parentConfig): string
     {
         $output = '';
 
         if ($this->description) {
-            $output .= $this->description->toCode();
+            $output .= $this->description->toCode($this);
         }
 
         $default = isset($this->default)

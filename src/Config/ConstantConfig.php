@@ -41,7 +41,7 @@ class ConstantConfig extends AbstractConfig
         );
     }
 
-    public function toConfig(): array
+    public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         return [
             'type' => 'constant',

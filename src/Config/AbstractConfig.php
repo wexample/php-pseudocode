@@ -88,12 +88,12 @@ abstract class AbstractConfig
         return $config;
     }
 
-    public function toConfig(): mixed
+    public function toConfig(?AbstractConfig $parentConfig = null): mixed
     {
         return null;
     }
 
-    public function toCode(): ?string
+    public function toCode(?AbstractConfig $parentConfig): ?string
     {
         return null;
     }

@@ -3,7 +3,6 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Config\AbstractConfig;
 
 abstract class AbstractDocCommentParameterConfig extends AbstractConfig
 {
@@ -15,7 +14,7 @@ abstract class AbstractDocCommentParameterConfig extends AbstractConfig
 
     }
 
-    public function toConfig(): mixed
+    public function toConfig(?AbstractConfig $parentConfig = null): mixed
     {
         return [
             'type' => $this->type,

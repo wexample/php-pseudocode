@@ -47,7 +47,7 @@ class ClassConfig extends AbstractConfig
         );
     }
 
-    public function toConfig(): array
+    public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         $config = [
             'name' => $this->name,
@@ -55,7 +55,7 @@ class ClassConfig extends AbstractConfig
         ];
 
         if ($this->description) {
-            $config['description'] = $this->description->toConfig();
+            $config['description'] = $this->description->toConfig($this);
         }
 
         if (!empty($this->properties)) {
@@ -69,22 +69,22 @@ class ClassConfig extends AbstractConfig
         return $config;
     }
 
-    public function toCode(): string
+    public function toCode(?AbstractConfig $parentConfig): string
     {
         $output = '';
 
         if ($this->description) {
-            $output .= $this->description->toCode();
+            $output .= $this->description->toCode($this);
         }
 
         $output .= "class {$this->name}\n{\n";
 
         foreach ($this->properties as $property) {
-            $output .= $property->toCode();
+            $output .= $property->toCode($this);
         }
 
         foreach ($this->methods as $method) {
-            $output .= $method->toCode();
+            $output .= $method->toCode($this);
         }
 
         $output .= "}\n";

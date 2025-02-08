@@ -3,7 +3,6 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Config\AbstractConfig;
 
 class FunctionParameterConfig extends AbstractConfig
 {
@@ -23,7 +22,7 @@ class FunctionParameterConfig extends AbstractConfig
         return null;
     }
 
-    public function toConfig(): array
+    public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         return [
             'type' => $this->type,

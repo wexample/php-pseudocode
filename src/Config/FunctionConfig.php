@@ -46,7 +46,7 @@ class FunctionConfig extends AbstractConfig
         );
     }
 
-    public function toConfig(): array
+    public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         $config = [
             'type' => 'function',
@@ -116,7 +116,7 @@ class FunctionConfig extends AbstractConfig
         $output = '';
 
         if ($this->description) {
-            $output .= $this->description->toCode();
+            $output .= $this->description->toCode($this);
         }
 
         if ($this->implementationGuidelines) {

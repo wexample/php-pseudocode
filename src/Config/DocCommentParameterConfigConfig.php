@@ -16,14 +16,14 @@ class DocCommentParameterConfigConfig extends AbstractDocCommentParameterConfig
         );
     }
 
-    public function toConfig(): mixed
+    public function toConfig(?AbstractConfig $parentConfig = null): mixed
     {
         return [
                 'name' => $this->name,
             ] + parent::toConfig();
     }
 
-    public function toCode(): string
+    public function toCode(?AbstractConfig $parentConfig): string
     {
         return sprintf(
             " * @param %s $%s %s\n",

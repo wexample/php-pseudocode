@@ -13,7 +13,7 @@ class FunctionReturnConfig extends AbstractConfig
 
     }
 
-    public function toConfig(): string
+    public function toConfig(?AbstractConfig $parentConfig = null): string
     {
         return $this->type;
     }
@@ -26,7 +26,7 @@ class FunctionReturnConfig extends AbstractConfig
         return $node->returnType ? new (static::class)(type: self::getTypeName($node->returnType)) : null;
     }
 
-    public function toCode(): string
+    public function toCode(?AbstractConfig $parentConfig): string
     {
         return ($this->type ?? 'void');
     }
