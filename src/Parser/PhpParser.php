@@ -80,7 +80,9 @@ class PhpParser extends NodeVisitorAbstract
             $this->items[] = ClassItem::fromNode($node);
         } elseif ($node instanceof Node\Stmt\Function_) {
             $this->items[] = FunctionItem::fromNode($node);
-        } elseif ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define') {
+        } elseif (
+            ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define')
+            or ($node instanceof Node\Stmt\Const_)) {
             $endLine = $node->getEndLine();
             $this->items[] = ConstantItem::fromNode(
                 $node,

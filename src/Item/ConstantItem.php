@@ -26,14 +26,28 @@ class ConstantItem extends AbstractItem
 
     public static function fromNode(NodeAbstract $node, ?string $inlineComment = null): array
     {
-        $data = [
-            'type' => 'constant',
-            'name' => $node->args[0]->value->value,
-            'value' => static::parseValue($node->args[1]->value),
-        ];
+        if ($node instanceof \PhpParser\Node\Expr\FuncCall) {
+            // Handle define() calls
+            $data = [
+                'type' => 'constant',
+                'name' => $node->args[0]->value->value,
+                'value' => static::parseValue($node->args[1]->value),
+            ];
 
-        if ($inlineComment !== null) {
-            $data['description'] = $inlineComment;
+            if ($inlineComment !== null) {
+                $data['description'] = $inlineComment;
+            }
+        } elseif ($node instanceof \PhpParser\Node\Stmt\Const_) {
+            // Handle const keyword
+            $const = $node->consts[0];
+            $data = [
+                'type' => 'constant',
+                'name' => $const->name->toString(),
+                'value' => static::parseValue($const->value),
+                'description' => self::getDocComment($node)
+            ];
+        } else {
+            throw new \InvalidArgumentException('Unsupported node type for constant');
         }
 
         return $data;
