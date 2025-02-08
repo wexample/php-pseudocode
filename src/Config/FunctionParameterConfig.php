@@ -8,7 +8,8 @@ class FunctionParameterConfig extends AbstractConfig
 {
     public function __construct(
         protected readonly string $type,
-        protected readonly string $name
+        protected readonly string $name,
+        protected readonly ?DocCommentConfig $description = null
     )
     {
 
@@ -24,9 +25,15 @@ class FunctionParameterConfig extends AbstractConfig
 
     public function toConfig(?AbstractConfig $parentConfig = null): array
     {
-        return [
+        $config = [
             'type' => $this->type,
             'name' => $this->name,
         ];
+
+        if ($this->description) {
+            $config['description'] = $this->description->toConfig();
+        }
+
+        return $config;
     }
 }
