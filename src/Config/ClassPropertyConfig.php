@@ -3,6 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
+use Wexample\Pseudocode\Helper\DocCommentParserHelper;
 
 class ClassPropertyConfig extends AbstractConfig
 {
@@ -21,16 +22,7 @@ class ClassPropertyConfig extends AbstractConfig
         ?string $inlineComment = null
     ): ?static
     {
-        $description = null;
-        if ($node->getDocComment()) {
-            $docComment = $node->getDocComment()->getText();
-            // Remove /** and */ markers
-            $docComment = preg_replace('/^\/\*\*|\*\/$/', '', $docComment);
-            // Remove @var type if present and get the actual description
-            if (preg_match('/@var\s+\S+\s+(.+)/', $docComment, $matches)) {
-                $description = new DocCommentConfig(trim($matches[1]));
-            }
-        }
+        $description = DocCommentParserHelper::extractDescriptionFromNode($node);
 
         return new (static::class)(
             name: $node->props[0]->name->name,

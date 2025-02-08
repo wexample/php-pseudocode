@@ -3,6 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
+use Wexample\Pseudocode\Helper\DocCommentParserHelper;
 
 class FunctionConfig extends AbstractConfig
 {
@@ -30,22 +31,7 @@ class FunctionConfig extends AbstractConfig
     ): ?static
     {
         $parameters = [];
-        $paramDescriptions = [];
-
-        // Extract parameter descriptions from doc comment
-        if ($node->getDocComment()) {
-            $docComment = $node->getDocComment()->getText();
-            $lines = explode("\n", $docComment);
-            foreach ($lines as $line) {
-                // Remove leading asterisks and whitespace
-                $line = preg_replace('/^\s*\*\s*/', '', trim($line));
-                
-                // Parse @param tags
-                if (preg_match('/@param\s+(\S+)\s+\$(\S+)\s+(.+)/', $line, $matches)) {
-                    $paramDescriptions[$matches[2]] = new DocCommentConfig(trim($matches[3]));
-                }
-            }
-        }
+        $paramDescriptions = DocCommentParserHelper::extractParamDescriptionsFromNode($node);
 
         foreach ($node->params as $param) {
             $parameters[] = new FunctionParameterConfig(
