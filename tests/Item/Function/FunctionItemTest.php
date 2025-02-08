@@ -5,9 +5,9 @@ namespace Wexample\Pseudocode\Tests\Item\Function;
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 use Wexample\Pseudocode\Item\FunctionItem;
 use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
-use Wexample\Pseudocode\Tests\AbstractConverterTest;
+use Wexample\Pseudocode\Tests\AbstractGeneratorTest;
 
-class FunctionItemTest extends AbstractConverterTest
+class FunctionItemTest extends AbstractGeneratorTest
 {
     use WithYamlTestCase;
 

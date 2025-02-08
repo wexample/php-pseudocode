@@ -9,7 +9,7 @@ use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 use Wexample\Pseudocode\Item\AbstractItem;
 use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
 
-abstract class AbstractConverterTest extends TestCase
+abstract class AbstractGeneratorTest extends TestCase
 {
     protected AbstractGenerator $generator;
     use WithYamlTestCase;
@@ -23,7 +23,7 @@ abstract class AbstractConverterTest extends TestCase
     {
         return new PseudocodeGenerator();
     }
-    
+
     /**
      * @return class-string<AbstractItem>
      */

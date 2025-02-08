@@ -4,9 +4,9 @@ namespace Wexample\Pseudocode\Tests\Item\Constant;
 
 use Wexample\Pseudocode\Item\ConstantItem;
 use Wexample\Pseudocode\Testing\Traits\WithYamlTestCase;
-use Wexample\Pseudocode\Tests\AbstractConverterTest;
+use Wexample\Pseudocode\Tests\AbstractGeneratorTest;
 
-class ConstantItemTest extends AbstractConverterTest
+class ConstantItemTest extends AbstractGeneratorTest
 {
     use WithYamlTestCase;
 
