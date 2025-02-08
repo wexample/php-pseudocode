@@ -1,0 +1,12 @@
+items:
+  - type: function
+    name: add
+    description: "Calculate the sum of two ints."
+    parameters:
+      - name: a
+        type: int
+        description: "The first operand."
+      - name: b
+        type: int
+        description: "The second operand."
+    returnType: int

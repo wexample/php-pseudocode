@@ -1,0 +1,15 @@
+items:
+  - type: function
+    name: processData
+    description: "Process an array of data with optional configuration."
+    parameters:
+      - name: data
+        type: array
+        description: "The data to process"
+      - name: config
+        type: array
+        description: "Optional configuration parameters"
+      - name: callback
+        type: callable|null
+        description: "Optional callback for custom processing"
+    returnType: array

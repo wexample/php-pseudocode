@@ -1,0 +1,9 @@
+items:
+  - type: constant
+    name: PI
+    value: 3.14159
+    description: "Mathematical constant for circle calculations."
+  - type: constant
+    name: DEFAULT_GREETING
+    value: "Hello, World!"
+    description: "Default greeting message."

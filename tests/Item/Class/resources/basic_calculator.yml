@@ -1,0 +1,20 @@
+items:
+  - type: class
+    name: Calculator
+    description: "A class that performs basic arithmetic operations."
+    properties:
+      - name: lastResult
+        type: int
+        default: 0
+        description: "Stores the result of the last operation performed."
+    methods:
+      - name: add
+        description: "Calculate the sum of two ints."
+        parameters:
+          - name: a
+            type: int
+            description: "The first operand."
+          - name: b
+            type: int
+            description: "The second operand."
+        returnType: int
