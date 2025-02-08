@@ -36,7 +36,7 @@ abstract class AbstractGeneratorTest extends TestCase
     protected function assertConversion(string $filename): void
     {
         $generator = $this->getGenerator();
-        $actualPseudocode = $generator->generateItems(
+        $actualPseudocode = $generator->generateConfigData(
             $this->loadTestResource($filename . '.php')
         );
 

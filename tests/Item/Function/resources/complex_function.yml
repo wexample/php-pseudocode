@@ -12,4 +12,4 @@ items:
       - name: callback
         type: callable|null
         description: "Optional callback for custom processing"
-    returnType: array
+    return: array

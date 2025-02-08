@@ -3,7 +3,6 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
-use Wexample\Pseudocode\Config\AbstractConfig;
 
 class FunctionReturnConfig extends AbstractConfig
 {
@@ -29,6 +28,6 @@ class FunctionReturnConfig extends AbstractConfig
 
     public function toCode(): string
     {
-        return " * @return " . $this->type . "\n";
+        return ($this->type ?? 'void');
     }
 }

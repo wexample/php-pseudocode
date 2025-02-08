@@ -6,6 +6,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
+use Wexample\Pseudocode\Config\AbstractConfig;
 use Wexample\Pseudocode\Config\ClassConfig;
 use Wexample\Pseudocode\Config\ConstantConfig;
 use Wexample\Pseudocode\Config\FunctionConfig;
@@ -60,11 +61,15 @@ class PhpParser extends NodeVisitorAbstract
         return $comments;
     }
 
+    /**
+     * @param string $code
+     * @return AbstractConfig[]
+     */
     public function parse(string $code): array
     {
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         $ast = $parser->parse($code);
-
+        $this->items = [];
         $this->allInlineComments = $this->buildInlineCommentsRegistry($ast);
 
         $traverser = new NodeTraverser();

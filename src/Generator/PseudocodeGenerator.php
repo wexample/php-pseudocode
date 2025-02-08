@@ -25,10 +25,17 @@ class PseudocodeGenerator extends AbstractGenerator
         return TextHelper::toSnake($file->getFilename());
     }
 
-    public function generateItems(string $code): array
+    public function generateConfigData(string $code): array
     {
         $phpParser = new PhpParser();
-        return ['items' => $phpParser->parse($code)];
+        $items = $phpParser->parse($code);
+        $itemsData = [];
+
+        foreach ($items as $item) {
+            $itemsData[] = $item->toConfig();
+        }
+
+        return ['items' => $itemsData];
     }
 
     public function dumpItems(array $items): string
@@ -47,7 +54,7 @@ class PseudocodeGenerator extends AbstractGenerator
     public function generate(string $pseudocode): string
     {
         return $this->dumpItems(
-            $this->generateItems($pseudocode)
+            $this->generateConfigData($pseudocode)
         );
     }
 }

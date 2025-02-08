@@ -90,8 +90,8 @@ class FunctionConfig extends AbstractConfig
     {
         $output = sprintf("function %s", $this->name);
 
-        if (empty($this->parameters)) {
-            return $output . "(): " . ($this->returnType ?? 'void') . "\n{\n";
+        if (empty($this->return)) {
+            return $output . "(): " . ($this->return->toCode() ?? 'void') . "\n{\n";
         }
 
         $output .= "(\n";

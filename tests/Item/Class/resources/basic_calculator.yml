@@ -9,6 +9,7 @@ items:
         description: "Stores the result of the last operation performed."
     methods:
       - name: add
+        type: function
         description: "Calculate the sum of two ints."
         parameters:
           - name: a
@@ -17,4 +18,4 @@ items:
           - name: b
             type: int
             description: "The second operand."
-        returnType: int
+        return: int
