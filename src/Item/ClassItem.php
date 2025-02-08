@@ -42,10 +42,20 @@ class ClassItem extends AbstractItem
 
     private static function parseProperty(Node\Stmt\Property $node): array
     {
+        $docInfo = self::parseDocComment($node);
+        
+        // Check for @var tag which might contain a better description
+        $description = $docInfo['description'];
+        if (preg_match('/@var\s+\S+(?:\s+([^*\/]+))?/', $node->getDocComment()?->getText() ?? '', $matches)) {
+            if (!empty($matches[1])) {
+                $description = trim($matches[1]);
+            }
+        }
+        
         return [
             'name' => $node->props[0]->name->toString(),
             'type' => self::getTypeName($node->type),
-            'description' => self::getDocComment($node),
+            'description' => $description,
             'default' => $node->props[0]->default ? self::parseValue($node->props[0]->default) : null
         ];
     }
