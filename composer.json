@@ -1,37 +1,37 @@
 {
-  "name": "wexample/pseudocode",
-  "description": "A basic PHP package",
-  "type": "library",
-  "license": "MIT",
-  "version": "0.0.1",
-  "authors": [
-    {
-      "name": "Wexample",
-      "email": "contact@wexample.com"
+    "name": "wexample/pseudocode",
+    "description": "A basic PHP package",
+    "type": "library",
+    "license": "MIT",
+    "version": "0.0.2",
+    "authors": [
+        {
+            "name": "Wexample",
+            "email": "contact@wexample.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4",
+        "symfony/yaml": "^6.0",
+        "nikic/php-parser": "^4.0",
+        "wexample/helpers": "^0.0.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wexample\\Pseudocode\\": "src/"
+        }
+    },
+    "repositories": {
+        "wexample/helpers": {
+            "type": "path",
+            "url": "../helpers",
+            "options": {
+                "symlink": true
+            }
+        }
     }
-  ],
-  "minimum-stability": "stable",
-  "require": {
-    "php": ">=7.4",
-    "symfony/yaml": "^6.0",
-    "nikic/php-parser": "^4.0",
-    "wexample/helpers": "^0.0.1"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.5"
-  },
-  "autoload": {
-    "psr-4": {
-      "Wexample\\Pseudocode\\": "src/"
-    }
-  },
-  "repositories": {
-    "wexample/helpers": {
-      "type": "path",
-      "url": "../helpers",
-      "options": {
-        "symlink": true
-      }
-    }
-  }
 }
