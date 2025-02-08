@@ -34,7 +34,11 @@ class PseudocodeGenerator extends AbstractGenerator
     public function dumpItems(array $items): string
     {
         // Dump YAML with specific indentation
-        $yaml = Yaml::dump($items, 4, 2);
+        $yaml = Yaml::dump(
+            $items,
+            inline: 10,
+            indent: 2
+        );
 
         // Replace the format '  -\n    ' with '  - '
         return preg_replace('/^(\s+)-\n\s+/m', '$1- ', $yaml);
