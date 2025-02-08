@@ -3,7 +3,9 @@
 namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Yaml\Yaml;
 use Wexample\Pseudocode\Generator\AbstractGenerator;
+use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 
 abstract class AbstractConverterTest extends TestCase
 {
@@ -16,7 +18,10 @@ abstract class AbstractConverterTest extends TestCase
         $this->fixturesDir = __DIR__;
     }
 
-    abstract protected function getGenerator(): AbstractGenerator;
+    protected function getGenerator(): PseudocodeGenerator
+    {
+        return new PseudocodeGenerator();
+    }
     
     protected function loadExampleFileContent(string $ext): string
     {
@@ -24,28 +29,68 @@ abstract class AbstractConverterTest extends TestCase
     }
 
     /**
-     * Normalizes line endings to prevent false negatives in tests
-     * due to different operating systems
+     * Helper method to test file conversion
      */
-    protected function normalizeLineEndings(string $content): string
+    protected function assertConversion(string $filename): void
     {
-        // Convert all line endings to \n
-        $content = str_replace("\r\n", "\n", $content);
-        $content = str_replace("\r", "\n", $content);
+        $generator = $this->getGenerator();
+        $actualPseudocode = $generator->generateItems(
+            $this->loadTestResource($filename . '.php')
+        );
 
-        // Trim trailing whitespace
-        $content = preg_replace('/[ \t]+$/m', '', $content);
+        $expectedYaml = $this->loadPseudocode($filename);
+        $filteredExpected = $this->filterIgnoredKeys($expectedYaml);
+        $filteredActual = $this->filterIgnoredKeys($actualPseudocode);
 
-        // Normalize empty lines between methods/functions
-        $content = preg_replace('/\}\n[\n\s]*\/\*\*/m', "}\n\n/**", $content);
+        $this->assertYamlEqualsArray(
+            json_encode($filteredExpected),
+            $filteredActual,
+            "Generated pseudocode does not match expected output for {$filename}.\n" .
+            "Expected:\n" . json_encode($filteredExpected, JSON_PRETTY_PRINT) . "\n" .
+            "Actual:\n" . json_encode($filteredActual, JSON_PRETTY_PRINT)
+        );
+    }
 
-        // Normalize empty lines at the end of classes
-        $content = preg_replace('/\}\n[\n\s]*\}/m', "}\n\n}", $content);
+    protected function loadPseudocode(string $filename): array
+    {
+        return Yaml::parse($this->loadTestResource($filename . '.yml'));
+    }
 
-        // Remove any remaining multiple empty lines
-        $content = preg_replace("/\n{3,}/", "\n\n", $content);
+    /**
+     * Load a test resource file
+     */
+    protected function loadTestResource(string $filename): string
+    {
+        $path = __DIR__ . '/resources/' . $filename;
+        if (!file_exists($path)) {
+            throw new \RuntimeException("Test resource not found: {$path}");
+        }
+        return file_get_contents($path);
+    }
 
-        // Ensure single newline at end of file
-        return rtrim($content) . "\n";
+    /**
+     * List of keys to ignore when comparing YAML structures
+     */
+    private array $ignoredKeys = [
+        'implementationGuidelines',
+    ];
+
+    /**
+     * Recursively removes specified keys from an array
+     */
+    private function filterIgnoredKeys(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (in_array($key, $this->ignoredKeys)) {
+                unset($data[$key]);
+                continue;
+            }
+
+            if (is_array($value)) {
+                $data[$key] = $this->filterIgnoredKeys($value);
+            }
+        }
+
+        return $data;
     }
 }
