@@ -5,16 +5,19 @@ namespace Wexample\Pseudocode\Config;
 use PhpParser\NodeAbstract;
 use Wexample\Pseudocode\Helper\DocCommentParserHelper;
 
+enum DefaultSentinel: string {
+    case NotProvided = 'not_provided';
+}
+
 class ClassPropertyConfig extends AbstractConfig
 {
     public function __construct(
         protected readonly string $name,
         protected readonly string $type,
         protected readonly ?DocCommentConfig $description = null,
-        protected readonly mixed $default = null,
+        protected readonly mixed $default = DefaultSentinel::NotProvided,
     )
     {
-
     }
 
     public static function fromNode(
@@ -22,11 +25,13 @@ class ClassPropertyConfig extends AbstractConfig
         ?string $inlineComment = null
     ): ?static
     {
-        return new (static::class)(
+        return new static(
             name: $node->props[0]->name->name,
             type: self::getTypeName($node->type),
             description: DocCommentParserHelper::extractDescriptionFromNode($node),
-            default: $node->props[0]->default ? self::parseValue($node->props[0]->default) : null,
+            default: $node->props[0]->default !== null
+                ? self::parseValue($node->props[0]->default)
+                : DefaultSentinel::NotProvided,
         );
     }
 
@@ -41,7 +46,7 @@ class ClassPropertyConfig extends AbstractConfig
             $config['description'] = $this->description->toConfig();
         }
 
-        if ($this->default !== null) {
+        if ($this->default !== DefaultSentinel::NotProvided) {
             $config['default'] = $this->default;
         }
 
@@ -56,7 +61,7 @@ class ClassPropertyConfig extends AbstractConfig
             $output .= $this->description->toCode($this);
         }
 
-        $default = isset($this->default)
+        $default = $this->default !== DefaultSentinel::NotProvided
             ? " = " . $this->formatValue($this->default)
             : "";
 

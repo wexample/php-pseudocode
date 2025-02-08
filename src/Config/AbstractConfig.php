@@ -37,8 +37,19 @@ abstract class AbstractConfig
             return $expr->value;
         }
         if ($expr instanceof Node\Expr\ConstFetch) {
-            return $expr->name->toString() === 'true';
+            $const = strtolower($expr->name->toString());
+
+            if ($const === 'true') {
+                return true;
+            }
+            if ($const === 'false') {
+                return false;
+            }
+            if ($const === 'null') {
+                return null;
+            }
         }
+
         return null;
     }
 
