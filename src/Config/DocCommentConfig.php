@@ -16,6 +16,15 @@ class DocCommentConfig extends AbstractConfig
 
     }
 
+    protected static function unpackData(mixed $data): array
+    {
+        if (is_string($data)) {
+            return ['description' => $data];
+        }
+
+        return parent::unpackData($data);
+    }
+
     public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null

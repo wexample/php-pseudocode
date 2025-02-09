@@ -33,9 +33,18 @@ abstract class AbstractConfig
         return false;
     }
 
-    public static function fromConfig(array $data): ?static
+    public static function fromConfig(mixed $data): ?static
     {
-        return new static(...$data);
+        return new static(...static::unpackData($data));
+    }
+
+    protected static function unpackData(mixed $data): array
+    {
+        if (!is_array($data)) {
+            throw new \Error('Bad data format passed to ' . static::class . ', you should implement unpackData() to help resolving data conversion to unpackable array.');
+        }
+
+        return $data;
     }
 
     protected static function getClassNameSuffix(): ?string
@@ -117,12 +126,25 @@ abstract class AbstractConfig
         return $config;
     }
 
+    /**
+     * @param array $items
+     * @return AbstractConfig[]
+     */
+    public static function collectionFromConfig(array $items): array
+    {
+        $config = [];
+        foreach ($items as $item) {
+            $config[] = static::fromConfig($item);
+        }
+        return $config;
+    }
+
     public function toConfig(?AbstractConfig $parentConfig = null): mixed
     {
         return null;
     }
 
-    public function toCode(?AbstractConfig $parentConfig): ?string
+    public function toCode(?AbstractConfig $parentConfig = null): ?string
     {
         return null;
     }

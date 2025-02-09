@@ -32,6 +32,15 @@ class ClassPropertyConfig extends AbstractConfig
         );
     }
 
+    public static function fromConfig(mixed $data): ?static
+    {
+        if (isset($data['description'])) {
+            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+        }
+
+        return parent::fromConfig($data);
+    }
+
     public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         $config = [
@@ -50,7 +59,7 @@ class ClassPropertyConfig extends AbstractConfig
         return $config;
     }
 
-    public function toCode(?AbstractConfig $parentConfig): string
+    public function toCode(?AbstractConfig $parentConfig = null): string
     {
         $output = '';
 

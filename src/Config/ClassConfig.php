@@ -11,12 +11,14 @@ class ClassConfig extends AbstractConfig
      * @param DocCommentConfig|null $description
      * @param ClassPropertyConfig[] $properties
      * @param ClassMethodConfig[] $methods
+     * @param string $type
      */
     public function __construct(
         protected readonly string $name,
         protected readonly ?DocCommentConfig $description = null,
         protected readonly array $properties,
         protected readonly array $methods,
+        protected readonly string $type = 'class',
     )
     {
 
@@ -25,6 +27,23 @@ class ClassConfig extends AbstractConfig
     public static function canParse(Node $node): bool
     {
         return $node instanceof Node\Stmt\Class_;
+    }
+
+    public static function canLoad(array $data): bool
+    {
+        return $data['type'] == 'class';
+    }
+
+    public static function fromConfig(mixed $data): ?static
+    {
+        if (isset($data['description'])) {
+            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+        }
+
+        $data['properties'] = ClassPropertyConfig::collectionFromConfig($data['properties'] ?? []);
+        $data['methods'] = ClassMethodConfig::collectionFromConfig($data['methods'] ?? []);
+
+        return parent::fromConfig($data);
     }
 
     public static function fromNode(
@@ -55,7 +74,7 @@ class ClassConfig extends AbstractConfig
     {
         $config = [
             'name' => $this->name,
-            'type' => 'class',
+            'type' => $this->type,
         ];
 
         if ($this->description) {
@@ -73,7 +92,7 @@ class ClassConfig extends AbstractConfig
         return $config;
     }
 
-    public function toCode(?AbstractConfig $parentConfig): string
+    public function toCode(?AbstractConfig $parentConfig = null): string
     {
         $output = '';
 

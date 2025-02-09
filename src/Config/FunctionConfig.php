@@ -13,13 +13,15 @@ class FunctionConfig extends AbstractConfig
      * @param FunctionParameterConfig[] $parameters
      * @param FunctionReturnConfig|null $return
      * @param string|null $implementationGuidelines
+     * @param string $type
      */
     public function __construct(
         protected readonly string $name,
         protected readonly ?DocCommentConfig $description = null,
         protected readonly array $parameters = [],
         protected readonly ?FunctionReturnConfig $return = null,
-        protected ?string $implementationGuidelines = null
+        protected ?string $implementationGuidelines = null,
+        protected readonly string $type = 'function',
     )
     {
 
@@ -28,6 +30,12 @@ class FunctionConfig extends AbstractConfig
     public static function canParse(Node $node): bool
     {
         return $node instanceof Node\Stmt\Function_;
+    }
+
+
+    public static function canLoad(array $data): bool
+    {
+        return $data['type'] == 'function';
     }
 
     public static function fromNode(
@@ -52,6 +60,18 @@ class FunctionConfig extends AbstractConfig
             parameters: $parameters,
             return: $node->returnType ? new FunctionReturnConfig(type: self::getTypeName($node->returnType)) : null
         );
+    }
+
+    public static function fromConfig(mixed $data): ?static
+    {
+        if (isset($data['description'])) {
+            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+        }
+        if (isset($data['return'])) {
+            $data['return'] = FunctionReturnConfig::fromConfig($data['return']);
+        }
+
+        return parent::fromConfig($data);
     }
 
     public function toConfig(?AbstractConfig $parentConfig = null): array

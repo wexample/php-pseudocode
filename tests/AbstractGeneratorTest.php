@@ -48,7 +48,9 @@ abstract class AbstractGeneratorTest extends TestCase
         );
 
         // Test Pseudocode -> PHP conversion
-        $regeneratedPhp = $this->codeGenerator->generateFromArray($actualPseudocodeData);
+        $regeneratedPhp = $this->codeGenerator->generate(
+            Yaml::dump($actualPseudocodeData)
+        );
 
         // Normalize both codes to compare them
         $normalizedOriginal = $this->normalizeCode($sourcePhp);

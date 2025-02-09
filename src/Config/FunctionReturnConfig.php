@@ -13,6 +13,15 @@ class FunctionReturnConfig extends AbstractConfig
 
     }
 
+    protected static function unpackData(mixed $data): array
+    {
+        if (!is_array($data)) {
+            return ['type' => (string) $data];
+        }
+
+        return parent::unpackData($data);
+    }
+
     public function toConfig(?AbstractConfig $parentConfig = null): string
     {
         return $this->type;
@@ -26,7 +35,7 @@ class FunctionReturnConfig extends AbstractConfig
         return $node->returnType ? new (static::class)(type: self::getTypeName($node->returnType)) : null;
     }
 
-    public function toCode(?AbstractConfig $parentConfig): string
+    public function toCode(?AbstractConfig $parentConfig = null): string
     {
         return ($this->type ?? 'void');
     }

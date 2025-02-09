@@ -22,20 +22,28 @@ class CodeGenerator extends AbstractGenerator
 
     public function generate(string $inputText): string
     {
-        return $this->generateFromArray(Yaml::parse($inputText));
+        $configs = $this->generateConfigInstances($inputText);
+        $output = "<?php\n\n";
+
+        foreach ($configs as $config) {
+            $output .= $config->toCode() . PHP_EOL;
+        }
+        return $output;
     }
 
-    public function generateFromArray(array $pseudoCode): string
+    protected function generateConfigInstances(string $inputText): array
     {
-        $output = "<?php\n\n";
+        $data = Yaml::parse($inputText);
         $registry = $this->getConfigRegistry();
+        $instances = [];
 
-        foreach ($pseudoCode['items'] as $data) {
+        foreach ($data['items'] as $data) {
             if ($configClass = $registry->findMatchingConfigLoader($data)) {
-                $output .= $configClass->toCode() . PHP_EOL;
+                print_r(($configClass));
+                $instances[] = $configClass::fromConfig($data);
             }
         }
 
-        return $output;
+        return $instances;
     }
 }

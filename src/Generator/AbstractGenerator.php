@@ -6,6 +6,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Wexample\Helpers\Helper\FileHelper;
 use Wexample\Helpers\Helper\PathHelper;
 use Wexample\Helpers\Helper\TextHelper;
+use Wexample\Pseudocode\Config\AbstractConfig;
 
 abstract class AbstractGenerator
 {
@@ -67,4 +68,10 @@ abstract class AbstractGenerator
     abstract function getTargetFileExtension(): string;
 
     abstract function generate(string $inputText): string;
+
+    /**
+     * @param string $inputText
+     * @return AbstractConfig[]
+     */
+    abstract protected function generateConfigInstances(string $inputText): array;
 }
