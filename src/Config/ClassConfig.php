@@ -117,7 +117,7 @@ class ClassConfig extends AbstractConfig
             $output .= $method->toCode($this);
         }
 
-        $output .= "}\n";
+        $output .= "}";
 
         return $output;
     }
