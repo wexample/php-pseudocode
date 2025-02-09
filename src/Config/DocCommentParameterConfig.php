@@ -8,13 +8,14 @@ class DocCommentParameterConfig extends AbstractDocCommentParameterConfig
         string $type,
         string $description,
         private readonly string $name,
+        protected readonly bool $optional = false,
         ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
-            generator: $generator,
             type: $type,
             description: $description,
+            generator: $generator,
         );
     }
 
@@ -29,7 +30,7 @@ class DocCommentParameterConfig extends AbstractDocCommentParameterConfig
     {
         return $this->getIndentation($indentationLevel) . sprintf(
             " * @param %s $%s %s\n",
-            $this->type ?? 'mixed',
+                ($this->optional ? '?' : '') . $this->type ?? 'mixed',
             $this->name,
             $this->description ?? ''
         );

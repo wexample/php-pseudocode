@@ -28,7 +28,7 @@ class FunctionReturnConfig extends AbstractConfig
 
     public function toConfig(?AbstractConfig $parentConfig = null): array|string
     {
-        if (!$this->description) {
+        if (!$this->description || !$this->description->description) {
             return $this->type;
         }
 

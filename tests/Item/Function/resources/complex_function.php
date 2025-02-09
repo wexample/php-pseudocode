@@ -5,8 +5,8 @@
  *
  * @param array $data The data to process
  * @param array $config Optional configuration parameters
- * @param callable|null $callback Optional callback for custom processing
- * @return array The processed data
+ * @param ?callable $callback Optional callback for custom processing
+ * @return array
  */
 function processData(
     array $data,

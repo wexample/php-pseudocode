@@ -39,7 +39,27 @@ class DocCommentConfig extends AbstractConfig
     ): ?static
     {
         $data = static::unpackData($data);
-        $data['parameters'] = DocCommentParameterConfig::collectionFromConfig($data['parameters'] ?? [], $globalGeneratorConfig);
+
+        if (isset($data['parameters']) && is_array($data['parameters'])) {
+            // Extract only the allowed keys from each parameter array.
+            $filteredParameters = array_map(function (
+                $param
+            ) {
+                return [
+                    'name' => $param['name'] ?? null,
+                    'type' => $param['type'] ?? null,
+                    'description' => $param['description'] ?? null,
+                    'optional' => $param['optional'] ?? false,
+                ];
+            }, $data['parameters']);
+        } else {
+            $filteredParameters = [];
+        }
+
+        $data['parameters'] = DocCommentParameterConfig::collectionFromConfig(
+            $filteredParameters,
+            $globalGeneratorConfig
+        );
 
         if (isset($data['return'])) {
             $data['return'] = DocCommentReturnConfig::fromConfig($data['return']);

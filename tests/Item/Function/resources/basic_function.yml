@@ -9,4 +9,6 @@ items:
       - name: b
         type: int
         description: "The second operand."
-    return: int
+    return:
+      type: int
+      description: "The sum of the two numbers."

@@ -39,16 +39,36 @@ abstract class AbstractConfig
     {
         return false;
     }
-
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
         $data = static::unpackData($data);
 
         if (isset($data['generator']) || $globalGeneratorConfig) {
             $data['generator'] = GeneratorConfig::fromConfig($data['generator'] ?? null, $globalGeneratorConfig);
+        }
+
+        // Validate named parameters before calling the constructor
+        $reflectionClass = new \ReflectionClass(static::class);
+        $constructor = $reflectionClass->getConstructor();
+        if ($constructor) {
+            // Get the list of allowed parameter names from the constructor
+            $allowedParameters = [];
+            foreach ($constructor->getParameters() as $parameter) {
+                $allowedParameters[] = $parameter->getName();
+            }
+
+            // Identify any keys in $data that do not correspond to the expected parameters
+            $unknownParameters = array_diff(array_keys($data), $allowedParameters);
+            if (!empty($unknownParameters)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Error in class %s: Unknown named parameter(s) "%s". Allowed parameters: "%s".',
+                    static::class,
+                    implode('", "', $unknownParameters),
+                    implode('", "', $allowedParameters)
+                ));
+            }
         }
 
         return new static(...$data);

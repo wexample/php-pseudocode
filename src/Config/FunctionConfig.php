@@ -182,7 +182,7 @@ class FunctionConfig extends AbstractConfig
         }
 
         $output .= $indentation . "// TODO: Implement function body\n";
-        $output .= $this->getIndentation($indentationLevel - 1) . "}\n";
+        $output .= $this->getIndentation($indentationLevel - 1) . "}";
 
         return $output;
     }
