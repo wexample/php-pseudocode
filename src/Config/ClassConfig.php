@@ -101,23 +101,28 @@ class ClassConfig extends AbstractConfig
 
     public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
     {
-        $output = '';
+        $indentation = $this->getIndentation($indentationLevel);
+        $output = $indentation;
 
         if ($this->description) {
             $output .= $this->description->toCode($this);
         }
 
-        $output .= "class {$this->name}\n{\n";
+        $output .= $indentation . "class {$this->name}\n" . $indentation . "{\n";
 
         foreach ($this->properties as $property) {
-            $output .= $property->toCode($this);
+            $output .= $property->toCode($this, $indentationLevel + 1);
+        }
+
+        if (!empty($this->properties) && !empty($this->methods)) {
+            $output .= "\n";
         }
 
         foreach ($this->methods as $method) {
-            $output .= $method->toCode($this);
+            $output .= $method->toCode($this, $indentationLevel + 1);
         }
 
-        $output .= "}";
+        $output .= $indentation . "}\n";
 
         return $output;
     }

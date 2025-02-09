@@ -29,7 +29,7 @@ class FunctionConfig extends AbstractConfig
     )
     {
         parent::__construct(
-            generator:$generator
+            generator: $generator
         );
     }
 
@@ -65,7 +65,10 @@ class FunctionConfig extends AbstractConfig
         );
     }
 
-    public static function fromConfig(mixed $data, ?GeneratorConfig $globalGeneratorConfig = null): ?static
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
     {
         if (isset($data['description'])) {
             $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
@@ -108,13 +111,15 @@ class FunctionConfig extends AbstractConfig
         return $config;
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
+    public function toCode(
+        ?AbstractConfig $parentConfig = null,
+        int $indentationLevel = 0
+    ): string
     {
-        $indentation = $this->getIndentation($indentationLevel);
-        $output = $indentation;
+        $output = '';
 
         if ($this->description) {
-            $output .= $this->description->toCode();
+            $output .= $this->description->toCode($this, $indentationLevel);
         }
 
         $output .= $this->generateSignature($indentationLevel);
@@ -125,7 +130,8 @@ class FunctionConfig extends AbstractConfig
 
     protected function generateSignature(int $indentationLevel = 0): string
     {
-        $output = sprintf("function %s", $this->name);
+        $indentation = $this->getIndentation($indentationLevel);
+        $output = $indentation . sprintf("function %s", $this->name);
 
         if (empty($this->return)) {
             return $output . "(): " . ($this->return->toCode() ?? 'void') . "\n" . $this->getIndentation($indentationLevel) . "{\n";
@@ -138,7 +144,8 @@ class FunctionConfig extends AbstractConfig
             ) => $param->toCode(),
             $this->parameters
         );
-        $output .= implode(",\n" . $this->getIndentation($indentationLevel), $params);
+        $paramIndentation = $this->getIndentation($indentationLevel + 1);
+        $output .= "\n" . $paramIndentation . implode(",\n" . $paramIndentation, $params);
         $output .= "): " . ($this->return ? $this->return->toCode() : 'void') . "\n" . $this->getIndentation($indentationLevel) . "{\n";
 
         return $output;
@@ -148,10 +155,6 @@ class FunctionConfig extends AbstractConfig
     {
         $indentation = $this->getIndentation($indentationLevel);
         $output = '';
-
-        if ($this->description) {
-            $output .= $this->description->toCode($this);
-        }
 
         if ($this->implementationGuidelines) {
             foreach (explode("\n", $this->implementationGuidelines) as $line) {

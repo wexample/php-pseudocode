@@ -8,7 +8,10 @@
  * @param callable|null $callback Optional callback for custom processing
  * @return array The processed data
  */
-function processData(array $data, array $config = [], ?callable $callback = null): array
+function processData(
+    array $data,
+    array $config = [],
+    ?callable $callback = null): array
 {
     // TODO: Implement function body
 }

@@ -84,17 +84,19 @@ class DocCommentConfig extends AbstractConfig
         ?FunctionReturnConfig $return = null
     ): string
     {
-        $output = "/**\n * " . $this->description . "\n";
+        $indentation = $this->getIndentation($indentationLevel);
+
+        $output = $indentation . "/**\n" . $indentation . " * " . $this->description . "\n";
 
         foreach ($parameters as $parameter) {
-            $output .= $parameter->toCode($this);
+            $output .= $parameter->toCode($this, $indentationLevel);
         }
 
         if ($return) {
-            $output = $return->toCode($this);
+            $output .= $return->toCode($this, $indentationLevel);
         }
 
-        $output .= " */\n";
+        $output .= $indentation . " */\n";
         return $output;
     }
 }

@@ -27,7 +27,7 @@ class DocCommentParameterConfigConfig extends AbstractDocCommentParameterConfig
 
     public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
     {
-        return sprintf(
+        return $this->getIndentation($indentationLevel) . sprintf(
             " * @param %s $%s %s\n",
             $this->type ?? 'mixed',
             $this->name,

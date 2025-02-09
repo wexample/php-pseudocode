@@ -29,6 +29,6 @@ class ClassMethodConfig extends FunctionConfig
 
     protected function generateSignature(int $indentationLevel = 0): string
     {
-        return 'public ' . parent::generateSignature($indentationLevel);
+        return $this->getIndentation($indentationLevel) . 'public ' . ltrim(parent::generateSignature($indentationLevel));
     }
 }

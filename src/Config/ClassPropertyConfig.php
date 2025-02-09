@@ -69,19 +69,22 @@ class ClassPropertyConfig extends AbstractConfig
         return $config;
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
+    public function toCode(
+        ?AbstractConfig $parentConfig = null,
+        int $indentationLevel = 0
+    ): string
     {
         $output = '';
 
         if ($this->description) {
-            $output .= $this->description->toCode($this);
+            $output .= $this->description->toCode($this, $indentationLevel);
         }
 
         $default = $this->default !== ConfigEnum::NOT_PROVIDED
             ? " = " . $this->formatValue($this->default)
             : "";
 
-        $output .= "    private {$this->type} \${$this->name}{$default};\n\n";
+        $output .= $this->getIndentation($indentationLevel) . "private {$this->type} \${$this->name}{$default};\n\n";
 
         return $output;
     }

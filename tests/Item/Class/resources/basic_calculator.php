@@ -15,7 +15,9 @@ class Calculator
      * @param int $b The second operand.
      * @return int The sum of the two numbers.
      */
-    public function add(int $a, int $b): int
+    public function add(
+        int $a,
+        int $b): int
     {
         // TODO: Implement function body
     }

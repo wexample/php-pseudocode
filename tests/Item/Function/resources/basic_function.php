@@ -7,7 +7,9 @@
  * @param int $b The second operand.
  * @return int The sum of the two numbers.
  */
-function add(int $a, int $b): int
+function add(
+    int $a,
+    int $b): int
 {
     // TODO: Implement function body
 }
