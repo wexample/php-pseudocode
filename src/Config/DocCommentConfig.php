@@ -9,22 +9,19 @@ class DocCommentConfig extends AbstractConfig
     /**
      * @param string|null $description
      * @param DocCommentParameterConfig[] $parameters
+     * @param DocCommentReturnConfig|null $return
      * @param GeneratorConfig|null $generator
      */
     public function __construct(
         private readonly ?string $description = null,
         public array $parameters = [],
+        private readonly ?DocCommentReturnConfig $return = null,
         ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
             generator: $generator,
         );
-    }
-
-    public function addParameter(DocCommentParameterConfig $parameterConfig): void
-    {
-        $this->parameters[] = $parameterConfig;
     }
 
     protected static function unpackData(mixed $data): array
@@ -43,6 +40,10 @@ class DocCommentConfig extends AbstractConfig
     {
         $data = static::unpackData($data);
         $data['parameters'] = DocCommentParameterConfig::collectionFromConfig($data['parameters'] ?? [], $globalGeneratorConfig);
+
+        if (isset($data['return'])) {
+            $data['return'] = DocCommentReturnConfig::fromConfig($data['return']);
+        }
 
         return new static(...$data);
     }
@@ -91,7 +92,6 @@ class DocCommentConfig extends AbstractConfig
     /**
      * @param AbstractConfig|null $parentConfig
      * @param int $indentationLevel
-     * @param FunctionReturnConfig|null $return
      * @param string|null $prefix
      * @param bool $inlineBlock
      * @return string
@@ -99,7 +99,6 @@ class DocCommentConfig extends AbstractConfig
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0,
-        ?FunctionReturnConfig $return = null,
         ?string $prefix = null,
         bool $inlineBlock = false,
     ): string
@@ -117,8 +116,8 @@ class DocCommentConfig extends AbstractConfig
             $outputParameters .= $parameter->toCode($this, $indentationLevel);
         }
 
-        if ($return) {
-            $outputParameters .= $return->toCode($this, $indentationLevel);
+        if ($this->return) {
+            $outputParameters .= $this->return->toCode($this, $indentationLevel);
         }
 
         if ($outputParameters) {

@@ -40,7 +40,23 @@ class FunctionReturnConfig extends AbstractConfig
         ) : null;
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
+    {
+        $data = static::unpackData($data);
+
+        // Description is allowed but handled by comment configurations.
+        unset($data['description']);
+
+        return new static(...$data);
+    }
+
+    public function toCode(
+        ?AbstractConfig $parentConfig = null,
+        int $indentationLevel = 0
+    ): string
     {
         return ($this->type ?? 'void');
     }

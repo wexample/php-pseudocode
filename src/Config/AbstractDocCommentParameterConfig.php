@@ -8,12 +8,12 @@ abstract class AbstractDocCommentParameterConfig extends AbstractConfig
 {
     public function __construct(
         protected readonly string $type,
-        protected readonly string $description,
+        protected readonly ?string $description = null,
         ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
-            generator:$generator
+            generator: $generator
         );
     }
 

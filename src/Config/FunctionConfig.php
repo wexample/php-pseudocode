@@ -74,9 +74,17 @@ class FunctionConfig extends AbstractConfig
     ): ?static
     {
 
-        if (isset($data['description']) || $data['parameters']) {
+        if (isset($data['description']) || isset($data['parameters']) || isset($data['return'])) {
             $docData = DocCommentConfig::unpackData($data['description'] ?? []);
+
+            // Append parameters.
             $docData['parameters'] = $data['parameters'] ?? [];
+
+            // Append return.
+            if (isset($data['return'])) {
+                $docData['return'] = $data['return'];
+            }
+
             $data['description'] = DocCommentConfig::fromConfig($docData, $globalGeneratorConfig);
         }
 
