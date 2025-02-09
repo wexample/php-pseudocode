@@ -32,6 +32,12 @@ abstract class AbstractGeneratorTest extends TestCase
      */
     protected function assertConversion(string $filename): void
     {
+        // Create temp directory if not exists
+        $tempDir = sys_get_temp_dir() . '/pseudocode_tests';
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir);
+        }
+
         // Test PHP -> Pseudocode conversion
         $sourcePhp = $this->loadTestResource($filename . '.php');
         $actualPseudocodeData = $this->pseudocodeGenerator->generateConfigData($sourcePhp);
@@ -39,6 +45,16 @@ abstract class AbstractGeneratorTest extends TestCase
         $expectedYaml = $this->loadPseudocode($filename);
         $filteredExpected = $this->filterIgnoredKeys($expectedYaml);
         $filteredActual = $this->filterIgnoredKeys($actualPseudocodeData);
+
+        // Write YAML files
+        file_put_contents(
+            $tempDir . "/{$filename}_expected.yml",
+            Yaml::dump($filteredExpected, 4)
+        );
+        file_put_contents(
+            $tempDir . "/{$filename}_actual.yml",
+            Yaml::dump($filteredActual, 4)
+        );
 
         $this->assertArraysEqual(
             $filteredExpected,
@@ -52,14 +68,35 @@ abstract class AbstractGeneratorTest extends TestCase
             Yaml::dump($actualPseudocodeData)
         );
 
+        // Write PHP files
+        file_put_contents(
+            $tempDir . "/{$filename}_original.php",
+            $sourcePhp
+        );
+        file_put_contents(
+            $tempDir . "/{$filename}_regenerated.php",
+            $regeneratedPhp
+        );
+
         // Normalize both codes to compare them
         $normalizedOriginal = $this->normalizeCode($sourcePhp);
         $normalizedRegenerated = $this->normalizeCode($regeneratedPhp);
 
+        // Write normalized PHP files
+        file_put_contents(
+            $tempDir . "/{$filename}_original_normalized.php",
+            $normalizedOriginal
+        );
+        file_put_contents(
+            $tempDir . "/{$filename}_regenerated_normalized.php",
+            $normalizedRegenerated
+        );
+
         $this->assertEquals(
             $normalizedOriginal,
             $normalizedRegenerated,
-            "Pseudocode to PHP: Generated PHP code does not match original for {$filename}."
+            "Pseudocode to PHP: Generated PHP code does not match original for {$filename}.\n" .
+            "Files written to: {$tempDir}"
         );
     }
 
