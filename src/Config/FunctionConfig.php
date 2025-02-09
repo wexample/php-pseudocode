@@ -58,13 +58,15 @@ class FunctionConfig extends AbstractConfig
         }
 
         $docComment = DocCommentConfig::fromNode($node);
-        $docComment->parameters = ['coucou'];
+        $returnDescription = DocCommentParserHelper::extractReturnDescriptionFromNode($node);
 
         return new (static::class)(
             name: $node->name->toString(),
             description: $docComment,
             parameters: $parameters,
-            return: FunctionReturnConfig::fromNode($node)
+            return: FunctionReturnConfig::fromNode(
+                node:$node,
+                description:$returnDescription)
         );
     }
 

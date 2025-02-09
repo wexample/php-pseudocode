@@ -8,6 +8,7 @@ class FunctionReturnConfig extends AbstractConfig
 {
     public function __construct(
         protected readonly string $type,
+        protected readonly ?DocCommentReturnConfig $description = null,
         ?GeneratorConfig $generator = null,
     )
     {
@@ -25,19 +26,16 @@ class FunctionReturnConfig extends AbstractConfig
         return parent::unpackData($data);
     }
 
-    public function toConfig(?AbstractConfig $parentConfig = null): string
+    public function toConfig(?AbstractConfig $parentConfig = null): array|string
     {
-        return $this->type;
-    }
+        if (!$this->description) {
+            return $this->type;
+        }
 
-    public static function fromNode(
-        NodeAbstract $node,
-        ?string $inlineComment = null
-    ): ?static
-    {
-        return $node->returnType ? new static(
-            type: self::getTypeName($node->returnType)
-        ) : null;
+        return [
+            'type' => $this->type,
+            'description' => $this->description->description,
+        ];
     }
 
     public static function fromConfig(
@@ -47,10 +45,27 @@ class FunctionReturnConfig extends AbstractConfig
     {
         $data = static::unpackData($data);
 
-        // Description is allowed but handled by comment configurations.
-        unset($data['description']);
+        if (isset($data['description'])) {
+            $data['description'] = DocCommentReturnConfig::fromConfig($data['description'], $globalGeneratorConfig);
+        }
 
         return new static(...$data);
+    }
+
+    public static function fromNode(
+        NodeAbstract $node,
+        ?string $inlineComment = null,
+        ?DocCommentReturnConfig $description = null
+    ): ?static
+    {
+        if (!$node->returnType) {
+            return null;
+        }
+
+        return new static(
+            type: self::getTypeName($node->returnType),
+            description: $description
+        );
     }
 
     public function toCode(
