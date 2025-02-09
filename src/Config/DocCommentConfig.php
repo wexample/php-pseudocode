@@ -7,17 +7,24 @@ use PhpParser\NodeAbstract;
 class DocCommentConfig extends AbstractConfig
 {
     /**
-     * @param GeneratorConfig $generator
-     * @param string $description
+     * @param string|null $description
+     * @param DocCommentParameterConfig[] $parameters
+     * @param GeneratorConfig|null $generator
      */
     public function __construct(
-        private readonly string $description,
+        private readonly ?string $description = null,
+        public array $parameters = [],
         ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
             generator: $generator,
         );
+    }
+
+    public function addParameter(DocCommentParameterConfig $parameterConfig): void
+    {
+        $this->parameters[] = $parameterConfig;
     }
 
     protected static function unpackData(mixed $data): array
@@ -27,6 +34,17 @@ class DocCommentConfig extends AbstractConfig
         }
 
         return parent::unpackData($data);
+    }
+
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
+    {
+        $data = static::unpackData($data);
+        $data['parameters'] = DocCommentParameterConfig::collectionFromConfig($data['parameters'] ?? [], $globalGeneratorConfig);
+
+        return new static(...$data);
     }
 
     public static function fromNode(
@@ -94,11 +112,20 @@ class DocCommentConfig extends AbstractConfig
             . $this->description
             . (!$inlineBlock ? "\n" : ' ');
 
-        if ($return) {
-            $output .= $return->toCode($this, $indentationLevel);
+        $outputParameters = '';
+        foreach ($this->parameters as $parameter) {
+            $outputParameters .= $parameter->toCode($this, $indentationLevel);
         }
 
-        $output .= $indentation . " */\n";
+        if ($return) {
+            $outputParameters .= $return->toCode($this, $indentationLevel);
+        }
+
+        if ($outputParameters) {
+            $outputParameters = $indentation . " * " . "\n" . $outputParameters . "\n";
+        }
+
+        $output .= $outputParameters . $indentation . " */\n";
         return $output;
     }
 }

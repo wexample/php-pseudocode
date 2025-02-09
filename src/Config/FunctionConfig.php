@@ -57,9 +57,12 @@ class FunctionConfig extends AbstractConfig
             }
         }
 
+        $docComment = DocCommentConfig::fromNode($node);
+        $docComment->parameters = ['coucou'];
+
         return new (static::class)(
             name: $node->name->toString(),
-            description: DocCommentConfig::fromNode($node),
+            description: $docComment,
             parameters: $parameters,
             return: FunctionReturnConfig::fromNode($node)
         );
@@ -70,8 +73,11 @@ class FunctionConfig extends AbstractConfig
         ?GeneratorConfig $globalGeneratorConfig = null
     ): ?static
     {
-        if (isset($data['description'])) {
-            $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
+
+        if (isset($data['description']) || $data['parameters']) {
+            $docData = DocCommentConfig::unpackData($data['description'] ?? []);
+            $docData['parameters'] = $data['parameters'] ?? [];
+            $data['description'] = DocCommentConfig::fromConfig($docData, $globalGeneratorConfig);
         }
 
         if (isset($data['parameters'])) {

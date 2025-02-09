@@ -175,7 +175,10 @@ abstract class AbstractConfig
         return str_repeat('    ', $level);
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): ?string
+    public function toCode(
+        ?AbstractConfig $parentConfig = null,
+        int $indentationLevel = 0
+    ): ?string
     {
         return null;
     }
