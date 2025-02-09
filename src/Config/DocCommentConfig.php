@@ -73,24 +73,26 @@ class DocCommentConfig extends AbstractConfig
     /**
      * @param AbstractConfig|null $parentConfig
      * @param int $indentationLevel
-     * @param FunctionParameterConfig[] $parameters
      * @param FunctionReturnConfig|null $return
+     * @param string|null $prefix
+     * @param bool $inlineBlock
      * @return string
      */
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0,
-        array $parameters = [],
-        ?FunctionReturnConfig $return = null
+        ?FunctionReturnConfig $return = null,
+        ?string $prefix = null,
+        bool $inlineBlock = false,
     ): string
     {
         $indentation = $this->getIndentation($indentationLevel);
 
-        $output = $indentation . "/**\n" . $indentation . " * " . $this->description . "\n";
-
-        foreach ($parameters as $parameter) {
-            $output .= $parameter->toCode($this, $indentationLevel);
-        }
+        $output = $indentation . "/**"
+            . (!$inlineBlock ? "\n" . $indentation . " * " : ' ')
+            . $prefix
+            . $this->description
+            . (!$inlineBlock ? "\n" : ' ');
 
         if ($return) {
             $output .= $return->toCode($this, $indentationLevel);

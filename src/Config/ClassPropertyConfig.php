@@ -77,14 +77,19 @@ class ClassPropertyConfig extends AbstractConfig
         $output = '';
 
         if ($this->description) {
-            $output .= $this->description->toCode($this, $indentationLevel);
+            $output .= $this->description->toCode(
+                parentConfig: $this,
+                indentationLevel: $indentationLevel,
+                prefix: '@var ' . $this->type. ' ',
+                inlineBlock:true
+            );
         }
 
         $default = $this->default !== ConfigEnum::NOT_PROVIDED
             ? " = " . $this->formatValue($this->default)
             : "";
 
-        $output .= $this->getIndentation($indentationLevel) . "private {$this->type} \${$this->name}{$default};\n\n";
+        $output .= $this->getIndentation($indentationLevel) . "private {$this->type} \${$this->name}{$default};\n";
 
         return $output;
     }
