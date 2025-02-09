@@ -2,7 +2,7 @@
 
 namespace Wexample\Pseudocode\Config;
 
-class DocCommentParameterConfigConfig extends AbstractDocCommentParameterConfig
+class DocCommentParameterConfig extends AbstractDocCommentParameterConfig
 {
     public function __construct(
         string $type,
