@@ -9,12 +9,18 @@ use PhpParser\NodeAbstract;
 class ConstantConfig extends AbstractConfig
 {
     public function __construct(
-        private string $name,
-        private mixed $value,
-        private DocCommentConfig $description
+        private readonly string $name,
+        private readonly mixed $value,
+        private readonly DocCommentConfig $description,
+        protected readonly string $type = 'constant',
     )
     {
 
+    }
+
+    public static function canLoad(array $data): bool
+    {
+        return $data['type'] === 'constant';
     }
 
     public static function canParse(Node $node): bool
@@ -48,23 +54,32 @@ class ConstantConfig extends AbstractConfig
         );
     }
 
+    public static function fromConfig(mixed $data): ?static
+    {
+        if (isset($data['description'])) {
+            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+        }
+
+        return parent::fromConfig($data);
+    }
+
     public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         return [
-            'type' => 'constant',
+            'type' => $this->type,
             'name' => $this->name,
             'value' => $this->value,
             'description' => $this->description->toConfig()
         ];
     }
 
-    public function generateCode(): string
+    public function toCode(?AbstractConfig $parentConfig = null): string
     {
         return sprintf(
             "define('%s', %s); // %s\n",
             $this->name,
             $this->formatValue($this->value),
-            $this->description ?? ''
+            $this->description?->toCode()
         );
     }
 }

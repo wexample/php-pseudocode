@@ -102,7 +102,7 @@ abstract class AbstractConfig
     protected function formatValue(mixed $value): string
     {
         if (is_string($value)) {
-            return '"' . addslashes($value) . '"';
+            return "'" . addslashes($value) . "'";
         }
         if (is_bool($value)) {
             return $value ? 'true' : 'false';

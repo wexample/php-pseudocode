@@ -32,7 +32,6 @@ class FunctionConfig extends AbstractConfig
         return $node instanceof Node\Stmt\Function_;
     }
 
-
     public static function canLoad(array $data): bool
     {
         return $data['type'] === 'function';
