@@ -49,11 +49,11 @@ abstract class AbstractGeneratorTest extends TestCase
         // Write YAML files
         file_put_contents(
             $tempDir . "/{$filename}_expected.yml",
-            Yaml::dump($filteredExpected, 4)
+            PseudocodeGenerator::dumpPseudocode($filteredExpected)
         );
         file_put_contents(
             $tempDir . "/{$filename}_actual.yml",
-            Yaml::dump($filteredActual, 4)
+            PseudocodeGenerator::dumpPseudocode($filteredActual)
         );
 
         $this->assertArraysEqual(
@@ -65,7 +65,7 @@ abstract class AbstractGeneratorTest extends TestCase
 
         // Test Pseudocode -> PHP conversion
         $regeneratedPhp = $this->codeGenerator->generate(
-            Yaml::dump($actualPseudocodeData)
+            PseudocodeGenerator::dumpPseudocode($actualPseudocodeData)
         );
 
         // Write PHP files

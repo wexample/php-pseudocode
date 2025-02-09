@@ -2,47 +2,62 @@
 
 ## **Overview**
 
-The **Pseudocode Generator** is a tool that analyzes PHP code and generates a structured representation (in YAML) of its
-components, including:
+The **Pseudocode Generator** is a tool that analyzes PHP code and produces a structured YAML representation of its elements, including:
 
 - Classes and their methods
 - Functions
 - Constants
 
-The generator extracts not only the code structure but also any associated documentation, including PHPDoc comments and
-inline comments.
+In addition to extracting the code structure, it also gathers all related documentation, such as PHPDoc comments and inline annotations.
 
 ## **Key Technical Details**
 
-Le but du peudocode est de tirer des informations générales sur du code sans spécifier la technologie employée derrière.
-Une configuration extraite sur une entité doctrine pourrait être employée pour produire du code avec Prisma ou SQL
-Alchemy.
+The purpose of pseudocode is to extract general information about the code without being tied to any specific underlying technology. For example, a configuration generated from a Doctrine entity could be used to produce code for frameworks like Prisma or SQLAlchemy.
 
 ### Configuration Objects
 
-The system uses a chain of configuration objects to build the final representation:
+The system uses a chain of configuration objects to construct the final representation:
 
-- Each code element (class, property, function) has its own configuration class
-- Configuration objects can reference their parent context through the `parentConfig` parameter
-- The final output structure is built by recursively calling `toConfig()` on these objects
+- **Individual Configuration:** Each code element (such as a class, property, or function) is managed by its own configuration class.
+- **Contextual Reference:** Configuration objects can reference their parent context via the `parentConfig` parameter.
+- **Recursive Assembly:** The complete output structure is built by recursively calling the `toConfig()` method on these objects.
 
-### Ajouter une configuration
+### Testing
 
-- Définir la notation à prendre en compte, par exemple :
+- **Test Command:** The command to run tests within the container is stored in the `TEST_COMMAND_SINGLE_FAIL` variable in the `.wex/.env` file.
+- **Temporary Files:** During tests, generated files are saved in a temporary directory inside the container at `/tmp/pseudocode_tests`.
+  - **Access Outside the Container:** To access this directory from outside, create a symbolic link that points from `/tmp/pseudocode_tests` to your package directory.
 
-```php
-#[ORM\Id]
+For example, run the following commands:
+
+```bash
+rm -rf /tmp/pseudocode_tests/
+mkdir /var/www/html/vendor-local/wexample/pseudocode/tmp
+ln -s /var/www/html/vendor-local/wexample/pseudocode/tmp /tmp/pseudocode_tests
 ```
 
-- Définir la notation qui en résultera en pseudocode, par exemple:
+### Adding a Configuration
 
-```yaml
-item:
-  - name: ...
-    database:
-      primary: true
-```
+1. **Specify the Annotation:**  
+   Define the annotation to be recognized. For example:
+   ```php
+   #[ORM\Id]
+   ```
 
-- Ajouter un fichier de configuration dans `src/Config` qui servira a 
-  - parser le code pour en faire du pseudocode
-  - récupérer le pseudocode et en faire du code
+2. **Define the Pseudocode Output:**  
+   Determine the corresponding pseudocode format. For example:
+   ```yaml
+   item:
+     - name: ...
+       database:
+         primary: true
+   ```
+
+3. **Create the Configuration File:**  
+   Add a configuration file in the `src/Config` directory. This file should be responsible for:
+  - Parsing the code to generate pseudocode.
+  - Converting the pseudocode back into actual code.
+
+---
+
+This version should serve as a clear, concise, and accurate English rendition of the original text.

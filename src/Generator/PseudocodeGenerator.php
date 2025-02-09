@@ -43,7 +43,7 @@ class PseudocodeGenerator extends AbstractGenerator
         return ['items' => $itemsData];
     }
 
-    public function dumpItems(array $items): string
+    public static function dumpPseudocode(array $items): string
     {
         // Dump YAML with specific indentation
         $yaml = Yaml::dump(
@@ -58,7 +58,7 @@ class PseudocodeGenerator extends AbstractGenerator
 
     public function generate(string $inputText): string
     {
-        return $this->dumpItems(
+        return $this::dumpPseudocode(
             $this->generateConfigData($inputText)
         );
     }
