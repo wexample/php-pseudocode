@@ -72,12 +72,14 @@ class DocCommentConfig extends AbstractConfig
 
     /**
      * @param AbstractConfig|null $parentConfig
+     * @param int $indentationLevel
      * @param FunctionParameterConfig[] $parameters
      * @param FunctionReturnConfig|null $return
      * @return string
      */
     public function toCode(
         ?AbstractConfig $parentConfig = null,
+        int $indentationLevel = 0,
         array $parameters = [],
         ?FunctionReturnConfig $return = null
     ): string

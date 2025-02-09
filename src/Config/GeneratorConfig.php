@@ -41,7 +41,7 @@ class GeneratorConfig extends AbstractConfig
         return [];
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null): null
+    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): null
     {
         return null;
     }

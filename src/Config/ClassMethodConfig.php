@@ -27,8 +27,8 @@ class ClassMethodConfig extends FunctionConfig
         );
     }
 
-    protected function generateSignature(): string
+    protected function generateSignature(int $indentationLevel = 0): string
     {
-        return 'public ' . parent::generateSignature();
+        return 'public ' . parent::generateSignature($indentationLevel);
     }
 }

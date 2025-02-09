@@ -40,7 +40,7 @@ class FunctionReturnConfig extends AbstractConfig
         ) : null;
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null): string
+    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
     {
         return ($this->type ?? 'void');
     }

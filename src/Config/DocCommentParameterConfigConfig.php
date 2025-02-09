@@ -25,7 +25,7 @@ class DocCommentParameterConfigConfig extends AbstractDocCommentParameterConfig
             ] + parent::toConfig();
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null): string
+    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
     {
         return sprintf(
             " * @param %s $%s %s\n",

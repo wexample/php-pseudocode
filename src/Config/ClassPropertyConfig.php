@@ -69,7 +69,7 @@ class ClassPropertyConfig extends AbstractConfig
         return $config;
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null): string
+    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
     {
         $output = '';
 
