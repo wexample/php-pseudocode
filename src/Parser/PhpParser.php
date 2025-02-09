@@ -6,15 +6,20 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
+use Wexample\Pseudocode\Common\ConfigRegistry;
 use Wexample\Pseudocode\Config\AbstractConfig;
-use Wexample\Pseudocode\Config\ClassConfig;
-use Wexample\Pseudocode\Config\ConstantConfig;
-use Wexample\Pseudocode\Config\FunctionConfig;
 
 class PhpParser extends NodeVisitorAbstract
 {
     private array $items = [];
     private array $allInlineComments = [];
+
+    private ConfigRegistry $configRegistry;
+
+    public function __construct()
+    {
+        $this->configRegistry = new ConfigRegistry();
+    }
 
     /**
      * @param Node\Stmt[] $ast
@@ -81,15 +86,9 @@ class PhpParser extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        if ($node instanceof Node\Stmt\Class_) {
-            $this->items[] = ClassConfig::fromNode($node);
-        } elseif ($node instanceof Node\Stmt\Function_) {
-            $this->items[] = FunctionConfig::fromNode($node);
-        } elseif (
-            ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define')
-            or ($node instanceof Node\Stmt\Const_)) {
+        if ($configClass = $this->configRegistry->findMatchingConfig($node)) {
             $endLine = $node->getEndLine();
-            $this->items[] = ConstantConfig::fromNode(
+            $this->items[] = $configClass::fromNode(
                 $node,
                 $this->allInlineComments[$endLine] ?? null
             );

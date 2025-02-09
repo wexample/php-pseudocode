@@ -2,7 +2,7 @@
 
 namespace Wexample\Pseudocode\Config;
 
-use PhpParser\NodeAbstract;
+use PhpParser\Node;
 use Wexample\Pseudocode\Helper\DocCommentParserHelper;
 
 class FunctionConfig extends AbstractConfig
@@ -25,8 +25,13 @@ class FunctionConfig extends AbstractConfig
 
     }
 
+    public static function canParse(Node $node): bool
+    {
+        return $node instanceof Node\Stmt\Function_;
+    }
+
     public static function fromNode(
-        NodeAbstract $node,
+        Node $node,
         ?string $inlineComment = null
     ): ?static
     {

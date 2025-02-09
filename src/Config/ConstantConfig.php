@@ -2,6 +2,7 @@
 
 namespace Wexample\Pseudocode\Config;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\NodeAbstract;
 
@@ -14,6 +15,12 @@ class ConstantConfig extends AbstractConfig
     )
     {
 
+    }
+
+    public static function canParse(Node $node): bool
+    {
+        return ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define')
+            || ($node instanceof Node\Stmt\Const_);
     }
 
     public static function fromNode(

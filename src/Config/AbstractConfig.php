@@ -15,6 +15,14 @@ abstract class AbstractConfig
         ?string $inlineComment = null
     ): ?static;
 
+    /**
+     * Check if this config can parse the given node.
+     */
+    public static function canParse(Node $node): bool
+    {
+        return false;
+    }
+
     public static function fromData(array $data): ?static
     {
         return new static(...$data);

@@ -3,7 +3,6 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
-use PhpParser\NodeAbstract;
 
 class ClassConfig extends AbstractConfig
 {
@@ -23,8 +22,13 @@ class ClassConfig extends AbstractConfig
 
     }
 
+    public static function canParse(Node $node): bool
+    {
+        return $node instanceof Node\Stmt\Class_;
+    }
+
     public static function fromNode(
-        NodeAbstract $node,
+        Node $node,
         ?string $inlineComment = null
     ): ?static
     {
