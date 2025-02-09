@@ -5,24 +5,21 @@ namespace Wexample\Pseudocode\Tests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
-use Wexample\Pseudocode\Generator\AbstractGenerator;
-use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 use Wexample\Pseudocode\Config\AbstractConfig;
+use Wexample\Pseudocode\Generator\CodeGenerator;
+use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 
 abstract class AbstractGeneratorTest extends TestCase
 {
     use WithYamlTestCase;
 
-    protected AbstractGenerator $generator;
+    protected PseudocodeGenerator $pseudocodeGenerator;
+    protected CodeGenerator $codeGenerator;
 
     protected function setUp(): void
     {
-        $this->generator = $this->getGenerator();
-    }
-
-    protected function getGenerator(): PseudocodeGenerator
-    {
-        return new PseudocodeGenerator();
+        $this->pseudocodeGenerator = new PseudocodeGenerator();
+        $this->codeGenerator = new CodeGenerator();
     }
 
     /**
@@ -36,13 +33,12 @@ abstract class AbstractGeneratorTest extends TestCase
     protected function assertConversion(string $filename): void
     {
         // Test PHP -> Pseudocode conversion
-        $generator = $this->getGenerator();
         $sourcePhp = $this->loadTestResource($filename . '.php');
-        $actualPseudocode = $generator->generateConfigData($sourcePhp);
+        $actualPseudocodeData = $this->pseudocodeGenerator->generateConfigData($sourcePhp);
 
         $expectedYaml = $this->loadPseudocode($filename);
         $filteredExpected = $this->filterIgnoredKeys($expectedYaml);
-        $filteredActual = $this->filterIgnoredKeys($actualPseudocode);
+        $filteredActual = $this->filterIgnoredKeys($actualPseudocodeData);
 
         $this->assertArraysEqual(
             $filteredExpected,
@@ -52,9 +48,7 @@ abstract class AbstractGeneratorTest extends TestCase
         );
 
         // Test Pseudocode -> PHP conversion
-        $configClass = $this->getItemType();
-        $config = $configClass::fromConfig($actualPseudocode);
-        $regeneratedPhp = $config->toCode();
+        $regeneratedPhp = $this->codeGenerator->generateFromArray($actualPseudocodeData);
 
         // Normalize both codes to compare them
         $normalizedOriginal = $this->normalizeCode($sourcePhp);
@@ -75,13 +69,13 @@ abstract class AbstractGeneratorTest extends TestCase
         // Remove comments
         $code = preg_replace('/\/\*.*?\*\//s', '', $code);
         $code = preg_replace('/\/\/.*$/m', '', $code);
-        
+
         // Split into lines
         $lines = explode("\n", $code);
-        
+
         // Remove empty lines and trim each line
         $lines = array_filter(array_map('trim', $lines));
-        
+
         // Rejoin and normalize whitespace
         return preg_replace('/\s+/', ' ', implode("\n", $lines));
     }

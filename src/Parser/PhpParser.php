@@ -6,20 +6,15 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
-use Wexample\Pseudocode\Common\ConfigRegistry;
+use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
 use Wexample\Pseudocode\Config\AbstractConfig;
 
 class PhpParser extends NodeVisitorAbstract
 {
+    use WithConfigRegistry;
+
     private array $items = [];
     private array $allInlineComments = [];
-
-    private ConfigRegistry $configRegistry;
-
-    public function __construct()
-    {
-        $this->configRegistry = new ConfigRegistry();
-    }
 
     /**
      * @param Node\Stmt[] $ast
@@ -86,7 +81,9 @@ class PhpParser extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        if ($configClass = $this->configRegistry->findMatchingConfig($node)) {
+        $registry = $this->getConfigRegistry();
+
+        if ($configClass = $registry->findMatchingNodeParser($node)) {
             $endLine = $node->getEndLine();
             $this->items[] = $configClass::fromNode(
                 $node,

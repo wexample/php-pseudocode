@@ -16,6 +16,16 @@ abstract class AbstractConfig
     ): ?static;
 
     /**
+     * Check if this config can load the given config value.
+     */
+    public static function canLoad(
+        array $data
+    ): bool
+    {
+        return false;
+    }
+
+    /**
      * Check if this config can parse the given node.
      */
     public static function canParse(Node $node): bool

@@ -51,10 +51,10 @@ class PseudocodeGenerator extends AbstractGenerator
         return preg_replace('/^(\s+)-\n\s+/m', '$1- ', $yaml);
     }
 
-    public function generate(string $pseudocode): string
+    public function generate(string $inputText): string
     {
         return $this->dumpItems(
-            $this->generateConfigData($pseudocode)
+            $this->generateConfigData($inputText)
         );
     }
 }

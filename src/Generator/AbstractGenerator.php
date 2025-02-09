@@ -66,5 +66,5 @@ abstract class AbstractGenerator
 
     abstract function getTargetFileExtension(): string;
 
-    abstract function generate(string $pseudocode): string;
+    abstract function generate(string $inputText): string;
 }

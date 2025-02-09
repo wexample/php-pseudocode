@@ -4,9 +4,12 @@ namespace Wexample\Pseudocode\Generator;
 
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Helpers\Helper\FileHelper;
+use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
 
 class CodeGenerator extends AbstractGenerator
 {
+    use WithConfigRegistry;
+
     public function getSourceFileExtension(): string
     {
         return FileHelper::FILE_EXTENSION_YML;
@@ -17,24 +20,20 @@ class CodeGenerator extends AbstractGenerator
         return FileHelper::FILE_EXTENSION_PHP;
     }
 
-    public function generate(string $pseudocode): string
+    public function generate(string $inputText): string
     {
-        $pseudoCode = Yaml::parse($pseudocode);
+        return $this->generateFromArray(Yaml::parse($inputText));
+    }
 
-        if ($pseudoCode === null) {
-            throw new \RuntimeException('No code structure loaded.');
-        }
-
+    public function generateFromArray(array $pseudoCode): string
+    {
         $output = "<?php\n\n";
+        $registry = $this->getConfigRegistry();
 
-        foreach ($pseudoCode['items'] as $itemData) {
-            if (!isset($itemData['type'])) {
-                continue;
+        foreach ($pseudoCode['items'] as $data) {
+            if ($configClass = $registry->findMatchingConfigLoader($data)) {
+                $output .= $configClass->toCode() . PHP_EOL;
             }
-
-
-            $item = $this->itemFactory->createFromArray($itemData);
-            $output .= $item->generateCode() . "\n";
         }
 
         return $output;
