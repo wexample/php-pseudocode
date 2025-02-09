@@ -76,12 +76,14 @@ class ConstantConfig extends AbstractConfig
         ];
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null): string
+    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
     {
+        $indentation = str_repeat('    ', $indentationLevel);
         return sprintf(
             $this->generator && $this->generator->constantDeclaration === 'define'
-                ? "define('%s', %s); // %s\n"
-                : "const %s = %s; // %s\n",
+                ? "%sdefine('%s', %s); // %s\n"
+                : "%sconst %s = %s; // %s\n",
+            $indentation,
             $this->name,
             $this->formatValue($this->value),
             $this->description?->toCode() ?? ''
