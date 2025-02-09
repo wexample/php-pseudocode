@@ -6,10 +6,13 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Helpers\Helper\FileHelper;
 use Wexample\Helpers\Helper\TextHelper;
+use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
 use Wexample\Pseudocode\Parser\PhpParser;
 
 class PseudocodeGenerator extends AbstractGenerator
 {
+    use WithConfigRegistry;
+
     public function getSourceFileExtension(): string
     {
         return FileHelper::FILE_EXTENSION_PHP;

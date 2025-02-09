@@ -8,6 +8,11 @@ trait WithConfigRegistry
 {
     private ?ConfigRegistry $configRegistry = null;
 
+    protected function getConfigRegistryClass(): string
+    {
+        return ConfigRegistry::class;
+    }
+
     protected function getConfigRegistry(): ConfigRegistry
     {
         if (!$this->configRegistry) {
