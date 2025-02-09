@@ -105,7 +105,7 @@ class FunctionConfig extends AbstractConfig
         return $config;
     }
 
-    public function generateCode(): string
+    public function toCode(?AbstractConfig $parentConfig = null): string
     {
         $output = '';
 
@@ -121,25 +121,21 @@ class FunctionConfig extends AbstractConfig
 
     private function generateSignature(): string
     {
-        $output = sprintf("function %s", $this->name);
+        $output = sprintf("public function %s", $this->name);
 
         if (empty($this->return)) {
             return $output . "(): " . ($this->return->toCode() ?? 'void') . "\n{\n";
         }
 
-        $output .= "(\n";
+        $output .= "(";
         $params = array_map(
             fn(
-                $param
-            ) => sprintf(
-                '    %s$%s',
-                isset($param['type']) ? $param['type'] . ' ' : '',
-                $param['name']
-            ),
+                FunctionParameterConfig $param
+            ) => $param->toCode(),
             $this->parameters
         );
         $output .= implode(",\n", $params);
-        $output .= "\n): " . ($this->returnType ?? 'void') . "\n{\n";
+        $output .= "): " . ($this->return ? $this->return->toCode() : 'void') . "\n{\n";
 
         return $output;
     }
