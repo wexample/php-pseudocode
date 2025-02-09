@@ -15,6 +15,15 @@ class FunctionParameterConfig extends AbstractConfig
 
     }
 
+    public static function fromConfig(mixed $data): ?static
+    {
+        if (isset($data['description'])) {
+            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+        }
+
+        return parent::fromConfig($data);
+    }
+
     public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null
@@ -35,5 +44,10 @@ class FunctionParameterConfig extends AbstractConfig
         }
 
         return $config;
+    }
+
+    public function toCode(?AbstractConfig $parentConfig = null): string
+    {
+        return $this->type . ' $' . $this->name;
     }
 }
