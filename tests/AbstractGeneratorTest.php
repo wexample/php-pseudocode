@@ -8,10 +8,13 @@ use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Config\AbstractConfig;
 use Wexample\Pseudocode\Generator\CodeGenerator;
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
+use Wexample\Pseudocode\Testing\CodeToPseudocodeTestTrait;
+use Wexample\Pseudocode\Testing\PseudocodeToCodeTestTrait;
 
 abstract class AbstractGeneratorTest extends TestCase
 {
-    use WithYamlTestCase;
+    use CodeToPseudocodeTestTrait;
+    use PseudocodeToCodeTestTrait;
 
     protected PseudocodeGenerator $pseudocodeGenerator;
     protected CodeGenerator $codeGenerator;
@@ -28,78 +31,15 @@ abstract class AbstractGeneratorTest extends TestCase
     abstract protected function getItemType(): string;
 
     /**
-     * Helper method to test file conversion
+     * Helper method to assert arrays are equal
      */
-    protected function assertConversion(string $filename): void
+    protected function assertArraysEqual(
+        array $expected,
+        array $actual,
+        string $message = ''
+    ): void
     {
-        // Create temp directory if not exists
-        $tempDir = sys_get_temp_dir() . '/pseudocode_tests';
-        if (!is_dir($tempDir)) {
-            mkdir($tempDir);
-        }
-
-        // Test PHP -> Pseudocode conversion
-        $sourcePhp = $this->loadTestResource($filename . '.php');
-        $actualPseudocodeData = $this->pseudocodeGenerator->generateConfigData($sourcePhp);
-
-        $expectedYaml = $this->loadPseudocode($filename);
-        $filteredExpected = $this->filterIgnoredKeys(['items' => $expectedYaml['items']]);
-        $filteredActual = $this->filterIgnoredKeys($actualPseudocodeData);
-
-        // Write YAML files
-        file_put_contents(
-            $tempDir . "/{$filename}_expected.yml",
-            PseudocodeGenerator::dumpPseudocode($filteredExpected)
-        );
-        file_put_contents(
-            $tempDir . "/{$filename}_actual.yml",
-            PseudocodeGenerator::dumpPseudocode($filteredActual)
-        );
-
-        $this->assertArraysEqual(
-            $filteredExpected,
-            $filteredActual,
-            "PHP to Pseudocode: Generated pseudocode does not match expected output for {$filename}.\n" .
-            "Expected:\n" . json_encode($filteredExpected, JSON_PRETTY_PRINT) . "\n"
-        );
-
-        // Test Pseudocode -> PHP conversion
-        // We use the test yaml instead of the generated one to allow passing
-        // custom generator configuration which can't be generated from code.
-        $regeneratedPhp = $this->codeGenerator->generate(
-            PseudocodeGenerator::dumpPseudocode($expectedYaml)
-        );
-
-        // Write PHP files
-        file_put_contents(
-            $tempDir . "/{$filename}_original.php",
-            $sourcePhp
-        );
-        file_put_contents(
-            $tempDir . "/{$filename}_regenerated.php",
-            $regeneratedPhp
-        );
-
-        // Normalize both codes to compare them
-        $normalizedOriginal = $this->normalizeCode($sourcePhp);
-        $normalizedRegenerated = $this->normalizeCode($regeneratedPhp);
-
-        // Write normalized PHP files
-        file_put_contents(
-            $tempDir . "/{$filename}_original_normalized.php",
-            $normalizedOriginal
-        );
-        file_put_contents(
-            $tempDir . "/{$filename}_regenerated_normalized.php",
-            $normalizedRegenerated
-        );
-
-        $this->assertEquals(
-            $normalizedOriginal,
-            $normalizedRegenerated,
-            "Pseudocode to PHP: Generated PHP code does not match original for {$filename}.\n" .
-            "Files written to: {$tempDir}"
-        );
+        $this->assertEquals($expected, $actual, $message);
     }
 
     /**

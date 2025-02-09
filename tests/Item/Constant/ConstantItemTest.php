@@ -18,16 +18,32 @@ class ConstantItemTest extends AbstractGeneratorTest
     /**
      * Test conversion of constants defined using define()
      */
-    public function testDefineConstantConversion(): void
+    public function testDefineConstantToPseudocode(): void
     {
-        $this->assertConversion('constant_using_define');
+        $this->assertCodeToPseudocode('constant_using_define');
     }
 
     /**
      * Test conversion of constants defined using const keyword
      */
-    public function testConstKeywordConversion(): void
+    public function testConstKeywordPseudocode(): void
     {
-        $this->assertConversion('constant_using_const');
+        $this->assertCodeToPseudocode('constant_using_const');
+    }
+
+    /**
+     * Test conversion of constants defined using define()
+     */
+    public function testDefineConstantToCode(): void
+    {
+        $this->assertPseudocodeToCode('constant_using_define');
+    }
+
+    /**
+     * Test conversion of constants defined using const keyword
+     */
+    public function testConstKeywordToCode(): void
+    {
+        $this->assertPseudocodeToCode('constant_using_const');
     }
 }

@@ -24,16 +24,32 @@ class FunctionItemTest extends AbstractGeneratorTest
     /**
      * Test conversion of a basic function with parameters and return type
      */
-    public function testBasicFunctionConversion(): void
+    public function testBasicFunctionToPseudocode(): void
     {
-        $this->assertConversion('basic_function');
+        $this->assertCodeToPseudocode('basic_function');
     }
 
     /**
      * Test conversion of a function with complex parameters and PHPDoc
      */
-    public function testComplexFunctionConversion(): void
+    public function testComplexFunctionToPseudocode(): void
     {
-        $this->assertConversion('complex_function');
+        $this->assertCodeToPseudocode('complex_function');
+    }
+
+    /**
+     * Test conversion of a basic function with parameters and return type
+     */
+    public function testBasicFunctionToCode(): void
+    {
+        $this->assertPseudocodeToCode('basic_function');
+    }
+
+    /**
+     * Test conversion of a function with complex parameters and PHPDoc
+     */
+    public function testComplexFunctionToCode(): void
+    {
+        $this->assertPseudocodeToCode('complex_function');
     }
 }

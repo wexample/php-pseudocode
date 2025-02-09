@@ -18,8 +18,16 @@ class ClassItemTest extends AbstractGeneratorTest
     /**
      * Test conversion of a basic class with properties and methods
      */
-    public function testBasicClassConversion(): void
+    public function testBasicClassToPseudocode(): void
     {
-        $this->assertConversion('basic_calculator');
+        $this->assertCodeToPseudocode('basic_calculator');
+    }
+
+    /**
+     * Test conversion of a basic class with properties and methods
+     */
+    public function testBasicClassToCode(): void
+    {
+        $this->assertPseudocodeToCode('basic_calculator');
     }
 }
