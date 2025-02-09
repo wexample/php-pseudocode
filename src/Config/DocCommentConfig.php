@@ -110,41 +110,67 @@ class DocCommentConfig extends AbstractConfig
     }
 
     /**
+     * Generates the doc comment code in various formats.
+     *
+     * Allowed formats:
+     * - "block": Standard multi-line block format
+     * - "inlineBlock": Single-line inline block format
+     * - "inline": Alternative format (e.g. using single-line comments)
+     *
      * @param AbstractConfig|null $parentConfig
      * @param int $indentationLevel
      * @param string|null $prefix
-     * @param bool $inlineBlock
+     * @param string $format
      * @return string
      */
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0,
         ?string $prefix = null,
-        bool $inlineBlock = false,
+        string $format = 'block'
     ): string
     {
         $indentation = $this->getIndentation($indentationLevel);
+        // Prepare the base description with an optional prefix.
+        $description = ($prefix ?? '') . $this->description;
 
-        $output = $indentation . "/**"
-            . (!$inlineBlock ? "\n" . $indentation . " * " : ' ')
-            . $prefix
-            . $this->description
-            . (!$inlineBlock ? "\n" : ' ');
-
-        $outputParameters = '';
+        // Process parameters and return parts.
+        $parametersOutput = '';
         foreach ($this->parameters as $parameter) {
-            $outputParameters .= $parameter->toCode($this, $indentationLevel);
+            $parametersOutput .= $parameter->toCode($this, $indentationLevel);
         }
-
         if ($this->return) {
-            $outputParameters .= $this->return->toCode($this, $indentationLevel);
+            $parametersOutput .= $this->return->toCode($this, $indentationLevel);
         }
 
-        if ($outputParameters) {
-            $outputParameters = $indentation . " * " . "\n" . $outputParameters . "\n";
+        // Build the output according to the requested format.
+        switch ($format) {
+            case 'block':
+                $output = $indentation . "/**\n"
+                    . $indentation . " * " . $description . "\n";
+                if ($parametersOutput) {
+                    $output .= $indentation . " *\n" . $parametersOutput . "\n";
+                }
+                $output .= $indentation . " */";
+                break;
+
+            case 'inlineBlock':
+                // Remove newlines and extra spaces for an inline comment.
+                $paramsInline = $parametersOutput ? ' ' . trim(str_replace("\n", " ", $parametersOutput)) : '';
+                $output = $indentation . "/** " . $description . $paramsInline . " */";
+                break;
+
+            case 'inline':
+                // Example for an alternative format: using single-line comments.
+                $paramsInline = $parametersOutput ? ' ' . trim(str_replace("\n", " ", $parametersOutput)) : '';
+                $output = $indentation . "// " . $description . $paramsInline;
+                break;
+
+            default:
+                throw new \InvalidArgumentException("Unsupported docstring format: {$format}");
         }
 
-        $output .= $outputParameters . $indentation . " */\n";
         return $output;
     }
+
 }

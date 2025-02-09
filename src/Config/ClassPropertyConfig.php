@@ -81,7 +81,7 @@ class ClassPropertyConfig extends AbstractConfig
                 parentConfig: $this,
                 indentationLevel: $indentationLevel,
                 prefix: '@var ' . $this->type. ' ',
-                inlineBlock:true
+                format: 'inlineBlock'
             );
         }
 

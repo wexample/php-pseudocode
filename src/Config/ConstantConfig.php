@@ -57,7 +57,10 @@ class ConstantConfig extends AbstractConfig
         );
     }
 
-    public static function fromConfig(mixed $data, ?GeneratorConfig $globalGeneratorConfig = null): ?static
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
     {
         if (isset($data['description'])) {
             $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
@@ -76,17 +79,31 @@ class ConstantConfig extends AbstractConfig
         ];
     }
 
-    public function toCode(?AbstractConfig $parentConfig = null, int $indentationLevel = 0): string
+    public function toCode(
+        ?AbstractConfig $parentConfig = null,
+        int $indentationLevel = 0
+    ): string
     {
         $indentation = $this->getIndentation($indentationLevel);
-        return sprintf(
-            $this->generator && $this->generator->constantDeclaration === 'define'
-                ? "%sdefine('%s', %s); // %s\n"
-                : "%sconst %s = %s; // %s\n",
-            $indentation,
-            $this->name,
-            $this->formatValue($this->value),
-            $this->description?->toCode() ?? ''
-        );
+        $descriptionCode = $this->description?->toCode(format: 'inline');
+        $descriptionCode = $descriptionCode !== '' ? ' ' . $descriptionCode : '';
+
+        if ($this->generator && $this->generator->constantDeclaration === 'define') {
+            return $indentation
+                . "define('"
+                . $this->name
+                . "', "
+                . $this->formatValue($this->value)
+                . ");"
+                . $descriptionCode;
+        } else {
+            return $indentation
+                . "const "
+                . $this->name
+                . " = "
+                . $this->formatValue($this->value)
+                . ";"
+                . $descriptionCode;
+        }
     }
 }

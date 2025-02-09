@@ -18,7 +18,7 @@ class ConstantItemTest extends AbstractGeneratorTest
     /**
      * Test conversion of constants defined using define()
      */
-    public function testDefineConstantToPseudocode(): void
+    public function testConstantDefineToPseudocode(): void
     {
         $this->assertCodeToPseudocode('constant_using_define');
     }
@@ -26,7 +26,7 @@ class ConstantItemTest extends AbstractGeneratorTest
     /**
      * Test conversion of constants defined using const keyword
      */
-    public function testConstKeywordPseudocode(): void
+    public function testConstantConstKeywordPseudocode(): void
     {
         $this->assertCodeToPseudocode('constant_using_const');
     }
@@ -34,7 +34,7 @@ class ConstantItemTest extends AbstractGeneratorTest
     /**
      * Test conversion of constants defined using define()
      */
-    public function testDefineConstantToCode(): void
+    public function testConstantDefineToCode(): void
     {
         $this->assertPseudocodeToCode('constant_using_define');
     }
@@ -42,7 +42,7 @@ class ConstantItemTest extends AbstractGeneratorTest
     /**
      * Test conversion of constants defined using const keyword
      */
-    public function testConstKeywordToCode(): void
+    public function testConstantConstKeywordToCode(): void
     {
         $this->assertPseudocodeToCode('constant_using_const');
     }
