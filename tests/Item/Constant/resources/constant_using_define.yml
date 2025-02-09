@@ -1,3 +1,7 @@
+generator:
+  php:
+    constantDeclaration: "define"
+
 items:
   - type: constant
     name: PI
@@ -7,3 +11,6 @@ items:
     name: DEFAULT_GREETING
     value: "Hello, World!"
     description: "Default greeting message."
+    generator:
+      php:
+        constantDeclaration: "const"

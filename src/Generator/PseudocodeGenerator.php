@@ -25,7 +25,7 @@ class PseudocodeGenerator extends AbstractGenerator
         return TextHelper::toSnake($file->getFilename());
     }
 
-    protected function generateConfigInstances(string $inputText): array
+    protected function generateConfig(string $inputText): array
     {
         $phpParser = new PhpParser();
         return $phpParser->parse($inputText);
@@ -33,7 +33,7 @@ class PseudocodeGenerator extends AbstractGenerator
 
     public function generateConfigData(string $code): array
     {
-        $items = $this->generateConfigInstances($code);
+        $items = $this->generateConfig($code);
         $itemsData = [];
 
         foreach ($items as $item) {

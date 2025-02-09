@@ -7,7 +7,7 @@ use PhpParser\Node;
 class ClassConfig extends AbstractConfig
 {
     /**
-     * @param array $generator
+     * @param GeneratorConfig $generator
      * @param string $name
      * @param ClassPropertyConfig[] $properties
      * @param ClassMethodConfig[] $methods
@@ -20,7 +20,7 @@ class ClassConfig extends AbstractConfig
         protected readonly array $methods,
         protected readonly ?DocCommentConfig $description = null,
         protected readonly string $type = 'class',
-        array $generator = [],
+        ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
@@ -38,16 +38,19 @@ class ClassConfig extends AbstractConfig
         return $data['type'] === 'class';
     }
 
-    public static function fromConfig(mixed $data): ?static
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
     {
         if (isset($data['description'])) {
-            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+            $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
         }
 
-        $data['properties'] = ClassPropertyConfig::collectionFromConfig($data['properties'] ?? []);
-        $data['methods'] = ClassMethodConfig::collectionFromConfig($data['methods'] ?? []);
+        $data['properties'] = ClassPropertyConfig::collectionFromConfig($data['properties'] ?? [], $globalGeneratorConfig);
+        $data['methods'] = ClassMethodConfig::collectionFromConfig($data['methods'] ?? [], $globalGeneratorConfig);
 
-        return parent::fromConfig($data);
+        return parent::fromConfig($data, $globalGeneratorConfig);
     }
 
     public static function fromNode(

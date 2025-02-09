@@ -5,6 +5,7 @@ namespace Wexample\Pseudocode\Generator;
 use Symfony\Component\Yaml\Yaml;
 use Wexample\Helpers\Helper\FileHelper;
 use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
+use Wexample\Pseudocode\Config\GeneratorConfig;
 
 class CodeGenerator extends AbstractGenerator
 {
@@ -22,7 +23,7 @@ class CodeGenerator extends AbstractGenerator
 
     public function generate(string $inputText): string
     {
-        $configs = $this->generateConfigInstances($inputText);
+        $configs = $this->generateConfig($inputText);
         $output = "<?php\n\n";
 
         foreach ($configs as $config) {
@@ -31,16 +32,24 @@ class CodeGenerator extends AbstractGenerator
         return $output;
     }
 
-    protected function generateConfigInstances(string $inputText): array
+    protected function generateConfig(string $inputText): array
     {
         $data = Yaml::parse($inputText);
         $registry = $this->getConfigRegistry();
         $instances = [];
 
+        $globalGeneratorConfig = null;
+        if (isset($data['generator'])) {
+            $globalGeneratorConfig = GeneratorConfig::fromConfig($data['generator']);
+        }
+
         foreach ($data['items'] as $data) {
             if ($configClass = $registry->findMatchingConfigLoader($data)) {
-                print_r(($configClass));
-                $instances[] = $configClass::fromConfig($data);
+                print($configClass . ' : ');
+                $instances[] = $configClass::fromConfig(
+                    $data,
+                    $globalGeneratorConfig
+                );
             }
         }
 

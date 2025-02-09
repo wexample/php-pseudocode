@@ -7,14 +7,16 @@ use Wexample\Pseudocode\Helper\DocCommentParserHelper;
 
 class FunctionConfig extends AbstractConfig
 {
+    public const TYPE = 'function';
+
     /**
-     * @param array $generator
      * @param string $name
      * @param ?DocCommentConfig $description
      * @param FunctionParameterConfig[] $parameters
      * @param FunctionReturnConfig|null $return
      * @param string|null $implementationGuidelines
      * @param string $type
+     * @param GeneratorConfig|null $generator
      */
     public function __construct(
         protected readonly string $name,
@@ -22,8 +24,8 @@ class FunctionConfig extends AbstractConfig
         protected readonly array $parameters = [],
         protected readonly ?FunctionReturnConfig $return = null,
         protected ?string $implementationGuidelines = null,
-        protected readonly string $type = 'function',
-        array $generator = [],
+        protected readonly string $type = self::TYPE,
+        ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
@@ -38,7 +40,7 @@ class FunctionConfig extends AbstractConfig
 
     public static function canLoad(array $data): bool
     {
-        return $data['type'] === 'function';
+        return $data['type'] === self::TYPE;
     }
 
     public static function fromNode(
@@ -65,18 +67,18 @@ class FunctionConfig extends AbstractConfig
         );
     }
 
-    public static function fromConfig(mixed $data): ?static
+    public static function fromConfig(mixed $data, ?GeneratorConfig $globalGeneratorConfig = null): ?static
     {
         if (isset($data['description'])) {
-            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+            $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
         }
 
         if (isset($data['parameters'])) {
-            $data['parameters'] = FunctionParameterConfig::collectionFromConfig($data['parameters']);
+            $data['parameters'] = FunctionParameterConfig::collectionFromConfig($data['parameters'], $globalGeneratorConfig);
         }
 
         if (isset($data['return'])) {
-            $data['return'] = FunctionReturnConfig::fromConfig($data['return']);
+            $data['return'] = FunctionReturnConfig::fromConfig($data['return'], $globalGeneratorConfig);
         }
 
         return parent::fromConfig($data);
@@ -85,7 +87,7 @@ class FunctionConfig extends AbstractConfig
     public function toConfig(?AbstractConfig $parentConfig = null): array
     {
         $config = [
-            'type' => 'function',
+            'type' => $this->type,
             'name' => $this->name,
         ];
 
@@ -122,9 +124,9 @@ class FunctionConfig extends AbstractConfig
         return $output;
     }
 
-    private function generateSignature(): string
+    protected function generateSignature(): string
     {
-        $output = sprintf("public function %s", $this->name);
+        $output = sprintf("function %s", $this->name);
 
         if (empty($this->return)) {
             return $output . "(): " . ($this->return->toCode() ?? 'void') . "\n{\n";

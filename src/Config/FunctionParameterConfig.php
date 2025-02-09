@@ -10,7 +10,7 @@ class FunctionParameterConfig extends AbstractConfig
         protected readonly string $type,
         protected readonly string $name,
         protected readonly ?DocCommentConfig $description = null,
-        array $generator = [],
+        ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
@@ -18,10 +18,13 @@ class FunctionParameterConfig extends AbstractConfig
         );
     }
 
-    public static function fromConfig(mixed $data): ?static
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
     {
         if (isset($data['description'])) {
-            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+            $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
         }
 
         return parent::fromConfig($data);

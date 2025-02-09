@@ -7,12 +7,12 @@ use PhpParser\NodeAbstract;
 class DocCommentConfig extends AbstractConfig
 {
     /**
-     * @param array $generator
+     * @param GeneratorConfig $generator
      * @param string $description
      */
     public function __construct(
         private readonly string $description,
-        array $generator = [],
+        ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(

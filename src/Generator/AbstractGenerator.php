@@ -73,5 +73,5 @@ abstract class AbstractGenerator
      * @param string $inputText
      * @return AbstractConfig[]
      */
-    abstract protected function generateConfigInstances(string $inputText): array;
+    abstract protected function generateConfig(string $inputText): array;
 }

@@ -64,8 +64,10 @@ abstract class AbstractGeneratorTest extends TestCase
         );
 
         // Test Pseudocode -> PHP conversion
+        // We use the test yaml instead of the generated one to allow passing
+        // custom generator configuration which can't be generated from code.
         $regeneratedPhp = $this->codeGenerator->generate(
-            PseudocodeGenerator::dumpPseudocode($actualPseudocodeData)
+            PseudocodeGenerator::dumpPseudocode($expectedYaml)
         );
 
         // Write PHP files

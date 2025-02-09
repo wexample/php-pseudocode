@@ -13,7 +13,7 @@ class ClassPropertyConfig extends AbstractConfig
         protected readonly string $type,
         protected readonly ?DocCommentConfig $description = null,
         protected readonly mixed $default = ConfigEnum::NOT_PROVIDED,
-        array $generator = [],
+        ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
@@ -36,10 +36,16 @@ class ClassPropertyConfig extends AbstractConfig
         );
     }
 
-    public static function fromConfig(mixed $data): ?static
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
     {
         if (isset($data['description'])) {
-            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+            $data['description'] = DocCommentConfig::fromConfig(
+                $data['description'],
+                $globalGeneratorConfig
+            );
         }
 
         return parent::fromConfig($data);

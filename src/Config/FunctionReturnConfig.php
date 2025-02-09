@@ -8,7 +8,7 @@ class FunctionReturnConfig extends AbstractConfig
 {
     public function __construct(
         protected readonly string $type,
-        array $generator = [],
+        ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(

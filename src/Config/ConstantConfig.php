@@ -13,7 +13,7 @@ class ConstantConfig extends AbstractConfig
         private readonly mixed $value,
         private readonly DocCommentConfig $description,
         protected readonly string $type = 'constant',
-        array $generator = [],
+        ?GeneratorConfig $generator = null,
     )
     {
         parent::__construct(
@@ -57,13 +57,13 @@ class ConstantConfig extends AbstractConfig
         );
     }
 
-    public static function fromConfig(mixed $data): ?static
+    public static function fromConfig(mixed $data, ?GeneratorConfig $globalGeneratorConfig = null): ?static
     {
         if (isset($data['description'])) {
-            $data['description'] = DocCommentConfig::fromConfig($data['description']);
+            $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
         }
 
-        return parent::fromConfig($data);
+        return parent::fromConfig($data, $globalGeneratorConfig);
     }
 
     public function toConfig(?AbstractConfig $parentConfig = null): array
@@ -79,10 +79,12 @@ class ConstantConfig extends AbstractConfig
     public function toCode(?AbstractConfig $parentConfig = null): string
     {
         return sprintf(
-            "define('%s', %s); // %s\n",
+            $this->generator && $this->generator->constantDeclaration === 'define'
+                ? "define('%s', %s); // %s\n"
+                : "const %s = %s; // %s\n",
             $this->name,
             $this->formatValue($this->value),
-            $this->description?->toCode()
+            $this->description?->toCode() ?? ''
         );
     }
 }

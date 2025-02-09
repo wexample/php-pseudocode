@@ -11,7 +11,7 @@ abstract class AbstractConfig
     use HasSnakeShortClassNameClassTrait;
 
     public function __construct(
-        protected array $generator = []
+        protected ?GeneratorConfig $generator = null
     )
     {
 
@@ -40,9 +40,18 @@ abstract class AbstractConfig
         return false;
     }
 
-    public static function fromConfig(mixed $data): ?static
+    public static function fromConfig(
+        mixed $data,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): ?static
     {
-        return new static(...static::unpackData($data));
+        $data = static::unpackData($data);
+
+        if (isset($data['generator']) || $globalGeneratorConfig) {
+            $data['generator'] = GeneratorConfig::fromConfig($data['generator'] ?? null, $globalGeneratorConfig);
+        }
+
+        return new static(...$data);
     }
 
     protected static function unpackData(mixed $data): array
@@ -135,13 +144,20 @@ abstract class AbstractConfig
 
     /**
      * @param array $items
+     * @param GeneratorConfig|null $globalGeneratorConfig
      * @return AbstractConfig[]
      */
-    public static function collectionFromConfig(array $items): array
+    public static function collectionFromConfig(
+        array $items,
+        ?GeneratorConfig $globalGeneratorConfig = null
+    ): array
     {
         $config = [];
         foreach ($items as $item) {
-            $config[] = static::fromConfig($item);
+            $config[] = static::fromConfig(
+                $item,
+                $globalGeneratorConfig
+            );
         }
         return $config;
     }
