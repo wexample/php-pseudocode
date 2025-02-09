@@ -13,9 +13,12 @@ class ConstantConfig extends AbstractConfig
         private readonly mixed $value,
         private readonly DocCommentConfig $description,
         protected readonly string $type = 'constant',
+        array $generator = [],
     )
     {
-
+        parent::__construct(
+            generator: $generator,
+        );
     }
 
     public static function canLoad(array $data): bool

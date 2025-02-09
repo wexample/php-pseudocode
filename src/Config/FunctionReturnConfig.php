@@ -8,9 +8,12 @@ class FunctionReturnConfig extends AbstractConfig
 {
     public function __construct(
         protected readonly string $type,
+        array $generator = [],
     )
     {
-
+        parent::__construct(
+            generator: $generator
+        );
     }
 
     protected static function unpackData(mixed $data): array

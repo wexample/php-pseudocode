@@ -8,9 +8,11 @@ class DocCommentParameterConfigConfig extends AbstractDocCommentParameterConfig
         string $type,
         string $description,
         private readonly string $name,
+        array $generator = [],
     )
     {
         parent::__construct(
+            generator: $generator,
             type: $type,
             description: $description,
         );

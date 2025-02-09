@@ -10,6 +10,13 @@ abstract class AbstractConfig
 {
     use HasSnakeShortClassNameClassTrait;
 
+    public function __construct(
+        protected array $generator = []
+    )
+    {
+
+    }
+
     abstract public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null

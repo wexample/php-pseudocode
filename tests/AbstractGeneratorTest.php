@@ -43,7 +43,7 @@ abstract class AbstractGeneratorTest extends TestCase
         $actualPseudocodeData = $this->pseudocodeGenerator->generateConfigData($sourcePhp);
 
         $expectedYaml = $this->loadPseudocode($filename);
-        $filteredExpected = $this->filterIgnoredKeys($expectedYaml);
+        $filteredExpected = $this->filterIgnoredKeys(['items' => $expectedYaml['items']]);
         $filteredActual = $this->filterIgnoredKeys($actualPseudocodeData);
 
         // Write YAML files
@@ -141,6 +141,7 @@ abstract class AbstractGeneratorTest extends TestCase
      * List of keys to ignore when comparing YAML structures
      */
     private array $ignoredKeys = [
+        'generator',
         'implementationGuidelines',
     ];
 

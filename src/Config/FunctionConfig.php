@@ -8,6 +8,7 @@ use Wexample\Pseudocode\Helper\DocCommentParserHelper;
 class FunctionConfig extends AbstractConfig
 {
     /**
+     * @param array $generator
      * @param string $name
      * @param ?DocCommentConfig $description
      * @param FunctionParameterConfig[] $parameters
@@ -22,9 +23,12 @@ class FunctionConfig extends AbstractConfig
         protected readonly ?FunctionReturnConfig $return = null,
         protected ?string $implementationGuidelines = null,
         protected readonly string $type = 'function',
+        array $generator = [],
     )
     {
-
+        parent::__construct(
+            generator:$generator
+        );
     }
 
     public static function canParse(Node $node): bool

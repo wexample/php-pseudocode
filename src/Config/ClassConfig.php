@@ -7,10 +7,11 @@ use PhpParser\Node;
 class ClassConfig extends AbstractConfig
 {
     /**
+     * @param array $generator
      * @param string $name
-     * @param DocCommentConfig|null $description
      * @param ClassPropertyConfig[] $properties
      * @param ClassMethodConfig[] $methods
+     * @param DocCommentConfig|null $description
      * @param string $type
      */
     public function __construct(
@@ -19,9 +20,12 @@ class ClassConfig extends AbstractConfig
         protected readonly array $methods,
         protected readonly ?DocCommentConfig $description = null,
         protected readonly string $type = 'class',
+        array $generator = [],
     )
     {
-
+        parent::__construct(
+            generator: $generator,
+        );
     }
 
     public static function canParse(Node $node): bool

@@ -13,8 +13,12 @@ class ClassPropertyConfig extends AbstractConfig
         protected readonly string $type,
         protected readonly ?DocCommentConfig $description = null,
         protected readonly mixed $default = ConfigEnum::NOT_PROVIDED,
+        array $generator = [],
     )
     {
+        parent::__construct(
+            generator: $generator,
+        );
     }
 
     public static function fromNode(

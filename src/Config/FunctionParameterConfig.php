@@ -9,10 +9,13 @@ class FunctionParameterConfig extends AbstractConfig
     public function __construct(
         protected readonly string $type,
         protected readonly string $name,
-        protected readonly ?DocCommentConfig $description = null
+        protected readonly ?DocCommentConfig $description = null,
+        array $generator = [],
     )
     {
-
+        parent::__construct(
+            generator: $generator
+        );
     }
 
     public static function fromConfig(mixed $data): ?static
