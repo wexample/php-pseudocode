@@ -9,7 +9,10 @@ items:
       - name: config
         type: array
         description: "Optional configuration parameters"
+        default: []
       - name: callback
-        type: callable|null
+        type: callable
         description: "Optional callback for custom processing"
+        optional: true
+        default: null
     return: array

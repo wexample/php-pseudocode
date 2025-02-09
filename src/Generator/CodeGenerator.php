@@ -45,7 +45,6 @@ class CodeGenerator extends AbstractGenerator
 
         foreach ($data['items'] as $data) {
             if ($configClass = $registry->findMatchingConfigLoader($data)) {
-                print($configClass . ' : ');
                 $instances[] = $configClass::fromConfig(
                     $data,
                     $globalGeneratorConfig

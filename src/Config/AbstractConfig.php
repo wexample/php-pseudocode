@@ -79,6 +79,9 @@ abstract class AbstractConfig
         if ($expr instanceof Node\Scalar\DNumber) {
             return $expr->value;
         }
+        if ($expr instanceof Node\Expr\Array_) {
+            return [];
+        }
         if ($expr instanceof Node\Expr\ConstFetch) {
             $const = strtolower($expr->name->toString());
 
@@ -104,7 +107,7 @@ abstract class AbstractConfig
             ) => self::getTypeName($t), $type->types));
         }
         if ($type instanceof Node\NullableType) {
-            return self::getTypeName($type->type) . '|null';
+            return self::getTypeName($type->type);
         }
         if ($type instanceof Node\Name) {
             return $type->toString();

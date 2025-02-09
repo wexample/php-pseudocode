@@ -35,7 +35,9 @@ class FunctionReturnConfig extends AbstractConfig
         ?string $inlineComment = null
     ): ?static
     {
-        return $node->returnType ? new (static::class)(type: self::getTypeName($node->returnType)) : null;
+        return $node->returnType ? new static(
+            type: self::getTypeName($node->returnType)
+        ) : null;
     }
 
     public function toCode(?AbstractConfig $parentConfig = null): string

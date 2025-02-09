@@ -52,18 +52,16 @@ class FunctionConfig extends AbstractConfig
         $paramDescriptions = DocCommentParserHelper::extractParamDescriptionsFromNode($node);
 
         foreach ($node->params as $param) {
-            $parameters[] = new FunctionParameterConfig(
-                type: $param->type ? self::getTypeName($param->type) : null,
-                name: $param->var->name,
-                description: $paramDescriptions[$param->var->name] ?? null
-            );
+            if ($paramConfig = FunctionParameterConfig::fromNode($param, $paramDescriptions[$param->var->name] ?? null)) {
+                $parameters[] = $paramConfig;
+            }
         }
 
         return new (static::class)(
             name: $node->name->toString(),
             description: DocCommentConfig::fromNode($node),
             parameters: $parameters,
-            return: $node->returnType ? new FunctionReturnConfig(type: self::getTypeName($node->returnType)) : null
+            return: FunctionReturnConfig::fromNode($node)
         );
     }
 
