@@ -122,7 +122,7 @@ class ClassConfig extends AbstractConfig
             $output .= $method->toCode($this, $indentationLevel + 1);
         }
 
-        $output .= $indentation . "}\n";
+        $output .= $indentation . "}";
 
         return $output;
     }
