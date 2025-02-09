@@ -35,10 +35,10 @@ abstract class AbstractGeneratorTest extends TestCase
      */
     protected function assertConversion(string $filename): void
     {
+        // Test PHP -> Pseudocode conversion
         $generator = $this->getGenerator();
-        $actualPseudocode = $generator->generateConfigData(
-            $this->loadTestResource($filename . '.php')
-        );
+        $sourcePhp = $this->loadTestResource($filename . '.php');
+        $actualPseudocode = $generator->generateConfigData($sourcePhp);
 
         $expectedYaml = $this->loadPseudocode($filename);
         $filteredExpected = $this->filterIgnoredKeys($expectedYaml);
@@ -47,10 +47,43 @@ abstract class AbstractGeneratorTest extends TestCase
         $this->assertArraysEqual(
             $filteredExpected,
             $filteredActual,
-            "Generated pseudocode does not match expected output for {$filename}.\n" .
-            "Expected:\n" . json_encode($filteredExpected, JSON_PRETTY_PRINT) . "\n" .
-            "Actual:\n" . json_encode($filteredActual, JSON_PRETTY_PRINT)
+            "PHP to Pseudocode: Generated pseudocode does not match expected output for {$filename}.\n" .
+            "Expected:\n" . json_encode($filteredExpected, JSON_PRETTY_PRINT) . "\n"
         );
+
+        // Test Pseudocode -> PHP conversion
+        $configClass = $this->getItemType();
+        $config = $configClass::fromConfig($actualPseudocode);
+        $regeneratedPhp = $config->toCode();
+
+        // Normalize both codes to compare them
+        $normalizedOriginal = $this->normalizeCode($sourcePhp);
+        $normalizedRegenerated = $this->normalizeCode($regeneratedPhp);
+
+        $this->assertEquals(
+            $normalizedOriginal,
+            $normalizedRegenerated,
+            "Pseudocode to PHP: Generated PHP code does not match original for {$filename}."
+        );
+    }
+
+    /**
+     * Normalize code by removing extra whitespace and empty lines
+     */
+    private function normalizeCode(string $code): string
+    {
+        // Remove comments
+        $code = preg_replace('/\/\*.*?\*\//s', '', $code);
+        $code = preg_replace('/\/\/.*$/m', '', $code);
+        
+        // Split into lines
+        $lines = explode("\n", $code);
+        
+        // Remove empty lines and trim each line
+        $lines = array_filter(array_map('trim', $lines));
+        
+        // Rejoin and normalize whitespace
+        return preg_replace('/\s+/', ' ', implode("\n", $lines));
     }
 
     protected function loadPseudocode(string $filename): array

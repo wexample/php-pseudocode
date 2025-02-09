@@ -23,7 +23,7 @@ abstract class AbstractConfig
         return false;
     }
 
-    public static function fromData(array $data): ?static
+    public static function fromConfig(array $data): ?static
     {
         return new static(...$data);
     }
