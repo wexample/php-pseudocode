@@ -15,9 +15,9 @@ class ClassConfig extends AbstractConfig
      */
     public function __construct(
         protected readonly string $name,
-        protected readonly ?DocCommentConfig $description = null,
         protected readonly array $properties,
         protected readonly array $methods,
+        protected readonly ?DocCommentConfig $description = null,
         protected readonly string $type = 'class',
     )
     {
@@ -31,7 +31,7 @@ class ClassConfig extends AbstractConfig
 
     public static function canLoad(array $data): bool
     {
-        return $data['type'] == 'class';
+        return $data['type'] === 'class';
     }
 
     public static function fromConfig(mixed $data): ?static

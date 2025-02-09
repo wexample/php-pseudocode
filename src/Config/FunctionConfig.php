@@ -35,7 +35,7 @@ class FunctionConfig extends AbstractConfig
 
     public static function canLoad(array $data): bool
     {
-        return $data['type'] == 'function';
+        return $data['type'] === 'function';
     }
 
     public static function fromNode(
@@ -67,6 +67,11 @@ class FunctionConfig extends AbstractConfig
         if (isset($data['description'])) {
             $data['description'] = DocCommentConfig::fromConfig($data['description']);
         }
+
+        if (isset($data['parameters'])) {
+            $data['parameters'] = FunctionParameterConfig::collectionFromConfig($data['parameters']);
+        }
+
         if (isset($data['return'])) {
             $data['return'] = FunctionReturnConfig::fromConfig($data['return']);
         }
