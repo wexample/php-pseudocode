@@ -4,6 +4,7 @@ namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Stmt\Const_;
 use PhpParser\NodeAbstract;
 
 class ConstantConfig extends AbstractConfig
@@ -29,7 +30,7 @@ class ConstantConfig extends AbstractConfig
     public static function canParse(Node $node): bool
     {
         return ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define')
-            || ($node instanceof Node\Stmt\Const_);
+            || ($node instanceof Const_);
     }
 
     public static function fromNode(
@@ -41,13 +42,17 @@ class ConstantConfig extends AbstractConfig
             // Handle define() calls
             $name = $node->args[0]->value->value;
             $value = static::parseValue($node->args[1]->value);
-            $description = new DocCommentConfig(description: $inlineComment);
-        } elseif ($node instanceof \PhpParser\Node\Stmt\Const_) {
+        } elseif ($node instanceof Const_) {
             // Handle const keyword
             $const = $node->consts[0];
             $name = $const->name->toString();
             $value = static::parseValue($const->value);
-            $description = DocCommentConfig::fromNode($node);
+        } else {
+            return null;
+        }
+
+        if ($inlineComment) {
+            $description = new DocCommentConfig(description: $inlineComment);
         }
 
         return new (static::class)(
