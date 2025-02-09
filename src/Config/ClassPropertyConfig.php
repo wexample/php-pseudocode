@@ -3,11 +3,8 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
+use Wexample\Pseudocode\Enum\ConfigEnum;
 use Wexample\Pseudocode\Helper\DocCommentParserHelper;
-
-enum DefaultSentinel: string {
-    case NotProvided = 'not_provided';
-}
 
 class ClassPropertyConfig extends AbstractConfig
 {
@@ -15,7 +12,7 @@ class ClassPropertyConfig extends AbstractConfig
         protected readonly string $name,
         protected readonly string $type,
         protected readonly ?DocCommentConfig $description = null,
-        protected readonly mixed $default = DefaultSentinel::NotProvided,
+        protected readonly mixed $default = ConfigEnum::NOT_PROVIDED,
     )
     {
     }
@@ -31,7 +28,7 @@ class ClassPropertyConfig extends AbstractConfig
             description: DocCommentParserHelper::extractDescriptionFromNode($node),
             default: $node->props[0]->default !== null
                 ? self::parseValue($node->props[0]->default)
-                : DefaultSentinel::NotProvided,
+                : ConfigEnum::NOT_PROVIDED,
         );
     }
 
@@ -46,7 +43,7 @@ class ClassPropertyConfig extends AbstractConfig
             $config['description'] = $this->description->toConfig();
         }
 
-        if ($this->default !== DefaultSentinel::NotProvided) {
+        if ($this->default !== ConfigEnum::NOT_PROVIDED) {
             $config['default'] = $this->default;
         }
 
@@ -61,7 +58,7 @@ class ClassPropertyConfig extends AbstractConfig
             $output .= $this->description->toCode($this);
         }
 
-        $default = $this->default !== DefaultSentinel::NotProvided
+        $default = $this->default !== ConfigEnum::NOT_PROVIDED
             ? " = " . $this->formatValue($this->default)
             : "";
 
