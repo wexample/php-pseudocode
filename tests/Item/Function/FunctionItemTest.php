@@ -16,11 +16,6 @@ class FunctionItemTest extends AbstractGeneratorTest
         return FunctionConfig::class;
     }
 
-    protected function getPseudocodeGenerator(): PseudocodeGenerator
-    {
-        return new PseudocodeGenerator();
-    }
-
     /**
      * Test conversion of a basic function with parameters and return type
      */
