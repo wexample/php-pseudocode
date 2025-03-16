@@ -4,6 +4,7 @@ namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Const_;
 use PhpParser\NodeAbstract;
 
@@ -29,8 +30,17 @@ class ConstantConfig extends AbstractConfig
 
     public static function canParse(Node $node): bool
     {
-        return ($node instanceof Node\Expr\FuncCall && $node->name->toString() === 'define')
-            || ($node instanceof Const_);
+        // Check for FuncCall with proper name
+        if ($node instanceof Node\Expr\FuncCall) {
+            // Make sure name is an Identifier and has toString method
+            if (!($node->name instanceof Identifier) || !method_exists($node->name, 'toString')) {
+                return false;
+            }
+            return $node->name->toString() === 'define';
+        }
+        
+        // Check for Const_
+        return $node instanceof Const_;
     }
 
     public static function fromNode(
@@ -53,6 +63,8 @@ class ConstantConfig extends AbstractConfig
 
         if ($inlineComment) {
             $description = new DocCommentConfig(description: $inlineComment);
+        } else {
+            $description = new DocCommentConfig(description: '');
         }
 
         return new (static::class)(
