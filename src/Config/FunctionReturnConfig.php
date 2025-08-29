@@ -3,6 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
+use InvalidArgumentException;
 
 class FunctionReturnConfig extends AbstractConfig
 {
@@ -20,7 +21,13 @@ class FunctionReturnConfig extends AbstractConfig
     protected static function unpackData(mixed $data): array
     {
         if (!is_array($data)) {
-            return ['type' => (string) $data];
+            throw new InvalidArgumentException(
+                sprintf('Invalid YAML for return: expected mapping with key "type", got %s', gettype($data))
+            );
+        }
+
+        if (!array_key_exists('type', $data) || !is_string($data['type']) || $data['type'] === '') {
+            throw new InvalidArgumentException('Invalid YAML for return: missing non-empty "type"');
         }
 
         return parent::unpackData($data);
@@ -28,14 +35,15 @@ class FunctionReturnConfig extends AbstractConfig
 
     public function toConfig(?AbstractConfig $parentConfig = null): array|string
     {
-        if (!$this->description || !$this->description->description) {
-            return $this->type;
+        $out = [
+            'type' => $this->type,
+        ];
+
+        if ($this->description && $this->description->description) {
+            $out['description'] = $this->description->description;
         }
 
-        return [
-            'type' => $this->type,
-            'description' => $this->description->description,
-        ];
+        return $out;
     }
 
     public static function fromConfig(

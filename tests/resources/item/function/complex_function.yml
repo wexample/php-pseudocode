@@ -15,4 +15,5 @@ items:
         description: "Optional callback for custom processing"
         optional: true
         default: null
-    return: array
+    return:
+      type: array
