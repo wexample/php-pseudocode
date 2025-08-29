@@ -71,12 +71,22 @@ abstract class AbstractGeneratorTest extends TestCase
      */
     protected function loadTestResource(string $filename): string
     {
-        $path = __DIR__ . '/Item/' . $this->getItemType()::getShortClassName() . '/resources/' . $filename;
+        $short = $this->getItemType()::getShortClassName();
+        $lower = strtolower($short);
 
-        if (!file_exists($path)) {
-            throw new \RuntimeException("Test resource not found: {$path}");
+        // New canonical location (aligned with Python repo): tests/resources/item/<type>/
+        $newPath = __DIR__ . '/resources/item/' . $lower . '/' . $filename;
+        if (file_exists($newPath)) {
+            return file_get_contents($newPath);
         }
-        return file_get_contents($path);
+
+        // Legacy location kept as fallback for BC
+        $legacyPath = __DIR__ . '/Item/' . $short . '/resources/' . $filename;
+        if (file_exists($legacyPath)) {
+            return file_get_contents($legacyPath);
+        }
+
+        throw new \RuntimeException("Test resource not found in new or legacy path: {$newPath} | {$legacyPath}");
     }
 
     /**
