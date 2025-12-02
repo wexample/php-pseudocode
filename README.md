@@ -1,6 +1,6 @@
-# php_pseudocode
+# wexample/php-pseudocode
 
-Version: 1.0.62
+Version: 1.0.63
 
 A basic PHP package
 
@@ -132,7 +132,7 @@ Refer to each package's documentation for specific version compatibility require
 - php: >=7.4
 - symfony/yaml: ^7.0
 - nikic/php-parser: ^4.0
-- wexample/php-helpers: ^1.0.62
+- wexample/php-helpers: 1.0.71
 
 
 # About us
