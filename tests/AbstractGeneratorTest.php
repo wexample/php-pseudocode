@@ -4,7 +4,6 @@ namespace Wexample\Pseudocode\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
-use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Config\AbstractConfig;
 use Wexample\Pseudocode\Generator\CodeGenerator;
 use Wexample\Pseudocode\Generator\PseudocodeGenerator;
@@ -37,8 +36,7 @@ abstract class AbstractGeneratorTest extends TestCase
         array $expected,
         array $actual,
         string $message = ''
-    ): void
-    {
+    ): void {
         $this->assertEquals($expected, $actual, $message);
     }
 
@@ -105,6 +103,7 @@ abstract class AbstractGeneratorTest extends TestCase
         foreach ($data as $key => $value) {
             if (in_array($key, $this->ignoredKeys)) {
                 unset($data[$key]);
+
                 continue;
             }
 

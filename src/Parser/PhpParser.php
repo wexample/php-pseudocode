@@ -51,7 +51,7 @@ class PhpParser extends NodeVisitorAbstract
                     // Use the comment's start line as the key.
                     // This ensures that there is at most one comment per end-of-line.
                     $line = $comment->getStartLine();
-                    if (!isset($comments[$line])) {
+                    if (! isset($comments[$line])) {
                         $comments[$line] = $extracted;
                     }
                 }
@@ -67,7 +67,7 @@ class PhpParser extends NodeVisitorAbstract
      */
     public function parse(string $code): array
     {
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         $ast = $parser->parse($code);
         $this->items = [];
         $this->allInlineComments = $this->buildInlineCommentsRegistry($ast);

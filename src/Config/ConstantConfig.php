@@ -16,8 +16,7 @@ class ConstantConfig extends AbstractConfig
         private readonly DocCommentConfig $description,
         protected readonly string $type = 'constant',
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator,
         );
@@ -33,12 +32,13 @@ class ConstantConfig extends AbstractConfig
         // Check for FuncCall with proper name
         if ($node instanceof Node\Expr\FuncCall) {
             // Make sure name is an Identifier and has toString method
-            if (!($node->name instanceof Identifier) || !method_exists($node->name, 'toString')) {
+            if (! ($node->name instanceof Identifier) || ! method_exists($node->name, 'toString')) {
                 return false;
             }
+
             return $node->name->toString() === 'define';
         }
-        
+
         // Check for Const_
         return $node instanceof Const_;
     }
@@ -46,8 +46,7 @@ class ConstantConfig extends AbstractConfig
     public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null
-    ): ?static
-    {
+    ): ?static {
         if ($node instanceof FuncCall) {
             // Handle define() calls
             $name = $node->args[0]->value->value;
@@ -77,8 +76,7 @@ class ConstantConfig extends AbstractConfig
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
         if (isset($data['description'])) {
             $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
         }
@@ -92,15 +90,14 @@ class ConstantConfig extends AbstractConfig
             'type' => $this->type,
             'name' => $this->name,
             'value' => $this->value,
-            'description' => $this->description->toConfig()
+            'description' => $this->description->toConfig(),
         ];
     }
 
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0
-    ): string
-    {
+    ): string {
         $indentation = $this->getIndentation($indentationLevel);
         $descriptionCode = $this->description?->toCode(format: 'inline');
         $descriptionCode = $descriptionCode !== '' ? ' ' . $descriptionCode : '';

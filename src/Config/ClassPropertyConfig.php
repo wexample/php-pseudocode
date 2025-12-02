@@ -14,8 +14,7 @@ class ClassPropertyConfig extends AbstractConfig
         protected readonly ?DocCommentConfig $description = null,
         protected readonly mixed $default = ConfigEnum::NOT_PROVIDED,
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator,
         );
@@ -24,8 +23,7 @@ class ClassPropertyConfig extends AbstractConfig
     public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null
-    ): ?static
-    {
+    ): ?static {
         return new static(
             name: $node->props[0]->name->name,
             type: self::getTypeName($node->type),
@@ -39,8 +37,7 @@ class ClassPropertyConfig extends AbstractConfig
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
         if (isset($data['description'])) {
             $data['description'] = DocCommentConfig::fromConfig(
                 $data['description'],
@@ -72,8 +69,7 @@ class ClassPropertyConfig extends AbstractConfig
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0
-    ): string
-    {
+    ): string {
         $output = '';
 
         if ($this->description) {

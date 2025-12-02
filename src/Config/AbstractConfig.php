@@ -12,8 +12,7 @@ abstract class AbstractConfig
 
     public function __construct(
         protected ?GeneratorConfig $generator = null
-    )
-    {
+    ) {
 
     }
 
@@ -27,8 +26,7 @@ abstract class AbstractConfig
      */
     public static function canLoad(
         array $data
-    ): bool
-    {
+    ): bool {
         return false;
     }
 
@@ -61,7 +59,7 @@ abstract class AbstractConfig
 
             // Identify any keys in $data that do not correspond to the expected parameters
             $unknownParameters = array_diff(array_keys($data), $allowedParameters);
-            if (!empty($unknownParameters)) {
+            if (! empty($unknownParameters)) {
                 throw new \InvalidArgumentException(sprintf(
                     'Error in class %s: Unknown named parameter(s) "%s". Allowed parameters: "%s".',
                     static::class,
@@ -76,7 +74,7 @@ abstract class AbstractConfig
 
     protected static function unpackData(mixed $data): array
     {
-        if (!is_array($data)) {
+        if (! is_array($data)) {
             throw new \Error('Bad data format passed to ' . static::class . ', you should implement unpackData() to help resolving data conversion to unpackable array.');
         }
 
@@ -122,7 +120,7 @@ abstract class AbstractConfig
     protected static function getTypeName($type): string
     {
         if ($type instanceof Node\UnionType) {
-            return implode('|', array_map(fn(
+            return implode('|', array_map(fn (
                 $t
             ) => self::getTypeName($t), $type->types));
         }
@@ -135,6 +133,7 @@ abstract class AbstractConfig
         if ($type instanceof Node\Identifier) {
             return $type->toString();
         }
+
         return 'mixed';
     }
 
@@ -149,6 +148,7 @@ abstract class AbstractConfig
         if (is_null($value)) {
             return 'null';
         }
+
         return (string) $value;
     }
 
@@ -162,6 +162,7 @@ abstract class AbstractConfig
         foreach ($items as $item) {
             $config[] = $item->toConfig();
         }
+
         return $config;
     }
 
@@ -173,8 +174,7 @@ abstract class AbstractConfig
     public static function collectionFromConfig(
         array $items,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): array
-    {
+    ): array {
         $config = [];
         foreach ($items as $item) {
             $config[] = static::fromConfig(
@@ -182,6 +182,7 @@ abstract class AbstractConfig
                 $globalGeneratorConfig
             );
         }
+
         return $config;
     }
 
@@ -198,8 +199,7 @@ abstract class AbstractConfig
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0
-    ): ?string
-    {
+    ): ?string {
         return null;
     }
 }

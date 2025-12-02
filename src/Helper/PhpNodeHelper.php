@@ -2,8 +2,6 @@
 
 namespace Wexample\Pseudocode\Helper;
 
-use Wexample\Pseudocode\Enum\ConfigEnum;
-
 class PhpNodeHelper
 {
     public static function isOptional(\PhpParser\Node\Param $node): bool

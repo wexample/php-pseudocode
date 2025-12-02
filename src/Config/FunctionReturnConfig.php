@@ -2,8 +2,8 @@
 
 namespace Wexample\Pseudocode\Config;
 
-use PhpParser\NodeAbstract;
 use InvalidArgumentException;
+use PhpParser\NodeAbstract;
 
 class FunctionReturnConfig extends AbstractConfig
 {
@@ -11,8 +11,7 @@ class FunctionReturnConfig extends AbstractConfig
         protected readonly string $type,
         protected readonly ?DocCommentReturnConfig $description = null,
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator
         );
@@ -20,13 +19,13 @@ class FunctionReturnConfig extends AbstractConfig
 
     protected static function unpackData(mixed $data): array
     {
-        if (!is_array($data)) {
+        if (! is_array($data)) {
             throw new InvalidArgumentException(
                 sprintf('Invalid YAML for return: expected mapping with key "type", got %s', gettype($data))
             );
         }
 
-        if (!array_key_exists('type', $data) || !is_string($data['type']) || $data['type'] === '') {
+        if (! array_key_exists('type', $data) || ! is_string($data['type']) || $data['type'] === '') {
             throw new InvalidArgumentException('Invalid YAML for return: missing non-empty "type"');
         }
 
@@ -49,8 +48,7 @@ class FunctionReturnConfig extends AbstractConfig
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
         $data = static::unpackData($data);
 
         if (isset($data['description'])) {
@@ -64,9 +62,8 @@ class FunctionReturnConfig extends AbstractConfig
         NodeAbstract $node,
         ?string $inlineComment = null,
         ?DocCommentReturnConfig $description = null
-    ): ?static
-    {
-        if (!$node->returnType) {
+    ): ?static {
+        if (! $node->returnType) {
             return null;
         }
 
@@ -79,8 +76,7 @@ class FunctionReturnConfig extends AbstractConfig
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0
-    ): string
-    {
+    ): string {
         return ($this->type ?? 'void');
     }
 }

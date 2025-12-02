@@ -26,8 +26,7 @@ class FunctionConfig extends AbstractConfig
         protected ?string $implementationGuidelines = null,
         protected readonly string $type = self::TYPE,
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator
         );
@@ -46,8 +45,7 @@ class FunctionConfig extends AbstractConfig
     public static function fromNode(
         Node $node,
         ?string $inlineComment = null
-    ): ?static
-    {
+    ): ?static {
         $parameters = [];
         $paramDescriptions = DocCommentParserHelper::extractParamDescriptionsFromNode($node);
 
@@ -66,15 +64,15 @@ class FunctionConfig extends AbstractConfig
             parameters: $parameters,
             return: FunctionReturnConfig::fromNode(
                 node:$node,
-                description:$returnDescription)
+                description:$returnDescription
+            )
         );
     }
 
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
 
         if (isset($data['description']) || isset($data['parameters']) || isset($data['return'])) {
             $docData = DocCommentConfig::unpackData($data['description'] ?? []);
@@ -112,7 +110,7 @@ class FunctionConfig extends AbstractConfig
             $config['description'] = $this->description->toConfig();
         }
 
-        if (!empty($this->parameters)) {
+        if (! empty($this->parameters)) {
             $config['parameters'] = FunctionParameterConfig::collectionToConfig($this->parameters);
         }
 
@@ -130,8 +128,7 @@ class FunctionConfig extends AbstractConfig
     public function toCode(
         ?AbstractConfig $parentConfig = null,
         int $indentationLevel = 0
-    ): string
-    {
+    ): string {
         $output = '';
 
         if ($this->description) {
@@ -155,7 +152,7 @@ class FunctionConfig extends AbstractConfig
 
         $output .= "(";
         $params = array_map(
-            fn(
+            fn (
                 FunctionParameterConfig $param
             ) => $param->toCode(),
             $this->parameters

@@ -14,8 +14,7 @@ class ClassMethodConfig extends FunctionConfig
         ?string $implementationGuidelines = null,
         string $type = self::TYPE,
         ?GeneratorConfig $generator = null
-    )
-    {
+    ) {
         parent::__construct(
             name: $name,
             description: $description,

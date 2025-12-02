@@ -15,6 +15,7 @@ class DocCommentParserHelper
     {
         // Remove /** and */ markers
         $docComment = preg_replace('/^\/\*\*|\*\/$/', '', $docComment);
+
         // Remove leading asterisks and whitespace from each line
         return preg_replace('/^\s*\*\s*/', '', trim($docComment));
     }
@@ -60,7 +61,7 @@ class DocCommentParserHelper
      */
     public static function extractDescriptionFromNode(NodeAbstract $node): ?DocCommentConfig
     {
-        if (!$node->getDocComment()) {
+        if (! $node->getDocComment()) {
             return null;
         }
 
@@ -72,7 +73,7 @@ class DocCommentParserHelper
      */
     public static function extractParamDescriptionsFromNode(NodeAbstract $node): array
     {
-        if (!$node->getDocComment()) {
+        if (! $node->getDocComment()) {
             return [];
         }
 
@@ -96,7 +97,7 @@ class DocCommentParserHelper
 
                 return DocCommentReturnConfig::fromConfig([
                     "type" => $type,
-                    "description" => $description
+                    "description" => $description,
                 ]);
             }
         }
@@ -109,7 +110,7 @@ class DocCommentParserHelper
      */
     public static function extractReturnDescriptionFromNode(NodeAbstract $node): ?DocCommentReturnConfig
     {
-        if (!$node->getDocComment()) {
+        if (! $node->getDocComment()) {
             return null;
         }
 

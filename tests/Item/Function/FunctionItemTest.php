@@ -4,7 +4,6 @@ namespace Wexample\Pseudocode\Tests\Item\Function;
 
 use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Config\FunctionConfig;
-use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 use Wexample\Pseudocode\Tests\AbstractGeneratorTest;
 
 class FunctionItemTest extends AbstractGeneratorTest

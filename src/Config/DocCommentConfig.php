@@ -17,8 +17,7 @@ class DocCommentConfig extends AbstractConfig
         public array $parameters = [],
         private readonly ?DocCommentReturnConfig $return = null,
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator,
         );
@@ -36,8 +35,7 @@ class DocCommentConfig extends AbstractConfig
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
         $data = static::unpackData($data);
 
         if (isset($data['parameters']) && is_array($data['parameters'])) {
@@ -71,9 +69,8 @@ class DocCommentConfig extends AbstractConfig
     public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null
-    ): ?static
-    {
-        if (!$node->getDocComment()) {
+    ): ?static {
+        if (! $node->getDocComment()) {
             return null;
         }
 
@@ -94,7 +91,7 @@ class DocCommentConfig extends AbstractConfig
             }
 
             // If not a tag, it's part of the description
-            if (!str_starts_with($line, '@')) {
+            if (! str_starts_with($line, '@')) {
                 $description[] = $line;
             }
         }
@@ -128,8 +125,7 @@ class DocCommentConfig extends AbstractConfig
         int $indentationLevel = 0,
         ?string $prefix = null,
         string $format = 'block'
-    ): string
-    {
+    ): string {
         $indentation = $this->getIndentation($indentationLevel);
         // Prepare the base description with an optional prefix.
         $description = ($prefix ?? '') . $this->description;
@@ -152,18 +148,21 @@ class DocCommentConfig extends AbstractConfig
                     $output .= $indentation . " *\n" . $parametersOutput . "\n";
                 }
                 $output .= $indentation . " */";
+
                 break;
 
             case 'inlineBlock':
                 // Remove newlines and extra spaces for an inline comment.
                 $paramsInline = $parametersOutput ? ' ' . trim(str_replace("\n", " ", $parametersOutput)) : '';
                 $output = $indentation . "/** " . $description . $paramsInline . " */";
+
                 break;
 
             case 'inline':
                 // Example for an alternative format: using single-line comments.
                 $paramsInline = $parametersOutput ? ' ' . trim(str_replace("\n", " ", $parametersOutput)) : '';
                 $output = $indentation . "// " . $description . $paramsInline;
+
                 break;
 
             default:

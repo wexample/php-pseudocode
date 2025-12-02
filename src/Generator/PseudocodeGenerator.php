@@ -23,7 +23,7 @@ class PseudocodeGenerator extends AbstractGenerator
         return FileHelper::FILE_EXTENSION_YML;
     }
 
-    function buildOutputFileName(SplFileInfo $file): string
+    public function buildOutputFileName(SplFileInfo $file): string
     {
         return TextHelper::toSnake($file->getFilename());
     }
@@ -31,6 +31,7 @@ class PseudocodeGenerator extends AbstractGenerator
     protected function generateConfig(string $inputText): array
     {
         $phpParser = new PhpParser();
+
         return $phpParser->parse($inputText);
     }
 

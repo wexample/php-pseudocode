@@ -15,11 +15,10 @@ trait WithConfigRegistry
 
     protected function getConfigRegistry(): ConfigRegistry
     {
-        if (!$this->configRegistry) {
+        if (! $this->configRegistry) {
             $this->configRegistry = new ConfigRegistry();
         }
 
         return $this->configRegistry;
     }
 }
-

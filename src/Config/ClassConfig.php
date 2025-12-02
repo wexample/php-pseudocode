@@ -21,8 +21,7 @@ class ClassConfig extends AbstractConfig
         protected readonly ?DocCommentConfig $description = null,
         protected readonly string $type = 'class',
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator,
         );
@@ -41,8 +40,7 @@ class ClassConfig extends AbstractConfig
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
         if (isset($data['description'])) {
             $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
         }
@@ -56,8 +54,7 @@ class ClassConfig extends AbstractConfig
     public static function fromNode(
         Node $node,
         ?string $inlineComment = null
-    ): ?static
-    {
+    ): ?static {
         $properties = [];
         $methods = [];
 
@@ -88,11 +85,11 @@ class ClassConfig extends AbstractConfig
             $config['description'] = $this->description->toConfig($this);
         }
 
-        if (!empty($this->properties)) {
+        if (! empty($this->properties)) {
             $config['properties'] = ClassPropertyConfig::collectionToConfig($this->properties);
         }
 
-        if (!empty($this->methods)) {
+        if (! empty($this->methods)) {
             $config['methods'] = ClassMethodConfig::collectionToConfig($this->methods);
         }
 
@@ -114,7 +111,7 @@ class ClassConfig extends AbstractConfig
             $output .= $property->toCode($this, $indentationLevel + 1);
         }
 
-        if (!empty($this->properties) && !empty($this->methods)) {
+        if (! empty($this->properties) && ! empty($this->methods)) {
             $output .= "\n";
         }
 

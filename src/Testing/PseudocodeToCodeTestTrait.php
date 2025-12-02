@@ -10,7 +10,7 @@ trait PseudocodeToCodeTestTrait
     {
         // Create temp directory if not exists
         $tempDir = sys_get_temp_dir() . '/pseudocode_tests';
-        if (!is_dir($tempDir)) {
+        if (! is_dir($tempDir)) {
             mkdir($tempDir);
         }
 

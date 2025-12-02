@@ -29,6 +29,7 @@ class CodeGenerator extends AbstractGenerator
         foreach ($configs as $config) {
             $output .= $config->toCode() . PHP_EOL;
         }
+
         return $output;
     }
 

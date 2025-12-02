@@ -31,8 +31,7 @@ class ConfigRegistry
      */
     public function findMatchingConfigLoader(
         array $data
-    ): ?string
-    {
+    ): ?string {
         /** @var AbstractConfig $config */
         foreach ($this->registry as $config) {
             if ($config::canLoad($data)) {

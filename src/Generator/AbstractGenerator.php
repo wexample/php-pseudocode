@@ -10,12 +10,11 @@ use Wexample\Pseudocode\Config\AbstractConfig;
 
 abstract class AbstractGenerator
 {
-    function generateFromFileAndSave(
+    public function generateFromFileAndSave(
         string $filePath,
         string $sourceBasePath,
         string $targetBasePath,
-    ): string
-    {
+    ): string {
         $outputFilePath = PathHelper::getCousin(
             fullPath: $filePath,
             sourceBasePath: $sourceBasePath,
@@ -37,7 +36,7 @@ abstract class AbstractGenerator
         return $outputFilePath;
     }
 
-    function generateFromPath(string $filePath): string
+    public function generateFromPath(string $filePath): string
     {
         return $this->generate(
             file_get_contents($filePath)
@@ -58,16 +57,16 @@ abstract class AbstractGenerator
         return $convertedDir . DIRECTORY_SEPARATOR . TextHelper::toSnake($file->getFilename()) . '.yml';
     }
 
-    function buildOutputFileName(SplFileInfo $file): string
+    public function buildOutputFileName(SplFileInfo $file): string
     {
         return $file->getFilename();
     }
 
-    abstract function getSourceFileExtension(): string;
+    abstract public function getSourceFileExtension(): string;
 
-    abstract function getTargetFileExtension(): string;
+    abstract public function getTargetFileExtension(): string;
 
-    abstract function generate(string $inputText): string;
+    abstract public function generate(string $inputText): string;
 
     /**
      * @param string $inputText

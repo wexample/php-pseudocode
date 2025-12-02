@@ -11,7 +11,7 @@
 function processData(
     array $data,
     array $config = [],
-    ?callable $callback = null): array
-{
+    ?callable $callback = null
+): array {
     // TODO: Implement function body
 }

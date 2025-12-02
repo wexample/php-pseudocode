@@ -15,8 +15,7 @@ class FunctionParameterConfig extends AbstractConfig
         protected readonly bool $optional = false,
         protected readonly ?DocCommentConfig $description = null,
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator
         );
@@ -25,8 +24,7 @@ class FunctionParameterConfig extends AbstractConfig
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
+    ): ?static {
         if (isset($data['description'])) {
             $data['description'] = DocCommentConfig::fromConfig($data['description'], $globalGeneratorConfig);
         }
@@ -37,9 +35,8 @@ class FunctionParameterConfig extends AbstractConfig
     public static function fromNode(
         NodeAbstract $node,
         null|string|DocCommentConfig $inlineComment = null
-    ): ?static
-    {
-        if (!$node instanceof \PhpParser\Node\Param) {
+    ): ?static {
+        if (! $node instanceof \PhpParser\Node\Param) {
             return null;
         }
 
@@ -109,6 +106,7 @@ class FunctionParameterConfig extends AbstractConfig
             $keyCode = is_int($key) ? '' : var_export($key, true) . ' => ';
             $items[] = $keyCode . $this->convertDefaultValueToPhpCode($value);
         }
+
         return '[' . implode(', ', $items) . ']';
     }
 }

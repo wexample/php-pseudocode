@@ -9,8 +9,7 @@ class GeneratorConfig extends AbstractConfig
     public function __construct(
         public readonly string $constantDeclaration,
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator,
         );
@@ -19,9 +18,8 @@ class GeneratorConfig extends AbstractConfig
     public static function fromConfig(
         mixed $data,
         ?GeneratorConfig $globalGeneratorConfig = null
-    ): ?static
-    {
-        if (!$data or !isset($data['php'])) {
+    ): ?static {
+        if (! $data or ! isset($data['php'])) {
             return $globalGeneratorConfig;
         }
 
@@ -31,8 +29,7 @@ class GeneratorConfig extends AbstractConfig
     public static function fromNode(
         Node $node,
         ?string $inlineComment = null
-    ): ?static
-    {
+    ): ?static {
         return null;
     }
 

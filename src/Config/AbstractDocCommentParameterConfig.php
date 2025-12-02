@@ -10,8 +10,7 @@ abstract class AbstractDocCommentParameterConfig extends AbstractConfig
         protected readonly string $type,
         public readonly ?string $description = null,
         ?GeneratorConfig $generator = null,
-    )
-    {
+    ) {
         parent::__construct(
             generator: $generator
         );
@@ -21,15 +20,14 @@ abstract class AbstractDocCommentParameterConfig extends AbstractConfig
     {
         return [
             'type' => $this->type,
-            'description' => $this->description
+            'description' => $this->description,
         ];
     }
 
     public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null
-    ): ?static
-    {
+    ): ?static {
         return null;
     }
 }

@@ -17,8 +17,8 @@ class Calculator
      */
     public function add(
         int $a,
-        int $b): int
-    {
+        int $b
+    ): int {
         // TODO: Implement function body
     }
 }
