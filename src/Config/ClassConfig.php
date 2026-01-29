@@ -60,13 +60,7 @@ class ClassConfig extends AbstractConfig
         mixed $inlineComment = null,
         ?ParserContext $context = null
     ): ?static {
-        $attribute = $context?->getClassIndex()
-            ? AttributeHelper::findAttributeInHierarchy(
-                $node,
-                $context->getClassIndex(),
-                PseudocodeExport::class
-            )
-            : AttributeHelper::findAttribute($node, PseudocodeExport::class);
+        $attribute = AttributeHelper::findAttribute($node, PseudocodeExport::class);
 
         if (! $attribute) {
             return null;
