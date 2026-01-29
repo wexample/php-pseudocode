@@ -3,6 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 class GeneratorConfig extends AbstractConfig
 {
@@ -28,7 +29,8 @@ class GeneratorConfig extends AbstractConfig
 
     public static function fromNode(
         Node $node,
-        ?string $inlineComment = null
+        ?string $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
         return null;
     }

@@ -5,6 +5,7 @@ namespace Wexample\Pseudocode\Parser;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
+use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
 use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
 use Wexample\Pseudocode\Config\AbstractConfig;
@@ -15,6 +16,17 @@ class PhpParser extends NodeVisitorAbstract
 
     private array $items = [];
     private array $allInlineComments = [];
+    private ?ParserContext $context = null;
+
+    public function __construct(?ParserContext $context = null)
+    {
+        $this->context = $context;
+    }
+
+    public function setContext(?ParserContext $context): void
+    {
+        $this->context = $context;
+    }
 
     /**
      * @param Node\Stmt[] $ast
@@ -73,6 +85,7 @@ class PhpParser extends NodeVisitorAbstract
         $this->allInlineComments = $this->buildInlineCommentsRegistry($ast);
 
         $traverser = new NodeTraverser();
+        $traverser->addVisitor(new NameResolver());
         $traverser->addVisitor($this);
         $traverser->traverse($ast);
 
@@ -85,10 +98,14 @@ class PhpParser extends NodeVisitorAbstract
 
         if ($configClass = $registry->findMatchingNodeParser($node)) {
             $endLine = $node->getEndLine();
-            $this->items[] = $configClass::fromNode(
+            $item = $configClass::fromNode(
                 $node,
-                $this->allInlineComments[$endLine] ?? null
+                $this->allInlineComments[$endLine] ?? null,
+                $this->context
             );
+            if ($item) {
+                $this->items[] = $item;
+            }
         }
     }
 }

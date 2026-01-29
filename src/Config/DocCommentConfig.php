@@ -3,6 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 class DocCommentConfig extends AbstractConfig
 {
@@ -68,7 +69,8 @@ class DocCommentConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null
+        ?string $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
         if (! $node->getDocComment()) {
             return null;

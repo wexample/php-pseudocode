@@ -3,6 +3,10 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
+use Wexample\Pseudocode\Attribute\PseudocodeExport;
+use Wexample\Pseudocode\Helper\AttributeHelper;
+use Wexample\Pseudocode\Parser\ParserContext;
+use Wexample\Pseudocode\Resolver\ClassInheritanceResolver;
 
 class ClassConfig extends AbstractConfig
 {
@@ -53,8 +57,14 @@ class ClassConfig extends AbstractConfig
 
     public static function fromNode(
         Node $node,
-        ?string $inlineComment = null
+        ?string $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
+        $attribute = AttributeHelper::findAttribute($node, PseudocodeExport::class);
+        if (! $attribute) {
+            return null;
+        }
+
         $properties = [];
         $methods = [];
 
@@ -66,12 +76,51 @@ class ClassConfig extends AbstractConfig
             }
         }
 
+        $exportInherited = AttributeHelper::getAttributeBoolOption(
+            $attribute,
+            'inherited',
+            0,
+            false
+        );
+
+        if ($exportInherited && $context?->getClassIndex()) {
+            $resolver = new ClassInheritanceResolver($context->getClassIndex());
+            $inheritedMembers = $resolver->collectInheritedMembers($node);
+
+            $properties = self::mergeByName($inheritedMembers['properties'], $properties);
+            $methods = self::mergeByName($inheritedMembers['methods'], $methods);
+        }
+
         return new (static::class)(
             name: $node->name->toString(),
             description: DocCommentConfig::fromNode($node),
             properties: $properties,
             methods: $methods,
         );
+    }
+
+    /**
+     * @param AbstractConfig[] $inherited
+     * @param AbstractConfig[] $local
+     * @return array
+     */
+    private static function mergeByName(array $inherited, array $local): array
+    {
+        $byName = [];
+
+        foreach ($inherited as $item) {
+            if (method_exists($item, 'getName')) {
+                $byName[$item->getName()] = $item;
+            }
+        }
+
+        foreach ($local as $item) {
+            if (method_exists($item, 'getName')) {
+                $byName[$item->getName()] = $item;
+            }
+        }
+
+        return array_values($byName);
     }
 
     public function toConfig(?AbstractConfig $parentConfig = null): array

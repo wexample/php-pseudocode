@@ -5,6 +5,7 @@ namespace Wexample\Pseudocode\Config;
 use PhpParser\NodeAbstract;
 use Wexample\Pseudocode\Enum\ConfigEnum;
 use Wexample\Pseudocode\Helper\PhpNodeHelper;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 class FunctionParameterConfig extends AbstractConfig
 {
@@ -34,7 +35,8 @@ class FunctionParameterConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        null|string|DocCommentConfig $inlineComment = null
+        null|string|DocCommentConfig $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
         if (! $node instanceof \PhpParser\Node\Param) {
             return null;

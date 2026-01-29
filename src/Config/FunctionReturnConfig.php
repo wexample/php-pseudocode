@@ -4,6 +4,7 @@ namespace Wexample\Pseudocode\Config;
 
 use InvalidArgumentException;
 use PhpParser\NodeAbstract;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 class FunctionReturnConfig extends AbstractConfig
 {
@@ -61,7 +62,8 @@ class FunctionReturnConfig extends AbstractConfig
     public static function fromNode(
         NodeAbstract $node,
         ?string $inlineComment = null,
-        ?DocCommentReturnConfig $description = null
+        ?DocCommentReturnConfig $description = null,
+        ?ParserContext $context = null
     ): ?static {
         if (! $node->returnType) {
             return null;

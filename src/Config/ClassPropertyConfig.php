@@ -5,6 +5,7 @@ namespace Wexample\Pseudocode\Config;
 use PhpParser\NodeAbstract;
 use Wexample\Pseudocode\Enum\ConfigEnum;
 use Wexample\Pseudocode\Helper\DocCommentParserHelper;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 class ClassPropertyConfig extends AbstractConfig
 {
@@ -22,7 +23,8 @@ class ClassPropertyConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null
+        ?string $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
         return new static(
             name: $node->props[0]->name->name,
@@ -88,5 +90,10 @@ class ClassPropertyConfig extends AbstractConfig
         $output .= $this->getIndentation($indentationLevel) . "private {$this->type} \${$this->name}{$default};\n";
 
         return $output;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

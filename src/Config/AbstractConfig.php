@@ -5,6 +5,7 @@ namespace Wexample\Pseudocode\Config;
 use PhpParser\Node;
 use PhpParser\NodeAbstract;
 use Wexample\Helpers\Class\Traits\HasSnakeShortClassNameClassTrait;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 abstract class AbstractConfig
 {
@@ -18,7 +19,8 @@ abstract class AbstractConfig
 
     abstract public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null
+        ?string $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static;
 
     /**
