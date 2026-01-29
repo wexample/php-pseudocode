@@ -45,7 +45,7 @@ class FunctionConfig extends AbstractConfig
 
     public static function fromNode(
         Node $node,
-        ?string $inlineComment = null,
+        mixed $inlineComment = null,
         ?ParserContext $context = null
     ): ?static {
         $parameters = [];
@@ -65,8 +65,9 @@ class FunctionConfig extends AbstractConfig
             description: $docComment,
             parameters: $parameters,
             return: FunctionReturnConfig::fromNode(
-                node:$node,
-                description:$returnDescription
+                node: $node,
+                inlineComment: $returnDescription,
+                context: $context
             )
         );
     }

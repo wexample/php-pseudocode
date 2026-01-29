@@ -29,7 +29,7 @@ class GeneratorConfig extends AbstractConfig
 
     public static function fromNode(
         Node $node,
-        ?string $inlineComment = null,
+        mixed $inlineComment = null,
         ?ParserContext $context = null
     ): ?static {
         return null;

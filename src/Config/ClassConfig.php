@@ -57,7 +57,7 @@ class ClassConfig extends AbstractConfig
 
     public static function fromNode(
         Node $node,
-        ?string $inlineComment = null,
+        mixed $inlineComment = null,
         ?ParserContext $context = null
     ): ?static {
         $attribute = AttributeHelper::findAttribute($node, PseudocodeExport::class);

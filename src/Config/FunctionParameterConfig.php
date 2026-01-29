@@ -35,7 +35,7 @@ class FunctionParameterConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        null|string|DocCommentConfig $inlineComment = null,
+        mixed $inlineComment = null,
         ?ParserContext $context = null
     ): ?static {
         if (! $node instanceof \PhpParser\Node\Param) {

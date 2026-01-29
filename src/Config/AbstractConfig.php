@@ -19,7 +19,7 @@ abstract class AbstractConfig
 
     abstract public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null,
+        mixed $inlineComment = null,
         ?ParserContext $context = null
     ): ?static;
 

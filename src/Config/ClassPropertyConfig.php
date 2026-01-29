@@ -23,7 +23,7 @@ class ClassPropertyConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null,
+        mixed $inlineComment = null,
         ?ParserContext $context = null
     ): ?static {
         return new static(
