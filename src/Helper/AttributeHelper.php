@@ -7,6 +7,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
+use Wexample\Pseudocode\Parser\ClassIndex;
 
 class AttributeHelper
 {
@@ -38,6 +39,48 @@ class AttributeHelper
         }
 
         return null;
+    }
+
+    public static function findAttributeInHierarchy(
+        Node\Stmt\Class_ $node,
+        ClassIndex $classIndex,
+        string $attributeFqcn,
+        string $propagateOption = 'propagate',
+        int $propagatePosition = 1
+    ): ?Attribute {
+        $attribute = self::findAttribute($node, $attributeFqcn);
+        if ($attribute) {
+            return $attribute;
+        }
+
+        $parentNode = self::getParentClassNode($node, $classIndex);
+        if (! $parentNode) {
+            return null;
+        }
+
+        $parentAttribute = self::findAttribute($parentNode, $attributeFqcn);
+        if ($parentAttribute) {
+            $propagate = self::getAttributeBoolOption(
+                $parentAttribute,
+                $propagateOption,
+                $propagatePosition,
+                false
+            );
+
+            if (! $propagate) {
+                return null;
+            }
+
+            return $parentAttribute;
+        }
+
+        return self::findAttributeInHierarchy(
+            $parentNode,
+            $classIndex,
+            $attributeFqcn,
+            $propagateOption,
+            $propagatePosition
+        );
     }
 
     public static function getAttributeBoolOption(
@@ -73,6 +116,20 @@ class AttributeHelper
         }
 
         return substr($value, -strlen($suffix)) === $suffix;
+    }
+
+    private static function getParentClassNode(
+        Node\Stmt\Class_ $node,
+        ClassIndex $classIndex
+    ): ?Node\Stmt\Class_ {
+        if (! $node->extends instanceof Node\Name) {
+            return null;
+        }
+
+        $resolved = $node->extends->getAttribute('resolvedName');
+        $parentName = $resolved instanceof Node\Name ? $resolved : $node->extends;
+
+        return $classIndex->getClass($parentName->toString());
     }
 
     private static function parseBool(Arg $arg): bool
