@@ -8,7 +8,8 @@ use Attribute;
 class PseudocodeExport
 {
     public function __construct(
-        public bool $inherited = false
+        public bool $inherited = false,
+        public bool $propagate = false
     ) {
     }
 }

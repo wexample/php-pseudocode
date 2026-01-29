@@ -61,6 +61,11 @@ class ClassConfig extends AbstractConfig
         ?ParserContext $context = null
     ): ?static {
         $attribute = AttributeHelper::findAttribute($node, PseudocodeExport::class);
+
+        if (! $attribute && $context?->getClassIndex()) {
+            $attribute = self::findPropagatedAttribute($node, $context->getClassIndex());
+        }
+
         if (! $attribute) {
             return null;
         }
@@ -97,6 +102,41 @@ class ClassConfig extends AbstractConfig
             properties: $properties,
             methods: $methods,
         );
+    }
+
+    private static function findPropagatedAttribute(
+        Node\Stmt\Class_ $node,
+        \Wexample\Pseudocode\Parser\ClassIndex $classIndex
+    ): ?\PhpParser\Node\Attribute {
+        if (! $node->extends instanceof Node\Name) {
+            return null;
+        }
+
+        $parentName = $node->extends->getAttribute('resolvedName');
+        if (! $parentName instanceof Node\Name) {
+            $parentName = $node->extends;
+        }
+
+        $parentNode = $classIndex->getClass($parentName->toString());
+        if (! $parentNode) {
+            return null;
+        }
+
+        $attribute = AttributeHelper::findAttribute($parentNode, PseudocodeExport::class);
+        if ($attribute) {
+            $propagate = AttributeHelper::getAttributeBoolOption(
+                $attribute,
+                'propagate',
+                1,
+                false
+            );
+
+            if ($propagate) {
+                return $attribute;
+            }
+        }
+
+        return self::findPropagatedAttribute($parentNode, $classIndex);
     }
 
     /**
