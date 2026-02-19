@@ -24,15 +24,6 @@ class ReflectionInheritanceResolver implements InheritedMembersResolverInterface
     public function collectInheritedMembers(Node\Stmt\Class_ $classNode): array
     {
         $fqcn = $this->resolveClassName($classNode);
-        fwrite(
-            STDERR,
-            sprintf(
-                "[pseudocode][inherited] class_node=%s resolved_fqcn=%s\n",
-                $classNode->name?->toString() ?? '(anonymous)',
-                $fqcn ?? '(null)'
-            )
-        );
-
         if (! $fqcn) {
             throw new \RuntimeException('Cannot resolve class FQCN for inherited export.');
         }
@@ -79,7 +70,25 @@ class ReflectionInheritanceResolver implements InheritedMembersResolverInterface
             return $namespacedName->toString();
         }
 
-        return $classNode->name?->toString();
+        $className = $classNode->name?->toString();
+        if (! $className) {
+            return null;
+        }
+
+        $parent = $classNode->getAttribute('parent');
+        while ($parent instanceof Node) {
+            if ($parent instanceof Node\Stmt\Namespace_) {
+                $namespace = $parent->name?->toString();
+
+                return $namespace
+                    ? $namespace . '\\' . $className
+                    : $className;
+            }
+
+            $parent = $parent->getAttribute('parent');
+        }
+
+        return $className;
     }
 
     /**

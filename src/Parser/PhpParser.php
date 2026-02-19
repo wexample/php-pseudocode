@@ -6,6 +6,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\NodeVisitor\NameResolver;
+use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\ParserFactory;
 use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
 use Wexample\Pseudocode\Config\AbstractConfig;
@@ -85,6 +86,7 @@ class PhpParser extends NodeVisitorAbstract
         $this->allInlineComments = $this->buildInlineCommentsRegistry($ast);
 
         $traverser = new NodeTraverser();
+        $traverser->addVisitor(new ParentConnectingVisitor());
         $traverser->addVisitor(new NameResolver());
         $traverser->addVisitor($this);
         $traverser->traverse($ast);
