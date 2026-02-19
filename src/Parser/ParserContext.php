@@ -2,15 +2,17 @@
 
 namespace Wexample\Pseudocode\Parser;
 
+use Wexample\Pseudocode\Resolver\InheritedMembersResolverInterface;
+
 class ParserContext
 {
     public function __construct(
-        private ?ClassIndex $classIndex = null
+        private ?InheritedMembersResolverInterface $inheritedMembersResolver = null
     ) {
     }
 
-    public function getClassIndex(): ?ClassIndex
+    public function getInheritedMembersResolver(): ?InheritedMembersResolverInterface
     {
-        return $this->classIndex;
+        return $this->inheritedMembersResolver;
     }
 }

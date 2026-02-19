@@ -6,7 +6,6 @@ use PhpParser\Node;
 use Wexample\Pseudocode\Attribute\PseudocodeExport;
 use Wexample\Pseudocode\Helper\AttributeHelper;
 use Wexample\Pseudocode\Parser\ParserContext;
-use Wexample\Pseudocode\Resolver\ClassInheritanceResolver;
 
 class ClassConfig extends AbstractConfig
 {
@@ -84,8 +83,14 @@ class ClassConfig extends AbstractConfig
             false
         );
 
-        if ($exportInherited && $context?->getClassIndex()) {
-            $resolver = new ClassInheritanceResolver($context->getClassIndex());
+        if ($exportInherited) {
+            $resolver = $context?->getInheritedMembersResolver();
+            if (! $resolver) {
+                throw new \RuntimeException(
+                    'Inherited export requires a configured inherited members resolver.'
+                );
+            }
+
             $inheritedMembers = $resolver->collectInheritedMembers($node);
 
             $properties = self::mergeByName($inheritedMembers['properties'], $properties);
