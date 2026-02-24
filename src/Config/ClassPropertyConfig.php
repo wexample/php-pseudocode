@@ -12,6 +12,7 @@ class ClassPropertyConfig extends AbstractConfig
     public function __construct(
         protected readonly string $name,
         protected readonly string $type,
+        protected readonly bool $nullable = false,
         protected readonly ?DocCommentConfig $description = null,
         protected readonly mixed $default = ConfigEnum::NOT_PROVIDED,
         ?GeneratorConfig $generator = null,
@@ -29,6 +30,7 @@ class ClassPropertyConfig extends AbstractConfig
         return new static(
             name: $node->props[0]->name->name,
             type: self::getTypeName($node->type),
+            nullable: self::isNullableType($node->type),
             description: DocCommentParserHelper::extractDescriptionFromNode($node),
             default: $node->props[0]->default !== null
                 ? self::parseValue($node->props[0]->default)
@@ -56,6 +58,10 @@ class ClassPropertyConfig extends AbstractConfig
             'name' => $this->name,
             'type' => $this->type,
         ];
+
+        if ($this->nullable) {
+            $config['nullable'] = true;
+        }
 
         if ($this->description) {
             $config['description'] = $this->description->toConfig();

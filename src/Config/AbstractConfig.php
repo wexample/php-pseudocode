@@ -139,6 +139,23 @@ abstract class AbstractConfig
         return 'mixed';
     }
 
+    protected static function isNullableType($type): bool
+    {
+        if ($type instanceof Node\NullableType) {
+            return true;
+        }
+
+        if ($type instanceof Node\UnionType) {
+            foreach ($type->types as $unionType) {
+                if ($unionType instanceof Node\Identifier && strtolower($unionType->toString()) === 'null') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     protected function formatValue(mixed $value): string
     {
         if (is_string($value)) {

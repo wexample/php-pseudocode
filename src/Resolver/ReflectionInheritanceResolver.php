@@ -186,6 +186,7 @@ class ReflectionInheritanceResolver implements InheritedMembersResolverInterface
         return new ClassPropertyConfig(
             name: $name,
             type: $this->resolveReflectionTypeName($property->getType()),
+            nullable: $this->isReflectionTypeNullable($property->getType()),
             default: $default
         );
     }
@@ -249,5 +250,26 @@ class ReflectionInheritanceResolver implements InheritedMembersResolverInterface
         }
 
         return (string) $type;
+    }
+
+    private function isReflectionTypeNullable(?ReflectionType $type): bool
+    {
+        if ($type === null) {
+            return false;
+        }
+
+        if ($type instanceof ReflectionNamedType) {
+            return $type->allowsNull();
+        }
+
+        if ($type instanceof ReflectionUnionType) {
+            foreach ($type->getTypes() as $unionType) {
+                if (strtolower($unionType->getName()) === 'null') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
