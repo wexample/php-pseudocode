@@ -7,6 +7,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Const_;
 use PhpParser\NodeAbstract;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 class ConstantConfig extends AbstractConfig
 {
@@ -45,7 +46,8 @@ class ConstantConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null
+        mixed $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
         if ($node instanceof FuncCall) {
             // Handle define() calls

@@ -4,6 +4,7 @@ namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
 use Wexample\Pseudocode\Helper\DocCommentParserHelper;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 class FunctionConfig extends AbstractConfig
 {
@@ -44,7 +45,8 @@ class FunctionConfig extends AbstractConfig
 
     public static function fromNode(
         Node $node,
-        ?string $inlineComment = null
+        mixed $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
         $parameters = [];
         $paramDescriptions = DocCommentParserHelper::extractParamDescriptionsFromNode($node);
@@ -63,8 +65,9 @@ class FunctionConfig extends AbstractConfig
             description: $docComment,
             parameters: $parameters,
             return: FunctionReturnConfig::fromNode(
-                node:$node,
-                description:$returnDescription
+                node: $node,
+                inlineComment: $returnDescription,
+                context: $context
             )
         );
     }
@@ -182,5 +185,10 @@ class FunctionConfig extends AbstractConfig
         $output .= $this->getIndentation($indentationLevel - 1) . "}\n";
 
         return $output;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

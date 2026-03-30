@@ -28,10 +28,12 @@ abstract class AbstractGenerator
             }
         );
 
-        FileHelper::putContentsRecursive(
-            $outputFilePath,
-            $this->generateFromPath($filePath),
-        );
+        $content = $this->generateFromPath($filePath);
+        if ($content === '') {
+            return '';
+        }
+
+        FileHelper::putContentsRecursive($outputFilePath, $content);
 
         return $outputFilePath;
     }

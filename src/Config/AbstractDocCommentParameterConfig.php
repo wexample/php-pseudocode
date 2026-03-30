@@ -3,6 +3,7 @@
 namespace Wexample\Pseudocode\Config;
 
 use PhpParser\NodeAbstract;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 abstract class AbstractDocCommentParameterConfig extends AbstractConfig
 {
@@ -26,7 +27,8 @@ abstract class AbstractDocCommentParameterConfig extends AbstractConfig
 
     public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null
+        mixed $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static {
         return null;
     }

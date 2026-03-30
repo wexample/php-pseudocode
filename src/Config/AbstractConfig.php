@@ -5,6 +5,7 @@ namespace Wexample\Pseudocode\Config;
 use PhpParser\Node;
 use PhpParser\NodeAbstract;
 use Wexample\Helpers\Class\Traits\HasSnakeShortClassNameClassTrait;
+use Wexample\Pseudocode\Parser\ParserContext;
 
 abstract class AbstractConfig
 {
@@ -18,7 +19,8 @@ abstract class AbstractConfig
 
     abstract public static function fromNode(
         NodeAbstract $node,
-        ?string $inlineComment = null
+        mixed $inlineComment = null,
+        ?ParserContext $context = null
     ): ?static;
 
     /**
@@ -135,6 +137,23 @@ abstract class AbstractConfig
         }
 
         return 'mixed';
+    }
+
+    protected static function isNullableType($type): bool
+    {
+        if ($type instanceof Node\NullableType) {
+            return true;
+        }
+
+        if ($type instanceof Node\UnionType) {
+            foreach ($type->types as $unionType) {
+                if ($unionType instanceof Node\Identifier && strtolower($unionType->toString()) === 'null') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     protected function formatValue(mixed $value): string

@@ -7,11 +7,19 @@ use Symfony\Component\Yaml\Yaml;
 use Wexample\Helpers\Helper\FileHelper;
 use Wexample\Helpers\Helper\TextHelper;
 use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
+use Wexample\Pseudocode\Parser\ParserContext;
 use Wexample\Pseudocode\Parser\PhpParser;
 
 class PseudocodeGenerator extends AbstractGenerator
 {
     use WithConfigRegistry;
+
+    protected ?ParserContext $parserContext = null;
+
+    public function setParserContext(?ParserContext $context): void
+    {
+        $this->parserContext = $context;
+    }
 
     public function getSourceFileExtension(): string
     {
@@ -30,9 +38,14 @@ class PseudocodeGenerator extends AbstractGenerator
 
     protected function generateConfig(string $inputText): array
     {
-        $phpParser = new PhpParser();
+        $phpParser = $this->buildPhpParser();
 
         return $phpParser->parse($inputText);
+    }
+
+    protected function buildPhpParser(): PhpParser
+    {
+        return new PhpParser($this->parserContext);
     }
 
     public function generateConfigData(string $code): array
@@ -62,8 +75,11 @@ class PseudocodeGenerator extends AbstractGenerator
 
     public function generate(string $inputText): string
     {
-        return $this::dumpPseudocode(
-            $this->generateConfigData($inputText)
-        );
+        $config = $this->generateConfigData($inputText);
+        if (empty($config['items'] ?? [])) {
+            return '';
+        }
+
+        return $this::dumpPseudocode($config);
     }
 }
