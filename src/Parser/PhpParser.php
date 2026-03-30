@@ -4,9 +4,9 @@ namespace Wexample\Pseudocode\Parser;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
+use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use Wexample\Pseudocode\Common\Traits\WithConfigRegistry;
 use Wexample\Pseudocode\Config\AbstractConfig;
