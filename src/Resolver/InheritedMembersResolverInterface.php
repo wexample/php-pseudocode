@@ -13,4 +13,3 @@ interface InheritedMembersResolverInterface
      */
     public function collectInheritedMembers(Node\Stmt\Class_ $classNode): array;
 }
-
