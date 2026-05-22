@@ -80,7 +80,7 @@ class PhpParser extends NodeVisitorAbstract
      */
     public function parse(string $code): array
     {
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->createForHostVersion();
         $ast = $parser->parse($code);
         $this->items = [];
         $this->allInlineComments = $this->buildInlineCommentsRegistry($ast);
@@ -94,7 +94,7 @@ class PhpParser extends NodeVisitorAbstract
         return $this->items;
     }
 
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): int|Node|array|null
     {
         $registry = $this->getConfigRegistry();
 
