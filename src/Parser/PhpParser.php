@@ -109,5 +109,7 @@ class PhpParser extends NodeVisitorAbstract
                 $this->items[] = $item;
             }
         }
+
+        return null;
     }
 }
