@@ -1,6 +1,6 @@
 # php_pseudocode
 
-Version: 2.1.0
+Version: 2.1.1
 
 A basic PHP package
 
