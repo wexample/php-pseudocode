@@ -1,6 +1,6 @@
 # php_pseudocode
 
-Version: 2.1.1
+Version: 2.1.2
 
 A basic PHP package
 
@@ -30,7 +30,7 @@ Visit the [Wexample Suite documentation](https://docs.wexample.com) for the comp
 - php: >=7.4
 - symfony/yaml: ^7.0
 - nikic/php-parser: ^5.0
-- wexample/php-helpers: *
+- wexample/php-helpers: >=2.0.0
 
 ## Versioning & Compatibility Policy
 
