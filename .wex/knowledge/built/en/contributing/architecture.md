@@ -1,19 +1,3 @@
-# php_pseudocode
-
-Version: 2.1.3
-
-`wexample/php-pseudocode` turns PHP source into a YAML description of its API — classes, methods, properties, functions and constants with their types, defaults and docblock descriptions, but no bodies — and turns that YAML back into compilable PHP skeletons. The two directions are `PseudocodeGenerator` (`.php` → `.yml`, built on `nikic/php-parser`) and `CodeGenerator` (`.yml` → `.php`), both able to work file by file through `generateFromFileAndSave()`. It is meant for tooling that needs a language-neutral, body-free view of a codebase: cross-language port scaffolding, API contracts kept under version control, or feeding a class structure to a generator without shipping its implementation.
-
-## Table of Contents
-
-- [Architecture](#architecture)
-- [Integration in the Suite](#integration-in-the-suite)
-- [Dependencies](#dependencies)
-- [Versioning & Compatibility Policy](#versioning--compatibility-policy)
-- [License](#license)
-- [About us](#about-us)
-- [Migration Notes](#migration-notes)
-
 ## Architecture
 
 The package is one PSR-4 root, `Wexample\Pseudocode\` → `src/`, with no service container and no configuration file: everything is instantiated directly by the caller. Four layers do the work — two generators, a config tree, a registry that dispatches to it, and a parser built on `nikic/php-parser`.
@@ -127,50 +111,3 @@ The two directions are asserted by the traits under `src/Testing/`, which are sh
 ### Adding an item type
 
 Extend `AbstractConfig`, implement `canParse()`, `canLoad()`, `fromNode()`, `toConfig()` and `toCode()` — plus `fromConfig()` if the type owns children or accepts a scalar shorthand, in which case override `unpackData()` — and add a `$this->register(YourConfig::class)` line in the `ConfigRegistry` constructor. Nothing else dispatches: a config the registry does not know is unreachable from both generators, and a config a parent instantiates directly needs no registration at all.
-
-## Integration in the Suite
-
-This package is part of the Wexample Suite — a collection of high-quality, modular tools designed to work seamlessly together across multiple languages and environments.
-
-### Related Packages
-
-The suite includes packages for configuration management, file handling, prompts, and more. Each package can be used independently or as part of the integrated suite.
-
-Visit the [Wexample Suite documentation](https://docs.wexample.com) for the complete package ecosystem.
-
-## Dependencies
-
-- php: >=7.4
-- symfony/yaml: ^7.0
-- nikic/php-parser: ^5.0
-- wexample/php-helpers: >=3.0.0
-
-## Versioning & Compatibility Policy
-
-Wexample packages follow **Semantic Versioning** (SemVer):
-
-- **MAJOR**: Breaking changes
-- **MINOR**: New features, backward compatible
-- **PATCH**: Bug fixes, backward compatible
-
-We maintain backward compatibility within major versions and provide clear migration guides for breaking changes.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-Free to use in both personal and commercial projects.
-
-## About us
-
-[Wexample](https://wexample.com) stands as a cornerstone of the digital ecosystem — a collective of seasoned engineers, researchers, and creators driven by a relentless pursuit of technological excellence. More than a media platform, it has grown into a vibrant community where innovation meets craftsmanship, and where every line of code reflects a commitment to clarity, durability, and shared intelligence.
-
-This packages suite embodies this spirit. Trusted by professionals and enthusiasts alike, it delivers a consistent, high-quality foundation for modern development — open, elegant, and battle-tested. Its reputation is built on years of collaboration, refinement, and rigorous attention to detail, making it a natural choice for those who demand both robustness and beauty in their tools.
-
-Wexample cultivates a culture of mastery. Each package, each contribution carries the mark of a community that values precision, ethics, and innovation — a community proud to shape the future of digital craftsmanship.
-
-## Migration Notes
-
-When upgrading between major versions, refer to the migration guides in the documentation.
-
-Breaking changes are clearly documented with upgrade paths and examples.
