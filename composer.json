@@ -3,7 +3,7 @@
   "description": "A basic PHP package",
   "type": "library",
   "license": "MIT",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "authors": [
     {
       "name": "Wexample",
@@ -15,7 +15,7 @@
     "php": ">=8.5",
     "symfony/yaml": "^7.0",
     "nikic/php-parser": "^5.0",
-    "wexample/php-helpers": ">=3.0.0"
+    "wexample/php-helpers": ">=4.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5"
