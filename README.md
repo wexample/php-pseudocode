@@ -1,6 +1,6 @@
 # php_pseudocode
 
-Version: 2.1.4
+Version: 2.1.5
 
 `wexample/php-pseudocode` turns PHP source into a YAML description of its API — classes, methods, properties, functions and constants with their types, defaults and docblock descriptions, but no bodies — and turns that YAML back into compilable PHP skeletons. The two directions are `PseudocodeGenerator` (`.php` → `.yml`, built on `nikic/php-parser`) and `CodeGenerator` (`.yml` → `.php`), both able to work file by file through `generateFromFileAndSave()`. It is meant for tooling that needs a language-neutral, body-free view of a codebase: cross-language port scaffolding, API contracts kept under version control, or feeding a class structure to a generator without shipping its implementation.
 
