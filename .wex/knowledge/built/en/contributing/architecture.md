@@ -104,7 +104,7 @@ Three stateless classes in `src/Helper/`, all static. `AttributeHelper` finds an
 
 ### Tests
 
-tests/AbstractGeneratorTest.php is the base case: it instantiates both generators in `setUp()`, and each concrete test declares its item type via `getItemType()`. Fixtures come in `.php` / `.yml` pairs under `tests/resources/item/<type>/`, the directory being the config's short class name lowercased, with the old `tests/Item/<Type>/resources/` layout still honoured as a fallback.
+tests/AbstractGeneratorTestCase.php is the base case: it instantiates both generators in `setUp()`, and each concrete test declares its item type via `getItemType()`. Fixtures come in `.php` / `.yml` pairs under `tests/resources/item/<type>/`, the directory being the config's short class name lowercased, with the old `tests/Item/<Type>/resources/` layout still honoured as a fallback.
 
 The two directions are asserted by the traits under `src/Testing/`, which are shipped rather than kept in `tests/` so downstream packages can reuse them. `CodeToPseudocodeTestTrait::assertCodeToPseudocode()` compares generated config data against the fixture YAML, after `filterIgnoredKeys()` strips `generator` and `implementationGuidelines` — neither survives a round trip from source. `PseudocodeToCodeTestTrait::assertPseudocodeToCode()` regenerates PHP from the fixture YAML, not from the freshly parsed config, precisely so generator options that cannot be inferred from code are exercised; both sides go through `normalizeCode()`, which strips comments and collapses whitespace, before `assertEquals`. Both traits dump intermediate files into `sys_get_temp_dir() . '/pseudocode_tests'` for inspection.
 
