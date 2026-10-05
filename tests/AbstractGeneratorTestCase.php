@@ -10,7 +10,7 @@ use Wexample\Pseudocode\Generator\PseudocodeGenerator;
 use Wexample\Pseudocode\Testing\CodeToPseudocodeTestTrait;
 use Wexample\Pseudocode\Testing\PseudocodeToCodeTestTrait;
 
-abstract class AbstractGeneratorTest extends TestCase
+abstract class AbstractGeneratorTestCase extends TestCase
 {
     use CodeToPseudocodeTestTrait;
     use PseudocodeToCodeTestTrait;

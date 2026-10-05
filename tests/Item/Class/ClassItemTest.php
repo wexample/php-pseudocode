@@ -4,9 +4,9 @@ namespace Wexample\Pseudocode\Tests\Item\Class;
 
 use Wexample\Helpers\Testing\Traits\WithYamlTestCase;
 use Wexample\Pseudocode\Config\ClassConfig;
-use Wexample\Pseudocode\Tests\AbstractGeneratorTest;
+use Wexample\Pseudocode\Tests\AbstractGeneratorTestCase;
 
-class ClassItemTest extends AbstractGeneratorTest
+class ClassItemTest extends AbstractGeneratorTestCase
 {
     use WithYamlTestCase;
 
