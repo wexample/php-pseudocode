@@ -48,6 +48,8 @@ abstract class AbstractGeneratorTest extends TestCase
         // Remove comments
         $code = preg_replace('/\/\*.*?\*\//s', '', $code);
         $code = preg_replace('/\/\/.*$/m', '', $code);
+        // Attributes mark what is exported; the generated code carries none.
+        $code = preg_replace('/^\s*#\[.*\]\s*$/m', '', $code);
 
         // Split into lines
         $lines = explode("\n", $code);
@@ -55,8 +57,11 @@ abstract class AbstractGeneratorTest extends TestCase
         // Remove empty lines and trim each line
         $lines = array_filter(array_map('trim', $lines));
 
-        // Rejoin and normalize whitespace
-        return preg_replace('/\s+/', ' ', implode("\n", $lines));
+        // Rejoin and normalize whitespace; a parenthesis is followed or closed
+        // the same whether its content spans one line or several.
+        $code = preg_replace('/\s+/', ' ', implode("\n", $lines));
+
+        return preg_replace(['/\(\s+/', '/\s+\)/'], ['(', ')'], $code);
     }
 
     protected function loadPseudocode(string $filename): array

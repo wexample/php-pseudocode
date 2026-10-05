@@ -4,7 +4,6 @@ namespace Wexample\Pseudocode\Config;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Const_;
 use PhpParser\NodeAbstract;
 use Wexample\Pseudocode\Parser\ParserContext;
@@ -32,12 +31,13 @@ class ConstantConfig extends AbstractConfig
     {
         // Check for FuncCall with proper name
         if ($node instanceof Node\Expr\FuncCall) {
-            // Make sure name is an Identifier and has toString method
-            if (! ($node->name instanceof Identifier) || ! method_exists($node->name, 'toString')) {
+            // A function call is named by a Name, never an Identifier: a dynamic
+            // call (`$fn(...)`) is the only other shape, and is not a define().
+            if (! ($node->name instanceof Node\Name)) {
                 return false;
             }
 
-            return $node->name->toString() === 'define';
+            return $node->name->toLowerString() === 'define';
         }
 
         // Check for Const_

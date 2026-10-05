@@ -3,6 +3,7 @@
 /**
  * A class that performs basic arithmetic operations.
  */
+#[\Wexample\Pseudocode\Attribute\PseudocodeExport]
 class Calculator
 {
     /** @var int Stores the result of the last operation performed. */
