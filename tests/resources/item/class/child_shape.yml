@@ -1,0 +1,9 @@
+items:
+  - name: Circle
+    type: class
+    extends: Shape
+    description: "A child of an exported class: the pseudocode says whose child it is."
+    properties:
+      - name: radius
+        type: float
+        default: 1.0

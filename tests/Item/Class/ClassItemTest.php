@@ -30,4 +30,14 @@ class ClassItemTest extends AbstractGeneratorTestCase
     {
         $this->assertPseudocodeToCode('basic_calculator');
     }
+
+    /**
+     * A class extending an exported one says so. Read from code only: the
+     * resource needs a namespace for its parent to be found, which the code
+     * generated from pseudocode never carries.
+     */
+    public function testChildClassToPseudocode(): void
+    {
+        $this->assertCodeToPseudocode('child_shape');
+    }
 }

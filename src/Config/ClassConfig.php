@@ -16,6 +16,10 @@ class ClassConfig extends AbstractConfig
      * @param ClassMethodConfig[] $methods
      * @param DocCommentConfig|null $description
      * @param string $type
+     * @param string|null $extends The parent class, by its short name, when
+     *     it is exported too: a hierarchy of exported classes is one in the
+     *     pseudocode as well. Null for a parent that is not exported, which
+     *     is as good as none to a reader of the pseudocode.
      */
     public function __construct(
         protected readonly string $name,
@@ -24,6 +28,7 @@ class ClassConfig extends AbstractConfig
         protected readonly ?DocCommentConfig $description = null,
         protected readonly string $type = 'class',
         ?GeneratorConfig $generator = null,
+        protected readonly ?string $extends = null,
     ) {
         parent::__construct(
             generator: $generator,
@@ -102,7 +107,32 @@ class ClassConfig extends AbstractConfig
             description: DocCommentConfig::fromNode($node),
             properties: $properties,
             methods: $methods,
+            extends: self::exportedParentName($node),
         );
+    }
+
+    /**
+     * The parent class when it carries the export attribute itself: read by
+     * reflection, as the parent lives in another file, and only where the
+     * class is autoloadable — a class parsed outside an autoloader has no
+     * parent to ask.
+     */
+    private static function exportedParentName(Node\Stmt\Class_ $node): ?string
+    {
+        $parent = $node->extends?->toString();
+
+        if (! $parent || ! class_exists($parent)) {
+            return null;
+        }
+
+        return (new \ReflectionClass($parent))->getAttributes(PseudocodeExport::class)
+            ? (new \ReflectionClass($parent))->getShortName()
+            : null;
+    }
+
+    public function getExtends(): ?string
+    {
+        return $this->extends;
     }
 
 
@@ -137,6 +167,10 @@ class ClassConfig extends AbstractConfig
             'type' => $this->type,
         ];
 
+        if ($this->extends) {
+            $config['extends'] = $this->extends;
+        }
+
         if ($this->description) {
             $config['description'] = $this->description->toConfig($this);
         }
@@ -161,7 +195,7 @@ class ClassConfig extends AbstractConfig
             $output .= $this->description->toCode($this);
         }
 
-        $output .= $indentation . "class {$this->name}\n" . $indentation . "{\n";
+        $output .= $indentation . "class {$this->name}" . ($this->extends ? " extends {$this->extends}" : '') . "\n" . $indentation . "{\n";
 
         foreach ($this->properties as $property) {
             $output .= $property->toCode($this, $indentationLevel + 1);
