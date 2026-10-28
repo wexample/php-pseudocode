@@ -54,3 +54,4 @@ coverage*.lcov
 /dist/
 /out/
 /coverage/
+/node_modules
