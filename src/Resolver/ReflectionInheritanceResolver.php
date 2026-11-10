@@ -224,7 +224,12 @@ class ReflectionInheritanceResolver implements InheritedMembersResolverInterface
         }
 
         try {
-            return $parameter->getDefaultValue();
+            $value = $parameter->getDefaultValue();
+
+            // A default built at each call — `new DateTimeImmutable()` — has no
+            // value of its own: its expression, not the moment it was read,
+            // which would change the pseudocode at every export.
+            return is_object($value) ? 'new ' . $value::class . '()' : $value;
         } catch (\ReflectionException) {
             return ConfigEnum::NOT_PROVIDED;
         }
